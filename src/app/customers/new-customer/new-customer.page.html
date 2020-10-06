@@ -1,0 +1,275 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons slot="start">
+          <ion-button (click)="prev()"><ion-icon slot="start" name="arrow-back"></ion-icon> {{labels.previous}}</ion-button>
+          </ion-buttons>
+    <ion-title text-center></ion-title>
+    <ion-buttons slot="primary">
+        <ion-buttons slot="end">
+            <!-- <ion-label button (click)="onSave()" color="success">{{labels.next}}</ion-label> -->
+            <ion-button (click)="next()">{{labels.next}} <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
+          </ion-buttons>
+    <!--  -->
+    
+  </ion-buttons> 
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="margin:0px; padding: 0px;">
+          <ion-grid style="margin:0px;padding-top: 30px; padding: 0px;">
+           
+            <ion-row justify-content-top style="margin:0px;padding-top: 0px; padding: 0px;">
+              <ion-col align-content-top size-xs="10" offset-xs="1">                                        
+                            <ion-slides #signupSlider pager>
+                            <ion-slide>
+                                <ion-list>
+                            <form [formGroup]="infoForm">
+                                <ion-grid class="main-grid" style="margin:50px;padding-top:0px; padding: 50px;">
+                                    <ion-row justify-content-center> 
+                                        <ion-col text-center size="12" size-xs="10" offset-xs="1">
+                                        <ion-label style="font-size: 1em; color: white">
+                                          {{labels.newCustomerWelcome}}
+                                      </ion-label>
+                                    </ion-col>
+                                    </ion-row>
+                                    <ion-row>
+                                        <ion-col size="12" size-xs="10" offset-xs="1">
+                                            <ion-item *ngFor="">
+                                                <ion-thumbnail>
+                                                  <ion-img alt="text" src="{{labels.personalPic}}" formControlName="personalPic">صورة شخصية</ion-img>
+                                                </ion-thumbnail>
+                                                <ion-label></ion-label>
+                                              </ion-item>
+                                            </ion-col>
+                                    </ion-row>
+                                    <ion-row justify-items-right>
+                                      <ion-col align-items-right>
+                                          <ion-item >
+                                              <ion-label text-right position="floating">{{labels.title}}</ion-label>
+                                              <ion-select style="direction: rtl" autocomplete interface="popover"   formControlName="title">
+                                                  <ion-select-option  selected value="Mr" >{{labels.mr}}</ion-select-option>
+                                                  <ion-select-option value="Miss">{{ labels.mrs}}</ion-select-option>
+                                                </ion-select>
+                                            </ion-item>
+                                      </ion-col>
+                                    </ion-row>
+                                    <ion-row *ngIf="!infoForm.get('title').valid && infoForm.get('title').touched">
+                                      <ion-col>
+                                       <ion-label class="input-error">{{labels.errorTitle}}</ion-label>
+                                      </ion-col>
+                                    </ion-row>
+                                    <ion-row>
+                                      <ion-col>
+                                        <ion-item >
+                                            <ion-label text-right position="floating">{{labels.userId}}</ion-label>
+                                            <ion-input autocomplete autocorrect   formControlName="userId"></ion-input>
+                                          </ion-item>
+                                        </ion-col>
+                                      </ion-row>
+                                      <ion-row *ngIf="!infoForm.get('userId').valid && infoForm.get('userId').touched">
+                                          <ion-col>
+                                           <ion-label class="input-error">{{labels.errorUserId}}</ion-label>
+                                          </ion-col>
+                                        </ion-row>
+                                        <ion-row>
+                                            <ion-col>
+                                              <ion-item>
+                                                  <ion-label text-right position="floating">{{labels.firstName}}</ion-label>
+                                                  <ion-input autocomplete autocorrect   formControlName="firstName"></ion-input>
+                                                </ion-item>
+                                              </ion-col>
+                                            </ion-row>
+                                            <ion-row *ngIf="!infoForm.get('firstName').valid && infoForm.get('firstName').touched">
+                                                <ion-col>
+                                                 <ion-label class="input-error">{{labels.errorFirstname}}</ion-label>
+                                                </ion-col>
+                                              </ion-row>
+                                      <ion-row>
+                                        <ion-col >
+                                          <ion-item>
+                                              <ion-label text-right position="floating">{{labels.lastName}}</ion-label>
+                                              <ion-input type="text" autocomplete autocorrect   formControlName="lastName"></ion-input>
+                                          </ion-item>
+                                        </ion-col>
+                                      </ion-row>
+                                      <ion-row *ngIf="!infoForm.get('lastName').valid && infoForm.get('lastName').touched">
+                                          <ion-col>
+                                           <ion-label class="input-error">{{labels.errorLastname}}</ion-label>
+                                          </ion-col>
+                                        </ion-row>
+                                      <ion-row>
+                                        <ion-col >
+                                            <ion-item>
+                                                <ion-label text-right position="floating">{{labels.email}}</ion-label>
+                                                <ion-input type="email" autocomplete autocorrect   formControlName="email"></ion-input>
+                                              </ion-item>
+                                            </ion-col>
+                                          </ion-row>
+                                          <ion-row *ngIf="!infoForm.get('email').valid && infoForm.get('email').touched">
+                                              <ion-col>
+                                               <ion-label class="input-error">{{labels.errorEamil}}</ion-label>
+                                              </ion-col>
+                                            </ion-row>
+                                          <ion-row>
+                                            <ion-col >
+                                              <ion-item>
+                                                  <ion-label text-right position="floating">{{labels.password}}</ion-label>
+                                                  <ion-input autocomplete type="password" autocorrect  formControlName="password"></ion-input>
+                                                </ion-item>
+                                              </ion-col>
+                                            </ion-row>
+                                            <ion-row *ngIf="!infoForm.get('password').valid && infoForm.get('password').touched">
+                                                <ion-col>
+                                                 <ion-label class="input-error">{{labels.errorPasswrod}}</ion-label>
+                                                </ion-col>
+                                              </ion-row>                                            
+                                              <ion-row>
+                                                  <ion-col >
+                                                    <ion-item>
+                                                        <ion-label text-right position="floating">{{labels.confirmPassword}}</ion-label>
+                                                        <ion-input autocomplete type="password" autocorrect  formControlName="confirmPassword"></ion-input>
+                                                      </ion-item>
+                                                    </ion-col>
+                                                  </ion-row>
+                                                  <ion-row *ngIf="!infoForm.get('confirmPassword').valid && infoForm.get('confirmPassword').touched">
+                                                      <ion-col>
+                                                       <ion-label class="input-error">{{labels.errorConfirmPasswrod}}</ion-label>
+                                                      </ion-col>
+                                                    </ion-row>             
+                                                </ion-grid>                              
+                                                </form>
+                                              </ion-list>
+                                            </ion-slide>
+                                            <!-- ********************************* -->
+                                            <ion-slide>
+                                                <ion-list>
+                                                  <form [formGroup]="locationForm">
+                                                      <ion-grid class="main-grid" style="margin:50px; padding: 50px;">
+                                                        <ion-row> 
+                                                            <ion-col >
+                                                              <ion-item>
+                                                                  <ion-label text-right position="floating">{{labels.gender}}</ion-label>
+                                                                  <ion-select style="direction: rtl" autocomplete interface="popover"   formControlName="gender">
+                                                                      <ion-select-option selected value="Male" >{{ labels.male}}</ion-select-option>
+                                                                      <ion-select-option value="Female">{{labels.female}}</ion-select-option>
+                                                                    </ion-select>
+                                                                </ion-item>
+                                                              </ion-col>
+                                                            </ion-row>
+                                                            <ion-row *ngIf="!locationForm.get('gender').valid && locationForm.get('gender').touched">
+                                                                <ion-col>
+                                                                 <ion-label class="input-error">{{labels.errorGender}}</ion-label>
+                                                                </ion-col>
+                                                              </ion-row>
+                                                            <ion-row>
+                                                              <ion-col >
+                                                                <ion-item>
+                                                                    <ion-label text-right position="floating">{{labels.birthday}}</ion-label>
+                                                                    <ion-datetime style="direction: inherit" max="2001-01-01"  autocorrect  formControlName="birthday"></ion-datetime>
+                                                                  </ion-item>
+                                                  </ion-col>
+                                                  </ion-row>
+                                                  <ion-row *ngIf="!locationForm.get('birthday').valid && locationForm.get('birthday').touched">
+                                                    <ion-col>
+                                                     <ion-label class="input-error">{{labels.errorBirthday}}</ion-label>
+                                                    </ion-col>
+                                                  </ion-row>
+                                                  <ion-row>
+                                                    <ion-col >
+                                                      <ion-item>
+                                                          <ion-label text-right position="floating">{{labels.country}}</ion-label>
+                                                          <ion-input type="text" autocomplete autocorrect   formControlName="city"></ion-input>
+                                                      </ion-item>
+                                                    </ion-col>
+                                                  </ion-row>
+                                                  <ion-row *ngIf="!locationForm.get('country').valid && locationForm.get('country').touched">
+                                                      <ion-col>
+                                                       <ion-label>{{labels}}</ion-label>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                  <ion-row>
+                                                      <ion-col >
+                                                        <ion-item>
+                                                            <ion-label text-right position="floating">{{labels.city}}</ion-label>
+                                                            <ion-input type="text" autocomplete autocorrect   formControlName="area"></ion-input>
+                                                        </ion-item>
+                                                      </ion-col>
+                                                    </ion-row>
+                                                    <ion-row *ngIf="!locationForm.get('city').valid && locationForm.get('city').touched">
+                                                        <ion-col>
+                                                         <ion-label>{{labels.city}}</ion-label>
+                                                        </ion-col>
+                                                      </ion-row>
+                                                    <ion-row>
+                                                        <ion-col >
+                                                          <ion-item>
+                                                              <ion-label text-right position="floating">{{labels.area}}</ion-label>
+                                                              <ion-input type="text" autocomplete autocorrect   formControlName="address"></ion-input>
+                                                          </ion-item>
+                                                        </ion-col>
+                                                      </ion-row>
+                                                      <ion-row *ngIf="!locationForm.get('area').valid && locationForm.get('area').touched">
+                                                          <ion-col>
+                                                           <ion-label class="input-error">{{labels.errorArea}}</ion-label>
+                                                          </ion-col>
+                                                        </ion-row>
+                                                      <ion-row>
+                                                          <ion-col >
+                                                            <ion-item>
+                                                                <ion-label text-right position="floating">{{labels.zipcode}}</ion-label>
+                                                                <ion-input type="number" autocomplete autocorrect   formControlName="zipcode"></ion-input>
+                                                            </ion-item>
+                                                          </ion-col>
+                                                        </ion-row>
+                                                        <ion-row *ngIf="!locationForm.get('zipcode').valid && locationForm.get('zipcode').touched">
+                                                            <ion-col>
+                                                             <ion-label>{{labels.zipcode}}</ion-label>
+                                                            </ion-col>
+                                                          </ion-row>
+                                                      <ion-row>
+                                                          <ion-col >
+                                                            <ion-item>
+                                                                <ion-label text-right position="floating">{{labels.address}}</ion-label>
+                                                                <ion-input type="text" autocomplete autocorrect  formControlName="address"></ion-input>
+                                                            </ion-item>
+                                                          </ion-col>
+                                                        </ion-row>
+                                                        <ion-row *ngIf="!locationForm.get('address').valid && locationForm.get('address').touched">
+                                                            <ion-col>
+                                                             <ion-label class="input-error">{{labels.errorAddress}}</ion-label>
+                                                            </ion-col>
+                                                          </ion-row>
+                                                        <ion-row>
+                                                            <ion-col >
+                                                              <ion-item>
+                                                                  <ion-label text-right position="floating">{{labels.phone}}</ion-label>
+                                                                  <ion-input type="tel" autocomplete autocorrect   formControlName="phone"></ion-input>
+                                                              </ion-item>
+                                                            </ion-col>
+                                                          </ion-row>
+                                                          <ion-row *ngIf="!locationForm.get('phone').valid && locationForm.get('phone').touched">
+                                                              <ion-col>
+                                                               <ion-label >{{labels.errorPhone}}</ion-label>
+                                                              </ion-col>
+                                                            </ion-row>                                                            
+                                                        </ion-grid>
+                                                    </form>
+                                                  </ion-list>
+                                              </ion-slide>
+                                            </ion-slides>                       
+              </ion-col>
+              <ion-row>
+                  <ion-col slot="center">
+                      <ion-button 
+                      (click)="createNewCustomer()">
+                         <ion-icon name="checkmark" slot="icon-only" ></ion-icon>
+                     </ion-button>
+                  </ion-col>
+                </ion-row>
+            </ion-row>
+          </ion-grid>
+            
+       
+    
+                    
+</ion-content>

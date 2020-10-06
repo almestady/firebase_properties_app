@@ -1,0 +1,162 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="end">
+        <ion-button [routerLink]="['/properties', 'tabs', 'discover']">
+          <ion-icon name="check" text-right></ion-icon
+        ></ion-button>       
+      </ion-buttons>
+      <ion-title text-center>إضافة المنتج </ion-title>
+      <ion-buttons  slot="end">
+        <ion-button (click)="submitForm()">إضافة</ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+      <ion-grid 
+        no-padding 
+        fixed
+        nopadding
+        >
+        
+        <ion-item-sliding #slidingItem >
+          <ion-row text-center>
+            <ion-col size-xs="12">
+              <ion-list>
+              <ion-item>
+              <ion-card no-padding margin="0" >
+                 
+                <ion-grid marigin="0" no-padding>
+                  <ion-row style="height: 100px;" align-items-center>
+                    <ion-col size-xs="8">
+                      <!-- ion card header8888888888888888888888888888888888888888888888-->
+                      <ion-card-header>
+                        <ion-grid no-paddin>                      
+                          <ion-row align-items-center>
+                            <ion-col size-xs="4"
+                              ><ion-label text-center> {{ property.type }}</ion-label></ion-col
+                            >
+                            <ion-col size-xs="4"
+                              ><ion-label text-center>{{
+                                property.address
+                              }}</ion-label></ion-col
+                            >
+                            <ion-col size-xs="4"
+                              ><ion-label text-center> {{ property.id }}</ion-label></ion-col
+                            >
+                          </ion-row>
+                          <ion-row>
+                            <ion-col size-xs="4"
+                              ><ion-label text-center>
+                                {{ property.startDate | date }}</ion-label
+                              ></ion-col
+                            >
+                            <ion-col size-xs="4"
+                              ><ion-label text-center>{{ property.space }}</ion-label></ion-col
+                            >
+                            <ion-col size-xs="4">
+                              <ion-label text-center *ngIf="!property.hasOffer">{{ property.price }}</ion-label>
+                              <ion-label text-center *ngIf="property.hasOffer" style="text-decoration: line-through">{{ property.price }}</ion-label>
+                              <ion-label text-center *ngIf="property.hasOffer">{{ property.hasOffer.offerPrice }}</ion-label>
+                            </ion-col>
+                          </ion-row>
+                        </ion-grid>
+                      </ion-card-header>
+                    </ion-col>
+                    <ion-col size-xs="4">
+                      <ion-img
+                        class="id-pic"
+                        src="https://cdn2.iconfinder.com/data/icons/rcons-user/32/male-circle-512.png"
+                      ></ion-img>
+                      {{property.owner}} 
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size-xs="12">
+                      <ion-grid>
+                        <ion-row>
+                          <ion-col size-xs="12">
+                            <ion-card-content>
+                              <ion-img src="{{ property.propertyPicture }}"></ion-img>
+                            </ion-card-content>
+                          </ion-col>
+                        </ion-row>
+                      </ion-grid>
+                    </ion-col>
+                    <ion-col size-xm="12">
+                      <ion-grid no-padding>
+                        <ion-row>
+                          <ion-col>
+                            <ion-img
+                              class="icon-img"
+                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ07LllehO8-NcFFCSPbPG95bKOuwkHUcH3cS04iL5mC5r1AS_u"
+                            ></ion-img>
+                          </ion-col>
+                          <ion-col>
+                            <ion-img
+                              class="icon-img"
+                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ07LllehO8-NcFFCSPbPG95bKOuwkHUcH3cS04iL5mC5r1AS_u"
+                            ></ion-img>
+                          </ion-col>
+                          <ion-col>
+                            <ion-img
+                              class="icon-img"
+                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ07LllehO8-NcFFCSPbPG95bKOuwkHUcH3cS04iL5mC5r1AS_u"
+                            ></ion-img>
+                          </ion-col>
+                          <ion-col>
+                            <ion-img
+                              class="icon-img"
+                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ07LllehO8-NcFFCSPbPG95bKOuwkHUcH3cS04iL5mC5r1AS_u"
+                            ></ion-img>
+                          </ion-col>
+                          <ion-col>
+                            <ion-img
+                              class="icon-img"
+                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ07LllehO8-NcFFCSPbPG95bKOuwkHUcH3cS04iL5mC5r1AS_u"
+                            ></ion-img>
+                          </ion-col>
+                          <ion-col>
+                            <ion-img
+                              class="icon-img"
+                              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ07LllehO8-NcFFCSPbPG95bKOuwkHUcH3cS04iL5mC5r1AS_u"
+                            ></ion-img>
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col text-center
+                            ><ion-badge>{{
+                              property.livingrooms
+                            }}</ion-badge></ion-col
+                          >
+                          <ion-col text-center
+                            ><ion-badge>{{
+                              property.bathrooms
+                            }}</ion-badge></ion-col
+                          >
+                          <ion-col text-center
+                            ><ion-badge>{{ property.bedrooms }}</ion-badge></ion-col
+                          >
+                          <ion-col text-center
+                            ><ion-badge>{{ property.garages }}</ion-badge></ion-col
+                          >
+                          <ion-col text-center
+                            ><ion-badge>{{ property.gardens }}</ion-badge></ion-col
+                          >
+                          <ion-col text-center
+                            ><ion-badge>{{ property.ketchins }}</ion-badge></ion-col
+                          >
+                        </ion-row>
+                      </ion-grid>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-card>
+            </ion-item>
+            </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-item-sliding>
+      </ion-grid>
+    </ion-content>
+  

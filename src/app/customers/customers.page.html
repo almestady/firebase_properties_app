@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons>
+          <ion-back-button></ion-back-button>
+        </ion-buttons>
+    <ion-title>قائمة العملاء</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngFor="let customer of customers">
+    <ion-label>{{ customer.title }}</ion-label><hr>
+<ion-label>{{ customer.firstName }}</ion-label><hr>
+<ion-label>{{ customer.lastName }}</ion-label><hr>
+<ion-label>{{ customer.email }}</ion-label><hr>
+<ion-label>{{ customer.gender }}</ion-label><hr>
+<ion-label>{{ customer.phone }}</ion-label><hr>
+<ion-label>{{ customer.phone }}</ion-label><hr>
+<ion-img src="{{ customer.personalPic }}"></ion-img><hr>
+
+</ion-content>

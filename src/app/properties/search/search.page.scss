@@ -1,0 +1,118 @@
+ion-grid{
+   
+    margin-left:0 !important;
+    margin-right:0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    ion-row{
+        padding: 0 !important; 
+        ion-col{
+            padding: 0 !important; 
+            ion-card{
+                background-color: white;
+                border-radius: 10px 10px 10px 10px;
+                width:100%;
+                height:440px;
+                margin-left:10px !important;
+                margin-right:10px !important;
+                margin-top: 5px;
+                margin-bottom: 3px;
+                padding: 0 !important; 
+                ion-card-header{padding: 0 !important;  border-radius: 10px 10px 0px 0px; }
+                ion-card-content{
+                    padding: 0 !important;   border-radius: 0px 0px 10px 10px;
+                }
+            }
+
+        }
+    }
+}
+.first-card{
+    margin-top: 10px;
+}
+.ion-content-below-property-card{
+    margin-top:400px!important;
+  }
+
+ion-card-subtitle{
+    text-decoration: line-through;
+    color: rgb(247, 223, 117);
+}
+
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+.ion-col{
+width:100%;
+height: 100%;
+padding:0;
+
+}
+.icon-img{
+   width: 19px;
+   height: 19px;
+   margin: auto;
+   display: block;
+}
+.main-pic {
+    margin:0;
+    padding: 0;
+    width: 100%;
+    height: 170px;
+    margin: auto;    
+    display: block;
+  }
+
+  
+  .clearfix {
+    overflow: auto;
+  }
+
+.id-pic{
+    width: 50px;
+    height: 50px;
+    margin: auto;    
+    display: block;
+}
+
+.thumbnail-pic {
+    width: 50px;
+    height: 50px;
+    
+    display: block;
+    
+}
+
+ion-label {
+    font-size: 5px;
+    margin: auto;
+}
+
+.location-img {
+    widht:10rem;
+    height: 25rem;
+    // max-height: 30vh;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.img-wrapper {
+    min-height: 200px;
+    width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.polaroid {
+    width: 80%;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+
+  .home-background {
+   
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+}

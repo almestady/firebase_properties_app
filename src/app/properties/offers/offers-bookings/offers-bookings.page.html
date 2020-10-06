@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/properties/tabs/offers"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ property.title }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+ <ion-button margin color="primary" [routerLink]="['/', 'properties', 'tabs', 'offers', 'edit', property.id]">
+  Edit
+</ion-button>
+</ion-content>

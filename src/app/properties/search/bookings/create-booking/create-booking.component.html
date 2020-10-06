@@ -1,0 +1,102 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title text-center>
+     {{ bookedProperty.propertyName }}
+    </ion-title>
+    <ion-buttons color="primary"> 
+      <ion-button (click)="onCancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid style="margin:0px;padding-top: 30px; padding: 0px;">
+    <ion-row>
+      <ion-col>
+        <form [formGroup]="form">
+       <ion-grid style="border-radius: 5px; border: 3px;">
+         <ion-row>
+           <ion-col size-sm="6" offset="3">
+              <ion-item lines="none">
+                  <ion-label text-right >{{this.customer.firstName }}...{{this.arabiceLabels.welcome}} <br> {{this.arabiceLabels.chooseBookingDate}}</ion-label>
+                  
+                   </ion-item>
+                   <ion-item>
+                    
+                     <ion-datetime  style="direction: rtl" max="2001-01-01"  autocorrect  formControlName="startDate"></ion-datetime><hr/>
+                     <ion-label text-right>{{arabiceLabels.startDate}}</ion-label>
+                     <ion-chip>
+                        <ion-label color="secondary">Secondary Label</ion-label>
+                      </ion-chip>
+                   </ion-item>
+                   <ion-item>
+                    <ion-label>Start Time</ion-label>
+                    <ion-datetime display-format="h:mm A" picker-format="h:mm A" value="1990-02-19T07:43Z" formControlName="startTime"></ion-datetime>
+                  </ion-item>
+           </ion-col>
+         </ion-row>
+         <ion-row>
+           <ion-col>
+             <ion-buttons>
+               <ion-button slot="start" (click)="onBookProperty()">  <ion-ripple-effect type="unbounded"></ion-ripple-effect>{{this.arabiceLabels.sure}}</ion-button>
+             </ion-buttons>
+           </ion-col>
+         </ion-row>
+       </ion-grid>
+      </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+
+<!-- <ion-content text-center>
+  <form [formGroup]="form">
+  <ion-grid>
+    <ion-row>
+      <ion-col size-sm="6" offset="3">
+        <ion-item>
+       <ion-label text-right position="floating">الإسم الأول</ion-label>
+       <ion-input text-right type="text" formControlName="firstName" required></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size-sm="6" offset="3">
+          <ion-item>
+         <ion-label text-right position="floating">العائلة</ion-label>
+         <ion-input text-right type="text" formControlName="firstName" required></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+          <ion-col size-sm="6" offset="3">
+            <ion-item>
+           <ion-label text-right position="floating"> من تاريخ</ion-label>
+           <ion-datetime
+           text-right
+            display-format="DD MMM YYYY"
+             picker-format="YY MMM DD"
+             ngModel
+              min=""
+               #fromDate="ngModel"
+               formControlName="date-From"
+                 required></ion-datetime>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col size-sm="6" offset="3">
+              <ion-item>
+             <ion-label text-right position="floating"> إلى تاريخ</ion-label>
+             <ion-datetime text-right display-format="DD MMM YYYY" picker-format="YY MMM DD" [min]="fromDate.value" [max]=""  formControlName="toDate" required></ion-datetime>
+             <ion-datetime style="direction: inherit" max="2001-01-01"  autocorrect  formControlName="birthday"></ion-datetime>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+  </ion-grid>
+  <ion-button color="primary" (click)="onBookProperty()" expand="block">حجز</ion-button>
+</form>
+</ion-content> -->

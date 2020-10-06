@@ -1,0 +1,515 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/properties/tabs/offers"></ion-back-button>
+    </ion-buttons>
+    <ion-title text-center>{{ labels.propertySampleView}} </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content overflow-scroll="false">
+  <ion-grid style="margin:0px;padding-top: 30px; padding: 0px;">
+    <ion-row
+      justify-content-top
+      style="margin:0px;padding-top: 0px; padding: 0px;"
+    >
+      <ion-col align-content-top size-xs="10" offset-xs="1">
+        <ion-slides #newProperty pager>
+          <ion-slide>
+            <ion-buttons>
+              <ion-button (click)="prev()"
+                ><ion-icon slot="start" name="arrow-back"></ion-icon>
+                {{labels.previous}}</ion-button
+              >
+              <ion-button (click)="next()" *ngIf="newProperty.slideNext"
+                >{{labels.next}} <ion-icon slot="end" name="arrow-forward"></ion-icon
+              ></ion-button>
+            </ion-buttons>
+            <p *ngIf="submitAttempt" style="color: #ea6153;">
+              Please fill out all details accurately.
+            </p>
+
+            <ion-list>
+              <form [formGroup]="form">
+                <ion-grid class="main-grid">
+                  <ion-row justify-content-center>
+                    <ion-col text-center size="12" size-xs="10" offset-xs="1">
+                      <ion-label style="font-size: 1em; color: white">
+                        {{labels.newproperty}}
+                      </ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.propertyName }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          autocomplete
+                          autocorrect
+                          formControlName="propertyName"
+                          type="text"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!form.get('propertyName').valid && (form.get('propertyName').dirty || form.get('propertyName').touched)"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorpropertyName }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <!-- <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.propertyPicture }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          autocomplete
+                          autocorrect
+                          formControlName="propertyPicture"
+                          type="text"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!form.get('propertyPicture').valid && form.get('propertyPicture').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorpropertyPicture }}</ion-label>
+                    </ion-col>
+                  </ion-row> -->
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.description }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          type="text"
+                          autocomplete
+                          autocorrect
+                          formControlName="description"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="
+                                  !form.get('description').valid && form.get('description').touched
+                                "
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorDescription }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.price }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          style="direction: rtl;"
+                          type="number"
+                          text-right
+                          autocomplete
+                          autocorrect
+                          formControlName="price"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!form.get('price').valid && form.get('price').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorPrice }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.type }}</ion-label
+                        >
+                        <ion-select
+                          text-right
+                          autocomplete
+                          interface="popover"
+                          formControlName="kind"
+                        >
+                          <ion-select-option selected value="{{labels.rent}}"
+                            >{{labels.rent}}</ion-select-option
+                          >
+                          <ion-select-option value="{{labels.forSale}}"
+                            >{{labels.forSale}}</ion-select-option
+                          >
+                        </ion-select>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!form.get('kind').valid && form.get('kind').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorType }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </form>
+            </ion-list>
+          </ion-slide>
+          <ion-slide>
+            <ion-buttons>
+              <ion-button (click)="prev()"
+                ><ion-icon slot="start" name="arrow-back"></ion-icon>
+                {{labels.previous}}</ion-button
+              >
+              <ion-button (click)="next()" *ngIf="newProperty.slideNext"
+                >{{labels.next}} <ion-icon slot="end" name="arrow-forward"></ion-icon
+              ></ion-button>
+            </ion-buttons>
+            <ion-list>
+              <form [formGroup]="formTwo">
+                <ion-grid class="main-grid">
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.address }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          type="text"
+                          autocomplete
+                          autocorrect
+                          formControlName="address"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!formTwo.get('address').valid && formTwo.get('address').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorAddress }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.space }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          type="number"
+                          autocomplete
+                          autocorrect
+                          formControlName="space"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!formTwo.get('space').valid && formTwo.get('space').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorSpace }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.owner }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          type="text"
+                          autocomplete
+                          autocorrect
+                          formControlName="owner"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!formTwo.get('space').valid && formTwo.get('owner').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorOwner }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.startDate }}</ion-label
+                        >
+                        <ion-datetime
+                          max="2020-12-30"
+                          autocorrect
+                          formControlName="startDate"
+                        ></ion-datetime>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!formTwo.get('startDate').valid && formTwo.get('startDate').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorStartDate }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.endDate }}</ion-label
+                        >
+                        <ion-datetime
+                          max="2021-12-30"
+                          autocorrect
+                          formControlName="endDate"
+                        ></ion-datetime>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!formTwo.get('endDate').valid && formTwo.get('endDate').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorEndDate }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </form>
+            </ion-list>
+          </ion-slide>
+
+          <ion-slide>
+            <ion-buttons>
+              <ion-button (click)="prev()"
+                ><ion-icon slot="start" name="arrow-back"></ion-icon>
+                {{labels.previous}}</ion-button
+              >
+              <ion-button (click)="next()" *ngIf="newProperty.slideNext"
+                >{{labels.next}} <ion-icon slot="end" name="arrow-forward"></ion-icon
+              ></ion-button>
+            </ion-buttons>
+            <ion-list>
+              <form [formGroup]="formThird">
+                <ion-grid class="main-grid">
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.bathrooms }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          type="number"
+                          autocomplete
+                          autocorrect
+                          formControlName="bathrooms"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!formThird.get('bathrooms').valid && formThird.get('bathrooms').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorBathrooms }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.bedrooms }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          type="number"
+                          autocomplete
+                          autocorrect
+                          formControlName="bedrooms"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!formThird.get('bedrooms').valid && formThird.get('bedrooms').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorBedrooms }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.ketchins }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          type="number"
+                          autocomplete
+                          autocorrect
+                          formControlName="ketchins"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!formThird.get('ketchins').valid && formThird.get('ketchins').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorKetchins }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.livingrooms }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          type="number"
+                          autocomplete
+                          autocorrect
+                          formControlName="livingrooms"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="
+                          !formThird.get('livingrooms').valid && formThird.get('livingrooms').touched
+                        "
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorLivingrooms }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.gardens }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          type="number"
+                          autocomplete
+                          autocorrect
+                          formControlName="gardens"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!formThird.get('gardens').valid && formThird.get('gardens').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorGardens }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>
+                      <ion-item>
+                        <ion-label stacked text-right position="floating"
+                          >{{ labels.garages }}</ion-label
+                        >
+                        <ion-input
+                          required
+                          ion-text-right
+                          type="number"
+                          autocomplete
+                          autocorrect
+                          formControlName="garages"
+                        ></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row
+                    *ngIf="!formThird.get('garages').valid && formThird.get('garages').touched"
+                  >
+                    <ion-col>
+                      <ion-label>{{ labels.errorGarages }}</ion-label>
+                    </ion-col>
+                  </ion-row>
+
+                
+                </ion-grid>
+              </form>
+            </ion-list>
+          </ion-slide>
+          <ion-slide>
+            <ion-buttons>
+              <ion-button (click)="prev()"
+                ><ion-icon slot="start" name="arrow-back"></ion-icon>
+                {{labels.previous}}</ion-button
+              >
+              <!-- <ion-button (click)="next()" *ngIf="newProperty.slideNext"
+                >{{labels.next}} <ion-icon slot="end" name="arrow-forward"></ion-icon
+              ></ion-button> -->
+            </ion-buttons>
+            <ion-list >
+              <ion-grid>
+              <form [formGroup]="formFourth">
+                  <ion-row >
+                    <ion-col size-sm="6" offset-sm="3">
+                      
+                        <app-location-picker [showPreview]="formFourth.get('location').value" (locationPick)="onLocationPicked($event)"></app-location-picker>
+                    
+                    </ion-col>   
+                  </ion-row>
+                  <ion-row >
+                    <ion-col size-sm="6" offset-sm="3">
+                        <app-image-picker [showPreview]="formFourth.get('propertyPicture').value" (imagePick)="onImagePicked($event)"></app-image-picker>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row class="margin:1em;">
+                    <ion-col>
+                      <ion-button
+                      [attr.disabled]="!this.form.valid || !this.formTwo.valid || !this.formThird.valid || !this.formFourth.valid || !this.formFourth.get('propertyPicture').value"
+                      expand="full"
+                      color="primary"
+                      (click)="onSave()"
+                      >{{labels.createAccount}}</ion-button
+                      >
+                    </ion-col>
+                    </ion-row>
+                  </form>
+                </ion-grid>
+            </ion-list>
+          </ion-slide>
+        </ion-slides>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

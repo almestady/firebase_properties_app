@@ -1,0 +1,32 @@
+<ion-app>
+    <ion-router-outlet main></ion-router-outlet>
+  <ion-menu class="custom" side="end" menuId="m1">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{labels.offersAndRequests}}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="custom" style="background-color: #f08080">
+      <ion-list class="custom">
+        <ion-menu-toggle menu="m1">
+            <ion-item lines="none" routerLink="/properties/tabs/discover">
+              <ion-icon name="business" slot="end"></ion-icon>
+              <ion-label><ion-title>  {{labels.property}}</ion-title></ion-label>
+            </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle menu="m1">
+            <ion-item lines="none" routerLink="/properties/tabs/discover/bookings">
+              <ion-icon name="checkbox-outline" slot="end"></ion-icon>
+              <ion-label><ion-title> {{labels.reservation}}</ion-title></ion-label>
+            </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle menu="m1">
+            <ion-item lines="none" (click)="onLogout()" button>
+                <ion-icon name="exit" slot="end"></ion-icon>
+                <ion-label><ion-title>{{labels.exit}}</ion-title></ion-label>
+            </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+</ion-app>

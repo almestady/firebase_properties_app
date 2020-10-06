@@ -1,0 +1,213 @@
+<ion-header >
+    <ion-toolbar>
+      <ion-buttons slot="end">
+          <ion-back-button></ion-back-button>
+          <ion-button 
+    
+     (click)="updateCustomer()">
+        <ion-icon name="checkmark" slot="icon-only" ></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>عميل جديد</ion-title>
+    </ion-toolbar>
+  </ion-header>
+<ion-content>
+  
+
+    
+<form [formGroup]="form">
+  <!-- <table style="width: 100%; background-color:lightcoral"> -->
+    <ion-grid no-padding  style=" border-width: thin; border: indigo;">
+        <ion-row  style="border-radius: 10px;">
+            <ion-col size-sm="6" offset-sm="3" style="border-top-left-radius: 15px;">
+                <ion-item *ngFor="">
+                    <ion-thumbnail>
+                      <ion-img alt="text" src="{{customer.personalPic}}" formControlName="personalPic">صورة شخصية</ion-img>
+                    </ion-thumbnail>
+                    <ion-label></ion-label>
+                  </ion-item>
+                </ion-col>
+        </ion-row>
+        <ion-row no-margin no-padding >
+          <ion-col >
+            <ion-item style=" border-top-left-radius:15px ;border-top-right-radius: 15px;">
+              <ion-label stacked text-right position="floating">{{arabicLabels.title}}</ion-label>
+              <ion-input  type="text" text-right autocomplete  autocorrect  formControlName="title"></ion-input>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="!form.get('title').valid && form.get('title').touched">
+          <ion-col>
+           <ion-label>{{arabicLabels.title}}</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item style=" margin:0;">
+                <ion-label stacked text-right position="floating">{{arabicLabels.firstName}}</ion-label>
+                <ion-input autocomplete autocorrect   formControlName="firstName"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="!form.get('firstName').valid && form.get('firstName').touched">
+              <ion-col>
+               <ion-label>{{arabicLabels.errorFirstname}}</ion-label>
+              </ion-col>
+            </ion-row>
+          <ion-row>
+            <ion-col >
+              <ion-item>
+                  <ion-label stacked text-right position="floating">{{arabicLabels.lastName}}</ion-label>
+                  <ion-input type="text" autocomplete autocorrect   formControlName="lastName"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="!form.get('lastName').valid && form.get('lastName').touched">
+              <ion-col>
+               <ion-label>{{arabicLabels.errorLastname}}</ion-label>
+              </ion-col>
+            </ion-row>
+          <ion-row>
+            <ion-col >
+                <ion-item>
+                    <ion-label stacked text-right position="floating">{{arabicLabels.email}}</ion-label>
+                    <ion-input type="email" autocomplete autocorrect   formControlName="email"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="!form.get('email').valid && form.get('email').touched">
+                  <ion-col>
+                   <ion-label>{{arabicLabels.errorEamil}}</ion-label>
+                  </ion-col>
+                </ion-row>
+              <ion-row>
+                <ion-col >
+                  <ion-item>
+                      <ion-label stacked text-right position="floating">{{arabicLabels.password}}</ion-label>
+                      <ion-input autocomplete type="password" autocorrect  formControlName="password"></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngIf="!form.get('password').valid && form.get('password').touched">
+                    <ion-col>
+                     <ion-label >{{arabicLabels.errorPasswrod}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                
+                  <!-- <ion-row *ngIf="!form.get('surepassword').valid && form.get('surepassword').touched">
+                      <ion-col>
+                       <p class="input-error">تأكيد الرمز السري</ion-label>
+                      </ion-col>
+                    </ion-row>-->
+                  <ion-row> 
+                    <ion-col >
+                      <ion-item>
+                          <ion-label stacked text-right position="floating">{{arabicLabels.gender}}</ion-label>
+                          <ion-select autocomplete interface="popover"   formControlName="gender">
+                              <ion-select-option selected value="Male" >ذكر</ion-select-option>
+                              <ion-select-option value="Female">أنثى</ion-select-option>
+                            </ion-select>
+                        </ion-item>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="!form.get('gender').valid && form.get('gender').touched">
+                        <ion-col>
+                         <ion-label>{{arabicLabels.errorGender}}</ion-label>
+                        </ion-col>
+                      </ion-row>
+                    <!-- <ion-row>
+                      <ion-col >
+                        <ion-item>
+                            <ion-label stacked text-right position="floating">{{arabicLabels.birthday}}</ion-label>
+                            <ion-datetime max="2001-01-01"  autocorrect  formControlName="birthday"></ion-datetime>
+                          </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="!form.get('birthday').valid && form.get('birthday').touched">
+            <ion-col>
+             <ion-label>{{arabicLabels.errorBirthday}}</ion-label>
+            </ion-col>
+          </ion-row> -->
+        <ion-row>
+            <ion-col >
+              <ion-item>
+                  <ion-label stacked text-right position="floating">{{arabicLabels.country}}</ion-label>
+                  <ion-input type="text" autocomplete autocorrect   formControlName="city"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row *ngIf="!form.get('country').valid && form.get('country').touched">
+              <ion-col>
+               <ion-label>{{arabicLabels}}</ion-label>
+              </ion-col>
+            </ion-row>
+          <ion-row>
+              <ion-col >
+                <ion-item>
+                    <ion-label stacked text-right position="floating">{{arabicLabels.city}}</ion-label>
+                    <ion-input type="text" autocomplete autocorrect   formControlName="area"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="!form.get('city').valid && form.get('city').touched">
+                <ion-col>
+                 <ion-label>{{arabicLabels.city}}</ion-label>
+                </ion-col>
+              </ion-row>
+            <ion-row>
+                <ion-col >
+                  <ion-item>
+                      <ion-label stacked text-right position="floating">{{arabicLabels.area}}</ion-label>
+                      <ion-input type="text" autocomplete autocorrect   formControlName="address"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row *ngIf="!form.get('area').valid && form.get('area').touched">
+                  <ion-col>
+                   <ion-label>{{arabicLabels.errorArea}}</ion-label>
+                  </ion-col>
+                </ion-row>
+              <ion-row>
+                  <ion-col >
+                    <ion-item>
+                        <ion-label stacked text-right position="floating">{{arabicLabels.zipcode}}</ion-label>
+                        <ion-input type="number" autocomplete autocorrect   formControlName="zipcode"></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngIf="!form.get('zipcode').valid && form.get('zipcode').touched">
+                    <ion-col>
+                     <ion-label>{{arabicLabels.zipcode}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+              <ion-row>
+                  <ion-col >
+                    <ion-item>
+                        <ion-label stacked text-right position="floating">{{arabicLabels.address}}</ion-label>
+                        <ion-input type="text" autocomplete autocorrect  formControlName="address"></ion-input>
+                    </ion-item>
+                  </ion-col>
+                </ion-row>
+                <ion-row *ngIf="!form.get('address').valid && form.get('address').touched">
+                    <ion-col>
+                     <ion-label>{{arabicLabels.errorAddress}}</ion-label>
+                    </ion-col>
+                  </ion-row>
+                <ion-row>
+                    <ion-col >
+                      <ion-item>
+                          <ion-label stacked text-right position="floating">{{arabicLabels.phone}}</ion-label>
+                          <ion-input type="number" autocomplete autocorrect   formControlName="phone"></ion-input>
+                      </ion-item>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="!form.get('phone').valid && form.get('phone').touched">
+                      <ion-col>
+                       <ion-label>{{arabicLabels.errorPhone}}</ion-label>
+                      </ion-col>
+                    </ion-row>
+                </ion-grid>
+              <!-- </table> -->
+</form>
+
+</ion-content>

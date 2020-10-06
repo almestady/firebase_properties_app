@@ -1,0 +1,182 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start" >
+            <ion-button (click)="onCancel()">{{labels.previous}}</ion-button>
+           </ion-buttons>
+      <ion-title text-center> {{ labels.newproperty }} </ion-title>
+     
+      <ion-buttons  slot="end">
+        <ion-button slot="end" (click)="onSubmit()">
+
+          <ion-icon name="save"></ion-icon>
+        </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-grid class="ion-margin-bottom: 10px;margin-top: 0px; padding-top: 0px">
+
+      
+      <ion-row class="ion-text-center" style="margin-top: 0px; padding-top: 0px">
+         
+        <ion-col size-xs="12">
+          <ion-list lines="none">
+          <ion-item >
+                <ion-card class="ion-no-padding" >
+                  <ion-item >
+                    <ion-label  *ngIf="!bookmarkOn"  style="font-size: 15;padding-left: 0px; padding-right: 0px;padding-top: 0px;margin-top: 0px; margin-bottom: 0px"><ion-icon  style="color: gray" size="large" name="ios-bookmark"></ion-icon></ion-label>
+                    <ion-label *ngIf="bookmarkOn" style="font-size: 15;padding-left: 0px; padding-right: 0px;padding-top: 0px;margin-top: 0px; margin-bottom: 0px"><ion-icon  style="color: rgb(194, 82, 57)" size="large" name="ios-bookmark"></ion-icon></ion-label>
+                  </ion-item>
+                  <ion-grid class="theCard" style="padding-left: 0px; padding-right: 0px;">
+                        <ion-row style="height: 100px;" align-items-center>
+                          <ion-col size-xs="8">
+                            <!-- ion card header8888888888888888888888888888888888888888888888-->
+                            <ion-card-header>
+                              <ion-grid class="ion-no-padding">                      
+                                <ion-row class="ion-align-items-center">
+                                  <ion-col size-xs="4"
+                                    ><ion-label class="ion-text-center"> {{property.kind }}</ion-label></ion-col
+                                  >
+                                  <ion-col size-xs="4"
+                                    ><ion-label class="ion-text-center">{{
+                                      property.address
+                                    }}</ion-label></ion-col
+                                  >
+                                  <ion-col size-xs="4"
+                                    ><ion-label class="ion-text-center" *ngIf="!property.hasOffer"> {{ property.price }}</ion-label></ion-col
+                                  >
+                                </ion-row>
+                                <ion-row>
+                                  <!-- <ion-col size-xs="4"
+                                    ><ion-label class="ion-text-center">
+                                      {{ property.startDate | date }}</ion-label
+                                    ></ion-col
+                                  > -->
+                                  <ion-col size-xs="4"
+                                    ><ion-label class="ion-text-center">{{ property.space }}</ion-label></ion-col
+                                  >
+                                  <ion-col size-xs="4">
+                                    <ion-label class="ion-text-center" *ngIf="!property.hasOffer">{{ property.price }}</ion-label>
+                                    <ion-label class="ion-text-center" *ngIf="property.hasOffer" style="text-decoration: line-through">{{ property.price }}</ion-label>
+                                    <ion-label class="ion-text-center" *ngIf="property.hasOffer"><h3 style="color: red;">Now! {{ property.hasOffer[0].price }}</h3></ion-label>
+                                  </ion-col>
+                                </ion-row>
+                              </ion-grid>
+                            </ion-card-header>
+                          </ion-col>
+                          <ion-col size-xs="4">
+                            <ion-img
+                              class="id-pic"
+                              src="https://cdn2.iconfinder.com/data/icons/rcons-user/32/male-circle-512.png"
+                            ></ion-img>
+                            {{property.owner}} 
+                          </ion-col>
+                        </ion-row>
+                        <ion-row style="padding: 0px; margin: 0px">
+                            <ion-col size-xs="12">
+                              <ion-card-content>
+                                <ion-img class="main-pic" src="{{property.propertyPic}}"></ion-img>
+                              </ion-card-content>
+                              </ion-col>
+                            </ion-row>
+                           <!-- ******************************     Facilities details            ******************************* -->
+                    <ion-row>
+                        <ion-col size-xm="12">
+                            <ion-grid class=" ion-no-padding">
+                              <ion-row>
+                                <ion-col size-xs="2">
+                                    <ion-label class="ion-text-center"> <ion-icon name="tv"></ion-icon><ion-text style="font-size: 8px;" *ngIf="property.livingrooms">{{property.livingrooms}}</ion-text></ion-label>
+                                </ion-col>
+                                <ion-col size-xs="2">
+                                    <ion-label class="ion-text-center"><ion-icon name="bicycle"></ion-icon><ion-text style="font-size: 8px;" *ngIf="property.livingrooms">{{property.bathrooms}}</ion-text></ion-label>
+                                  </ion-col>
+                                  <ion-col size-xs="2">
+                                      <ion-label class="ion-text-center"><ion-icon name="car"></ion-icon><ion-text style="font-size: 8px;" *ngIf="property.livingrooms">{{property.bedrooms}}</ion-text></ion-label>
+                                    </ion-col>
+                                    <ion-col size-xs="2">
+                                        <ion-label class="ion-text-center"> <ion-icon name="boat"></ion-icon><ion-text style="font-size: 8px;" *ngIf="property.livingrooms">{{property.garages}}</ion-text></ion-label>
+                                      </ion-col>
+                                      <ion-col size-xs="2">
+                                          <ion-label class="ion-text-center">  <ion-icon name="train"></ion-icon><ion-text style="font-size: 8px;" *ngIf="property.livingrooms">{{property.gardens}}</ion-text></ion-label>
+                                        </ion-col>
+                                        <ion-col size-xs="2">
+                                            <ion-label class="ion-text-center"><ion-icon name="walk"></ion-icon><ion-text style="font-size: 8px;" *ngIf="property.livingrooms">{{property.ketchins}}</ion-text></ion-label>
+                                          </ion-col>
+                              </ion-row>
+                              <hr>
+           
+                                  <ion-row style="align-content: center;margin-right: 5%;margin-left: 5%; margin-bottom: 2%;">
+                                    <ion-col size-xs="7" >
+                                      <ion-label class="ion-text-left" style="margin-right: 3%">{{property.startDate | date}}: {{this.labels.startDate}}</ion-label>
+                                    </ion-col>
+                                    <ion-col size-xs="1">
+                                      <ion-label class="ion-text-right" style="margin-right: 0% ; color: rgb(255, 153, 0)" ><ion-icon name="star"></ion-icon> </ion-label>
+                                  </ion-col>
+                                  <ion-col size-xs="1">
+                                    <ion-label class="ion-text-right" style="margin-right: 0% ; color: rgb(255, 153, 0)"  ><ion-icon name="star"></ion-icon> </ion-label>
+                                </ion-col>
+                                <ion-col size-xs="1">
+                                  <ion-label class="ion-text-right" style="margin-right: 0% ; color: rgb(255, 153, 0)"  ><ion-icon name="star"></ion-icon> </ion-label>
+                              </ion-col>
+                              <ion-col size-xs="1">
+                                <ion-label class="ion-text-right" style="margin-right: 0%" ><ion-icon name="star"></ion-icon> </ion-label>
+                            </ion-col>
+                            <ion-col size-xs="1">
+                              <ion-label class="ion-text-right" style="margin-right: 3%" ><ion-icon name="star"></ion-icon> </ion-label>
+                          </ion-col>
+                                  </ion-row>
+          
+                                  <ion-row style="margin-bottom: 5%;">     
+                                      <ion-col size-xs="2">
+                                        <ion-label *ngIf="!listActive" class="ion-text-center" style="margin-right: 3%" ><ion-icon  size="small" name="list"></ion-icon> </ion-label>
+                                        <ion-label *ngIf="listActive" class="ion-text-center" style="margin-right: 3%; color:dodgerblue" ><ion-icon  size="small" name="list"></ion-icon> </ion-label>
+                                    </ion-col>                                           
+                                     
+                                      <ion-col size-xs="2">
+                                          <ion-label *ngIf="!messageActive" class="ion-text-center" style="margin-right: 3%" ><ion-icon  size="small" name="mail"></ion-icon> </ion-label>
+                                          <ion-label *ngIf="messageActive" class="ion-text-center" style="margin-right: 3%; color:dodgerblue;" ><ion-icon  size="small" name="mail"></ion-icon> </ion-label>
+                                      </ion-col>
+                                      <ion-col size-xs="2">
+                                          <ion-label *ngIf="!mapActive" class="ion-text-center" style="margin-right: 3%" ><ion-icon  size="small" name="map"></ion-icon> </ion-label>
+                                          <ion-label *ngIf="mapActive" class="ion-text-center" style="margin-right: 3%; color:dodgerblue" ><ion-icon  size="small" name="map"></ion-icon> </ion-label>
+                                      </ion-col>
+                                      <ion-col size-xs="2">
+                                        <ion-label *ngIf="!imageActive" class="ion-text-center" style="margin-right: 3%" ><ion-icon size="small" name="image"></ion-icon> </ion-label>
+                                        <ion-label *ngIf="imageActive" class="ion-text-center" style="margin-right: 3%; color:dodgerblue" ><ion-icon  size="small" name="image"></ion-icon> </ion-label>
+                                    </ion-col>
+                                    <ion-col size-xs="2">
+                                      <!-- <ion-label class="ion-text-right" style="margin-right: 3%;margin-bottom: 3%;">{{property.endDate | date}}: {{this.labels.endDate}}</ion-label> -->
+                                      <ion-label *ngIf="likeOn"  class="ion-text-center" style="margin-left: 3%" ><ion-icon  size="small" name="heart" style="color: rgb(194, 82, 57)"></ion-icon><ion-text style="font-size: 8px;" *ngIf="property.likes">{{property.likes.length}}</ion-text></ion-label>
+                                      <ion-label *ngIf="!likeOn" class="ion-text-center" style="margin-left: 3%" ><ion-icon  size="small" name="heart" style="color: gray"></ion-icon><ion-text style="font-size: 8px;" *ngIf="property.likes">{{property.likes.length}}</ion-text></ion-label>
+                                    </ion-col>
+                                    <ion-col size-xs="2">
+                                      <ion-label *ngIf="property.likes" class="ion-text-center" style="margin-right: 3%" ><ion-icon size="small"  name="eye"></ion-icon><ion-text style="font-size: 8px;">{{property.views.length}}</ion-text> </ion-label>
+                                  </ion-col>
+                                    </ion-row>
+                        </ion-grid>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-card>
+            </ion-item>
+            </ion-list>
+            </ion-col>
+          </ion-row>
+      
+      </ion-grid>
+
+      
+        <ion-content *ngIf="messages">
+          <ion-label class="ion-text-center">List of messages of {{property.userId}} for {{property.id}}...go here.</ion-label>
+        </ion-content>
+        <ion-content *ngIf="map">
+          <ion-label class="ion-text-center">Map view of<ion-text style="color: dodgerblue"> {{property.userId}} </ion-text> for <ion-text  style="color: dodgerblue">{{property.id}}</ion-text>...go here.</ion-label>
+        </ion-content>
+        <ion-content *ngIf="image">
+          <ion-label class="ion-text-center">Image view of<ion-text style="color: dodgerblue"> {{property.userId}} </ion-text> for <ion-text  style="color: dodgerblue">{{property.id}}</ion-text>...go here.</ion-label>
+        </ion-content>
+        
+        
+   
+    
+    

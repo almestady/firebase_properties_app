@@ -1,0 +1,8 @@
+{
+  "name": "PropertiesTag",
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
+  "type": "angular"
+}

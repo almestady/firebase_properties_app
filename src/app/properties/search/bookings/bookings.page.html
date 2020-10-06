@@ -1,0 +1,205 @@
+<ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="end">
+        <ion-button [routerLink]="['/properties', 'tabs', 'discover', 'new']">
+          <ion-icon name="add" text-right></ion-icon
+        ></ion-button>
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title text-center> {{ labels.reservation }} </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+ <ion-item *ngIf="!this.listOfBookings || this.listOfBookings.length <= 0 ">
+   <ion-label>
+     {{labels.nothingTodisplay}}<ion-icon name='sad'>
+   </ion-icon>
+   </ion-label>
+   
+ </ion-item>
+ <ion-grid style="margin-top: 0px; padding-top: 0px" *ngIf="listOfBookings.length > 0 && this.currentProperty.hasOffer">
+
+    <ion-row text-center style="margin-top: 0px; padding-top: 0px">
+        
+      <ion-col size-xs="12">
+        <ion-list lines="none">
+        <ion-item >
+        <ion-card no-padding >
+           
+            <ion-label style="font-size: 15"><ion-icon (click)="onCancelBookmark()" style="color: rgb(194, 82, 57)" size="large" name="ios-bookmark"></ion-icon></ion-label>
+            <ion-grid class="theCard" style="padding-left: 0px; padding-right: 0px;">
+                <ion-row style="height: 100px;" align-items-center>
+                  <ion-col size-xs="8">
+                    <!-- ion card header8888888888888888888888888888888888888888888888-->
+                    <ion-card-header>
+                      <ion-grid no-padding>                      
+                        <ion-row align-items-center>
+                          <ion-col size-xs="4"
+                            ><ion-label text-center> {{currentProperty.kind }}</ion-label></ion-col
+                          >
+                          <ion-col size-xs="4"
+                            ><ion-label text-center>{{
+                              currentProperty.address
+                            }}</ion-label></ion-col
+                          >
+                          <ion-col size-xs="4"
+                            ><ion-label text-center> {{ currentProperty.id }}</ion-label></ion-col
+                          >
+                        </ion-row>
+                        <ion-row>
+                          <!-- <ion-col size-xs="4"
+                            ><ion-label text-center>
+                              {{ currentProperty.startDate | date }}</ion-label
+                            ></ion-col
+                          > -->
+                          <ion-col size-xs="4"
+                            ><ion-label text-center>{{ currentProperty.space }}</ion-label></ion-col
+                          >
+                          <ion-col size-xs="4">
+                            <ion-label text-center *ngIf="!offerOn">{{ currentProperty.price }}</ion-label>
+                            <ion-label text-center *ngIf="offerOn" style="text-decoration: line-through">{{ currentProperty.price }}</ion-label>
+                            <ion-label text-center *ngIf="offerOn">{{ currentProperty.hasOffer[0].price }}</ion-label>
+                          </ion-col>
+                        </ion-row>
+                      </ion-grid>
+                    </ion-card-header>
+                  </ion-col>
+                  <ion-col size-xs="4">
+                    <ion-img
+                      class="id-pic"
+                      src="https://cdn2.iconfinder.com/data/icons/rcons-user/32/male-circle-512.png"
+                    ></ion-img>
+                    {{currentProperty.owner}} 
+                  </ion-col>
+                </ion-row>
+                <ion-row style="padding: 0px; margin: 0px">
+                    <ion-col size-xs="12">
+                      <ion-card-content>
+                        <ion-img class="main-pic" src="{{ currentProperty.propertyPic }}"></ion-img>
+                      </ion-card-content>
+                      </ion-col>
+                    </ion-row>
+                   
+            <ion-row>
+                <ion-col size-xm="12">
+                    <ion-grid no-padding>
+                      <ion-row>
+                        <ion-col size-xs="2">
+                            <ion-label text-center> <ion-icon name="tv"></ion-icon><ion-text style="font-size: 8px;" *ngIf="currentProperty.livingrooms > 0">{{currentProperty.livingrooms}}</ion-text></ion-label>
+                        </ion-col>
+                        <ion-col size-xs="2">
+                            <ion-label text-center><ion-icon name="bicycle"></ion-icon><ion-text style="font-size: 8px;" *ngIf="currentProperty.livingrooms > 0">{{currentProperty.bathrooms}}</ion-text></ion-label>
+                          </ion-col>
+                          <ion-col size-xs="2">
+                              <ion-label text-center><ion-icon name="car"></ion-icon><ion-text style="font-size: 8px;" *ngIf="currentProperty.livingrooms > 0">{{currentProperty.bedrooms}}</ion-text></ion-label>
+                            </ion-col>
+                            <ion-col size-xs="2">
+                                <ion-label text-center> <ion-icon name="boat"></ion-icon><ion-text style="font-size: 8px;" *ngIf="currentProperty.livingrooms > 0">{{currentProperty.garages}}</ion-text></ion-label>
+                              </ion-col>
+                              <ion-col size-xs="2">
+                                  <ion-label text-center>  <ion-icon name="train"></ion-icon><ion-text style="font-size: 8px;" *ngIf="currentProperty.livingrooms > 0">{{currentProperty.gardens}}</ion-text></ion-label>
+                                </ion-col>
+                                <ion-col size-xs="2">
+                                    <ion-label text-center><ion-icon name="plane"></ion-icon><ion-text style="font-size: 8px;" *ngIf="this.currentProperty.livingrooms > 0">{{currentProperty.ketchins}}</ion-text></ion-label>
+                                  </ion-col>
+                      </ion-row>
+                      <hr>
+   
+                          <ion-row style="align-content: center;margin-right: 5%;margin-left: 5%;margin-bottom: 5%">
+                            <ion-col size-xs="7" >
+                              <ion-label *ngIf="this.currentProperty.reservations.length > 0" text-left style="margin-right: 3%">{{this.currentProperty.reservations[0].onDate | date }}: {{this.labels.startDate}}</ion-label>
+                            </ion-col>
+                            <ion-col size-xs="1">
+                              <ion-label text-right style="margin-right: 0% ; color: rgb(255, 153, 0)" ><ion-icon name="star"></ion-icon> </ion-label>
+                          </ion-col>
+                          <ion-col size-xs="1">
+                            <ion-label text-right style="margin-right: 0% ; color: rgb(255, 153, 0)"  ><ion-icon name="star"></ion-icon> </ion-label>
+                        </ion-col>
+                        <ion-col size-xs="1">
+                          <ion-label text-right style="margin-right: 0% ; color: rgb(255, 153, 0)"  ><ion-icon name="star"></ion-icon> </ion-label>
+                      </ion-col>
+                      <ion-col size-xs="1">
+                        <ion-label text-right style="margin-right: 0%" ><ion-icon name="star"></ion-icon> </ion-label>
+                    </ion-col>
+                    <ion-col size-xs="1">
+                      <ion-label text-right style="margin-right: 3%" ><ion-icon name="star"></ion-icon> </ion-label>
+                  </ion-col>
+                          </ion-row>
+  
+                          <ion-row style="margin-bottom: 0px;">     
+                              <ion-col size-xs="2">
+                                <ion-label *ngIf="!listActive" text-center style="margin-right: 3%" (click)="onList()"><ion-icon  size="small" name="list"></ion-icon> </ion-label>
+                                <ion-label *ngIf="listActive" text-center style="margin-right: 3%; color:dodgerblue" ><ion-icon  size="small" name="list"></ion-icon> </ion-label>
+                            </ion-col>                                           
+                             
+                              <ion-col size-xs="2">
+                                  <ion-label *ngIf="!messageActive" text-center style="margin-right: 3%" (click)="onMessages()"><ion-icon  size="small" name="mail"></ion-icon> </ion-label>
+                                  <ion-label *ngIf="messageActive" text-center style="margin-right: 3%; color:dodgerblue;" ><ion-icon  size="small" name="mail"></ion-icon> </ion-label>
+                              </ion-col>
+                              <ion-col size-xs="2">
+                                  <ion-label *ngIf="!mapActive" text-center style="margin-right: 3%" (click)="onMap()"><ion-icon  size="small" name="map"></ion-icon> </ion-label>
+                                  <ion-label *ngIf="mapActive" text-center style="margin-right: 3%; color:dodgerblue" ><ion-icon  size="small" name="map"></ion-icon> </ion-label>
+                              </ion-col>
+                              <ion-col size-xs="2">
+                                <ion-label *ngIf="!imageActive" text-center style="margin-right: 3%" (click)="onImage()"><ion-icon size="small" name="image"></ion-icon> </ion-label>
+                                <ion-label *ngIf="imageActive" text-center style="margin-right: 3%; color:dodgerblue" ><ion-icon  size="small" name="image"></ion-icon> </ion-label>
+                            </ion-col>
+                            <ion-col size-xs="2">
+                              <!-- <ion-label text-right style="margin-right: 3%;margin-bottom: 3%;">{{currentProperty.endDate | date}}: {{this.labels.endDate}}</ion-label> -->
+                              <ion-label *ngIf="likeOn"  text-center style="margin-left: 3%" (click)="onLike(currentProperty.id, $event)"><ion-icon  size="small" name="heart" style="color: rgb(194, 82, 57)"></ion-icon><ion-text style="font-size: 8px;" *ngIf="currentProperty.likes.length > 0">{{currentProperty.likes.length}}</ion-text></ion-label>
+                              <ion-label *ngIf="!likeOn" text-center style="margin-left: 3%" (click)="onLike(currentProperty.id,$event)"><ion-icon  size="small" name="heart" style="color: gray"></ion-icon><ion-text style="font-size: 8px;" *ngIf="currentProperty.likes.length > 0">{{currentProperty.likes.length}}</ion-text></ion-label>
+                            </ion-col>
+                            <ion-col size-xs="2">
+                              <ion-label text-center style="margin-right: 3%" ><ion-icon size="small"  name="eye"></ion-icon><ion-text style="font-size: 8px;">{{currentProperty.views.length}}</ion-text> </ion-label>
+                          </ion-col>
+                            </ion-row>
+                </ion-grid>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-item>
+     
+       </ion-list>
+       </ion-col>
+    </ion-row>
+  
+  
+  <ion-row >
+    <ion-col>
+       
+    </ion-col>
+  </ion-row>
+  
+  </ion-grid>
+  
+  <ion-content>
+ 
+      <ion-content class="ion-content-below-property-card" *ngIf="listOfBookings && listOfBookings.length > 0">
+          <ion-virtual-scroll [items]="listOfBookings" >
+              <ion-item style="margin-right: 30px; margin-left: 30px" *virtualItem="let property">
+                <ion-thumbnail slot="end" >
+                  <ion-img src="{{property.propertyPicture}}" class="thumbnail-pic" (click)="clickedPrperty(property.id)"></ion-img>
+                </ion-thumbnail>
+                <ion-label text-right>{{property.description}}</ion-label>
+              </ion-item>
+             </ion-virtual-scroll>
+      </ion-content>
+      <ion-content *ngIf="messages">
+        <ion-label text-center>List of messages of {{currentProperty.userId}} for {{currentProperty.id}}...go here.</ion-label>
+      </ion-content>
+      <ion-content *ngIf="map">
+        <ion-label text-center>Map view of<ion-text style="color: dodgerblue"> {{currentProperty.userId}} </ion-text> for <ion-text  style="color: dodgerblue">{{currentProperty.id}}</ion-text>...go here.</ion-label>
+      </ion-content>
+      <ion-content *ngIf="image">
+        <ion-label text-center>Image view of<ion-text style="color: dodgerblue"> {{currentProperty.userId}} </ion-text> for <ion-text  style="color: dodgerblue">{{currentProperty.id}}</ion-text>...go here.</ion-label>
+      </ion-content>
+      </ion-content>
+
+
+
+
+
+
+
+
