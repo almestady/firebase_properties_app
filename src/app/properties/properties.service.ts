@@ -2,9 +2,11 @@ import { Injectable, ɵisListLikeIterable } from '@angular/core';
 import { Property } from './property.model';
 import { Like } from './like.model';
 import { AuthService } from '../auth.service';
-import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
-import { take, map, tap, delay, retry, catchError, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError, of, from } from 'rxjs';
+import { take, map, tap, delay, retry, catchError, switchMap, mergeMap, finalize } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {AngularFireStorage} from '@angular/fire/storage'
+import { analytics } from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -21,10 +23,11 @@ export class PropertiesService {
 // };
 // headers = new HttpHeaders()
 //    .append('Content-Type' , 'application/json');
-
+loading = false
   constructor( 
     private authService: AuthService,
-    private http: HttpClient
+    private http: HttpClient,
+    private afStorage: AngularFireStorage
   ) {}
 
   get properties() {
@@ -38,8 +41,6 @@ export class PropertiesService {
       'https://propertiestag-25d9d.firebaseio.com/properties.json')
      .pipe(
             map(resData => {
-                console.log(resData)
-                console.log(resData.length)
                 const properties = [];
                 for (const key in resData) {
                   if (resData.hasOwnProperty(key)) {
@@ -208,5 +209,26 @@ export class PropertiesService {
       })
     );
   }
+
+  
+      uploadImage(filePath: File, property: Property){
+        console.log(property)
+        console.log(filePath)
+        this.loading = true
+      const path = '/images/'+Math.random()+filePath
+      const storageRef = this.afStorage.ref(path);
+      const task = this.afStorage.upload(path, filePath);
+       
+      return from(task)
+      .pipe(
+        switchMap(() => storageRef.getDownloadURL()),
+        tap(url => {
+          // use url here, e.g. assign it to a model
+        property.propertyPic = url
+        console.log(url)
+        this.addProperty(property).subscribe()
+      })
+       )
+      }
 
 }

@@ -3,7 +3,7 @@ import { LanguagesService, Labels } from 'src/app/languages.service';
 import { Subscription } from 'rxjs';
 import { Plugins, Capacitor, CameraSource, CameraResultType } from '@capacitor/core'
 import { Platform } from '@ionic/angular';
-import {AngularFireStorage} from '@angular/fire/storage'
+
 
 @Component({
   selector: 'app-image-picker',
@@ -19,13 +19,13 @@ selectedImage: string;
 @ViewChild('filePicker',{ static: false}) filePickerRef: ElementRef<HTMLInputElement>;
 
 usePicker = false;
-filePath:String
+
 
 
 constructor(
   private langService: LanguagesService,
   private platform: Platform,
-  private afStorage: AngularFireStorage
+  
   ) { }
   
   ngOnInit() {
@@ -83,14 +83,8 @@ constructor(
           this.imagePick.emit(pickedFile)
         };
         fr.readAsDataURL(pickedFile);
+        console.log(pickedFile)
       }
       
-      upload(event) {    
-        this.filePath = event.target.files[0]
-      }
-      uploadImage(){
-        console.log(this.filePath)
-        this.afStorage.upload('/images/'+Math.random()+this.filePath, this.filePath);
-      }
     }
     

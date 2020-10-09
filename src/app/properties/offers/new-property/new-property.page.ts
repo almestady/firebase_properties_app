@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Routes, Router, ActivatedRoute } from "@angular/router";
-
+import {AngularFireStorage} from '@angular/fire/storage'
 
 import {
   NavController,
@@ -55,6 +55,7 @@ export class NewPropertyPage implements OnInit {
   labels: Labels;
   public submitAttempt: boolean = false;
  @ViewChild('newProperty') newProperty: IonSlides;
+ filePath:String
 
   constructor(
     private router: Router,
@@ -64,8 +65,8 @@ export class NewPropertyPage implements OnInit {
     private authService: AuthService,
     private loadCtrl: LoadingController,
     private languageService: LanguagesService,
-   
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private afStorage: AngularFireStorage
   ) {}
 
 next() {  
@@ -113,7 +114,7 @@ save() {
     userId:this.authService.userId,
     propertyName: this.form.value.propertyName,
     description: this.form.value.description,
-    propertyPic: this.form.value.propertyPicture,
+    propertyPic: this.formFourth.value.propertyPicture,
     price: this.form.value.price,
     kind: this.form.value.kind,
     address: this.formTwo.value.address,
@@ -142,7 +143,7 @@ save() {
   onSave() {
     this.save()
     this.formInfo();
-    console.log(this.property.location)
+    console.log(this.property)
     this.modalCtrl.create(
        {
          component: NewFormComponent,
@@ -275,8 +276,8 @@ this.formTwo = new FormGroup({
     } else {
       imageFile = image;
     }
+    console.log(imageFile)
     this.formFourth.patchValue({propertyPicture:imageFile})
     }
-
 }
   

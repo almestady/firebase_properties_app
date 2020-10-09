@@ -18,6 +18,3 @@ class="-image"
 
 <input accept="image/jpeg"  type="file" *ngIf="usePicker" #filePicker (change)="onFileChosen($event)" />
 
-<label for="file">File:</label>
-<input type="file" (change)="upload($event)" accept=".png,.jpg" />
-<button (click)="uploadImage()">Upload Image</button>
