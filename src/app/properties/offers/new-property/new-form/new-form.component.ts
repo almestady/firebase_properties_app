@@ -62,7 +62,6 @@ onSubmit() {
     this.propertiesService.uploadImage(this.formFourth.get('propertyPicture').value, this.property)
     .subscribe(() => {
 
-      
         loadEl.dismiss();
         this.modalCtrl.dismiss('NewProperty');
         this.router.navigateByUrl(`/properties/tabs/offers`);

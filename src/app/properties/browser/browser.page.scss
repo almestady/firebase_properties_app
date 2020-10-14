@@ -1,0 +1,21 @@
+/* This CSS is used in HTML file -> https://gist.github.com/AnkitMaheshwariIn/20954763f4aabdd5524891cb8e0ad01c */
+.pins {
+    column-count: 3;
+    padding: 7px;
+  }
+  
+  .pin {
+    display: inline-block;
+    margin: 0 2px 10px;
+    padding: 0px;
+    background: #f8f8ff;
+  }
+
+  .big-pin {
+    display: inline-block;
+    margin: 0 10px 100px;
+    padding: 5px;
+    background: #f8f8ff;
+  }
+
+  

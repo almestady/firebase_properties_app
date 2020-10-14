@@ -14,8 +14,6 @@ const routes: Routes = [
             path: '',
             redirectTo: '/properties/tabs/discover',
             pathMatch: 'full'
-        },{
-          path: "upload", component: UploadComponent
         },
       {
         
@@ -24,7 +22,8 @@ const routes: Routes = [
           {
             path: "",
             loadChildren: () =>
-              import("./search/search.module").then((m) => m.SearchPageModule),
+            import("./browser/browser.module").then((m) => m.BrowserPageModule),
+             
           },
           {
             path: "bookings",
@@ -39,8 +38,19 @@ const routes: Routes = [
            
           {
             path: "browser",
-            loadChildren: () =>
-              import("./browser/browser.module").then((m) => m.BrowserPageModule),
+            children: [
+            {
+               path: "",
+              loadChildren: () =>
+                import("./browser/browser.module").then((m) => m.BrowserPageModule),
+            } ,
+            {
+              path: "search",
+              loadChildren: () =>
+              import("./search/search.module").then((m) => m.SearchPageModule)
+            }
+           
+            ]
           }
         ,
               {
@@ -62,8 +72,8 @@ const routes: Routes = [
           {
             path: ":propertyId",
             loadChildren: () =>
-              import("./search/property-detail/property-detail.module").then(
-                (m) => m.PropertyDetailPageModule
+              import("./search/search.module").then(
+                (m) => m.SearchPageModule
               ),
             // loadChildren: './offers/new-offer/new-offer.module#NewOfferPageModule'
           },

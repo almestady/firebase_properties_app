@@ -37,6 +37,7 @@ import { StreamingMedia } from '@ionic-native/streaming-media/ngx';
 import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import {AngularFireStorageModule} from '@angular/fire/storage'
 import {AngularFireModule} from '@angular/fire'
+import { BrowserPageModule } from './properties/browser/browser.module';
 
 @NgModule({
   declarations: [AppComponent, CallbackComponent, UploadComponent],
@@ -58,6 +59,8 @@ import {AngularFireModule} from '@angular/fire'
       appId: "1:207270852349:web:e8134b68afc0454cae3094",
       measurementId: "G-8T79XCGGSD"
     }),
+    BrowserPageModule
+    ,
     AngularFireStorageModule,
      IonicStorageModule.forRoot({
     name: '_mydb',

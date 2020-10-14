@@ -1,76 +1,95 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>browser</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">{{labels.discoverOffers}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div layout="column" layout-wrap>
-    <md-card ng-repeat="card in vm.cards | orderBy:'order':!reverse" flex>
-      <ion-grid>
-        <ion-row>
-          <ion-col size-xs="2">
-            <ion-label class="ion-text-center">
-              <ion-icon name="tv"></ion-icon
-              ><ion-text
-                style="font-size: 8px;"
-                *ngIf="currentProperty.livingrooms"
-                ></ion-text
-              ></ion-label
+<ion-content class="ion-padding">
+  <ion-grid *ngIf="isLoading">
+    <ion-row>
+      <ion-col size="12" size-sm="8" class="ion-text-center">
+        <ion-spinner color="primary"></ion-spinner>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid
+    *ngIf="!isLoading && (!relevantProperties || relevantProperties.length <= 0)"
+  >
+    <ion-row>
+      <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center">
+        <p>There are no bookable places right now, please come back later!</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-grid *ngIf="!isLoading && relevantProperties.length > 0">
+    <ion-row>
+      <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ currentProperty.address }}</ion-card-title>
+            <ion-card-subtitle
+              >{{ relevantProperties[0].price | currency }} /
+              Night</ion-card-subtitle
             >
-          </ion-col>
-          <ion-col size-xs="2">
-            <ion-label class="ion-text-center"
-              ><ion-icon name="bicycle"></ion-icon
-              ><ion-text
-                style="font-size: 8px;"
-                *ngIf="currentProperty.livingrooms"
-                ></ion-text
-              ></ion-label
+          </ion-card-header>
+          <ion-img [src]="currentProperty.propertyPic"></ion-img>
+          <ion-card-content>
+            <p>{{ currentProperty.description }}</p>
+          </ion-card-content>
+          <div>
+            <ion-button
+              fill="clear"
+              color="primary"
+              [routerLink]="[
+                '/',
+                'properties',
+                'tabs',
+                'discover',
+                currentProperty.id
+              ]"
             >
-          </ion-col>
-          <ion-col size-xs="2">
-            <ion-label class="ion-text-center"
-              ><ion-icon name="car"></ion-icon
-              ><ion-text
-                style="font-size: 8px;"
-                *ngIf="currentProperty.livingrooms"
-                ></ion-text
-              ></ion-label
-            >
-          </ion-col>
-          <ion-col size-xs="2">
-            <ion-label class="ion-text-center">
-              <ion-icon name="boat"></ion-icon
-              ><ion-text
-                style="font-size: 8px;"
-                *ngIf="currentProperty.livingrooms"
-                ></ion-text
-              ></ion-label
-            >
-          </ion-col>
-          <ion-col size-xs="2">
-            <ion-label class="ion-text-center">
-              <ion-icon name="train"></ion-icon
-              ><ion-text
-                style="font-size: 8px;"
-                *ngIf="currentProperty.livingrooms"
-                ></ion-text
-              ></ion-label
-            >
-          </ion-col>
-          <ion-col size-xs="2">
-            <ion-label class="ion-text-center"
-              ><ion-icon name="walk"></ion-icon
-              ><ion-text
-                style="font-size: 8px;"
-                *ngIf="currentProperty.livingrooms"
-                ></ion-text
-              ></ion-label
-            >
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </md-card>
-  </div>
+              More
+            </ion-button>
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center">
+        <div class="pins">
+          <ion-card class="pin" *ngFor="let property of loadedProperties" (click)="setCurrentProperty(property)">
+              <img [src]="property.propertyPic" >
+          </ion-card>
+        </div>
+      </ion-col>
+    </ion-row>
+    <!-- <ion-row>
+      <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center">
+        <ion-virtual-scroll
+          [items]="this.loadedProperties"
+          approxItemHeight="70px"
+        >
+          <ion-item
+            [routerLink]="['/', 'properties', 'tabs', 'discover', property.id]"
+            detail
+            *virtualItem="let property"
+          >
+            <ion-thumbnail slot="start">
+              <ion-img [src]="property.propertyPic"></ion-img>
+            </ion-thumbnail>
+            <ion-label>
+              <h2>{{ property.title }}</h2>
+              <p>{{ property.description }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-virtual-scroll>
+      </ion-col>
+      </ion-row> -->
+  </ion-grid>
+
 </ion-content>
