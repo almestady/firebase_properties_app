@@ -1,7 +1,8 @@
 /* This CSS is used in HTML file -> https://gist.github.com/AnkitMaheshwariIn/20954763f4aabdd5524891cb8e0ad01c */
 .pins {
-    column-count: 3;
+    column-count: 2;
     padding: 7px;
+    overflow: scroll;
   }
   
   .pin {
@@ -9,9 +10,20 @@
     margin: 0 2px 10px;
     padding: 0px;
     background: #f8f8ff;
+    // opacity: 0.5;
+    
+    
+  }
+  .pin:hover {
+    opacity: 1.0;
+  }
+
+  div.pin:hover {
+    border: 1px solid #777;
   }
 
   .big-pin {
+      width: 100px;
     display: inline-block;
     margin: 0 10px 100px;
     padding: 5px;
@@ -19,3 +31,10 @@
   }
 
   
+.pin:focus {
+    min-width: 150px;
+    width: auto;
+}
+
+
+

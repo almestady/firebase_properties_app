@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'properties',
   loadChildren: () => import('./properties/properties.module').then(m => m.PropertiesPageModule) ,
   // canLoad: [AuthGuard]
-//  canActivateChild: [AuthGuard]
+ canActivate: [AuthGuard]
 },
 { path: 'callback', component: CallbackComponent, 
 resolve: {token: AuthResolver}

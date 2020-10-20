@@ -12,7 +12,8 @@ export const environment = {
   clientId: '9mIsLa8Ta2P9BuQexn4pqAL6bJyERyKQ',
   audience: 'https://properties-golang-api',
   userId: '',
-  googleMapsAPIKey: 'AIzaSyCQGAi0HmfmSzPEGImEYzJxiX5C7vtjKSo'
+  googleMapsAPIKey: 'AIzaSyCQGAi0HmfmSzPEGImEYzJxiX5C7vtjKSo',
+  firebaseAPIKey: 'AIzaSyCFLk7p2LybX2Vpu9bIa2771ow94dXJFAo'
 };
 
 /*

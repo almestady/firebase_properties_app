@@ -12,9 +12,26 @@ const routes: Routes = [
     children: [
         {
             path: '',
-            redirectTo: '/properties/tabs/discover',
+            redirectTo: '/properties/tabs/browser',
             pathMatch: 'full'
         },
+        {
+          path: "browser",
+          children: [
+          {
+             path: "",
+            loadChildren: () =>
+              import("./browser/browser.module").then((m) => m.BrowserPageModule),
+          } ,
+          {
+            path: "search",
+            loadChildren: () =>
+            import("./search/search.module").then((m) => m.SearchPageModule)
+          }
+         
+          ]
+        }
+      ,
       {
         
         path: "discover",
@@ -36,23 +53,7 @@ const routes: Routes = [
                   ),
               },
            
-          {
-            path: "browser",
-            children: [
-            {
-               path: "",
-              loadChildren: () =>
-                import("./browser/browser.module").then((m) => m.BrowserPageModule),
-            } ,
-            {
-              path: "search",
-              loadChildren: () =>
-              import("./search/search.module").then((m) => m.SearchPageModule)
-            }
-           
-            ]
-          }
-        ,
+          
               {
                 path: ":propertyId",
                 loadChildren: () =>

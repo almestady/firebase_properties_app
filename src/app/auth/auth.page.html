@@ -13,7 +13,7 @@
                 <ion-card-header>
                   <ion-card-title text-center><h2> تسجيل دخول</h2></ion-card-title><br/>
                 
-                </ion-card-header>
+                </ion-card-header>   
                 <ion-card-content>
                     <ion-list>
                         <ion-item> 
@@ -33,7 +33,13 @@
                           <ion-text> الرقم السرى</ion-text>
                           <!-- <ion-icon name="man"></ion-icon> -->
                             </ion-label>
-                            <ion-input text-right type="password" name="password" ngModel required minlength="6" #passwordCtrl="ngModel"></ion-input>
+                            <ion-input text-right
+                             type="password"
+                             name="password"
+                             ngModel 
+                             required
+                              minlength="6"
+                               #passwordCtrl="ngModel"></ion-input>
                       </ion-item>
                       <ion-item *ngIf="!passwordCtrl.valid && passwordCtrl.touched" lines="none" lines="none">
                           <ion-label >
@@ -45,7 +51,7 @@
                       </ion-label>
                       
                         <ion-item>
-                          <ion-label class="new-account" margin  (click)="newCustomer()">
+                          <ion-label class="new-account" margin  (click)="signup()">
                               حساب جديد
                             </ion-label>
                           </ion-item>
@@ -54,8 +60,16 @@
                       <!-- <div text-center>
                           <ion-spinner color="primary" *ngIf="isLoading"></ion-spinner>
                       </div> -->
-                      
-                      <ion-button  type="submit" color="primary" padding (click)="onLogin()" [disabled]="!f.valid">
+                      <ion-button
+            type="button"
+            color="primary"
+            fill="clear"
+            expand="block"
+            (click)="onSwitchAuthMode()"
+          >
+            Switch to {{ isLogin ? 'Signup' : 'Login' }}
+          </ion-button>
+                      <ion-button  type="submit" color="primary" padding  [disabled]="!f.valid">
                           <ion-label>دخول</ion-label>
                       </ion-button>
                 </ion-card-content>

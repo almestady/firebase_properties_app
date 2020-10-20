@@ -81,7 +81,7 @@ export class SearchPage implements OnInit, OnDestroy {
   views: View[];
   viewsSub: Subscription;
   loadedViews: View[] = [];
-  theProperty: Property;
+  @Input()theProperty: Property;
   propertyId: string
    
   constructor(
@@ -401,7 +401,10 @@ onView(id: string){
       });
   }
 
-  
+  goBack(){
+    this.modalCtrl.dismiss('theProperty');
+      
+  }
 
   onBookMark() {
    
@@ -438,7 +441,7 @@ onView(id: string){
              .addBooking(booking)
               .subscribe(() => {
                 this.isBooked = true;
-                this.router.navigateByUrl(`/properties/tabs/discover`);
+                // this.router.navigateByUrl(`/properties/tabs/discover`);
               });
           }
         });
@@ -458,7 +461,7 @@ onView(id: string){
                     this.bookingService.cancelBooking(resv.id)
                    .subscribe(() => {
                      this.isBooked = false
-                      this.router.navigateByUrl(`/properties/tabs/discover`);
+                      // this.router.navigateByUrl(`/properties/tabs/discover`);
                     });
 
                   //  }
