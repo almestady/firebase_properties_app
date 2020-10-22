@@ -17,6 +17,7 @@ import { LanguagesService, Labels } from "src/app/languages.service";
 import { NewFormComponent } from './new-form/new-form.component';
 // import { unlink } from 'fs';
 import { Location } from '../../location.model';
+import { take } from 'rxjs/operators';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -109,35 +110,41 @@ save() {
 
 
  formInfo() {
-  this.property = { 
-    id:'',
-    userId:this.authService.userId,
-    propertyName: this.form.value.propertyName,
-    description: this.form.value.description,
-    propertyPic: this.formFourth.value.propertyPicture,
-    price: this.form.value.price,
-    kind: this.form.value.kind,
-    address: this.formTwo.value.address,
-    space: this.formTwo.value.space,
-    owner: this.formTwo.value.owner,
-    likes: this.form.value.likes,
-    bedrooms: this.formThird.value.bedrooms,
-    bathrooms: this.formThird.value.bathrooms,
-    ketchins: this.formThird.value.kitchen,
-    livingrooms: this.formThird.value.livingrooms,
-    gardens: this.formThird.value.gardens,
-    garages: this.formThird.value.garages,
-    startDate: this.formTwo.value.startDate,
-    endDate: this.formTwo.value.endDate,
-    views: this.form.value.views,
-    tags: this.form.value.tags,
-    hasOffer: this.form.value.HasOffer,
-    reservations: this.form.value.Reservation,
-    display: this.form.value.display,
-    location: this.formFourth.value.location,
-    created_at: new Date(),
-    updated_at: new Date()
-  };
+  this.authService.userId.pipe(take(1)).subscribe(userId => {
+    if(!userId){
+      throw Error('Could not find userId')
+    }
+
+    this.property = { 
+      id:'',
+      userId: userId,
+      propertyName: this.form.value.propertyName,
+      description: this.form.value.description,
+      propertyPic: this.formFourth.value.propertyPicture,
+      price: this.form.value.price,
+      kind: this.form.value.kind,
+      address: this.formTwo.value.address,
+      space: this.formTwo.value.space,
+      owner: this.formTwo.value.owner,
+      likes: this.form.value.likes,
+      bedrooms: this.formThird.value.bedrooms,
+      bathrooms: this.formThird.value.bathrooms,
+      ketchins: this.formThird.value.kitchen,
+      livingrooms: this.formThird.value.livingrooms,
+      gardens: this.formThird.value.gardens,
+      garages: this.formThird.value.garages,
+      startDate: this.formTwo.value.startDate,
+      endDate: this.formTwo.value.endDate,
+      views: this.form.value.views,
+      tags: this.form.value.tags,
+      hasOffer: this.form.value.HasOffer,
+      reservations: this.form.value.Reservation,
+      display: this.form.value.display,
+      location: this.formFourth.value.location,
+      created_at: new Date(),
+      updated_at: new Date()
+    };
+  })
  }
 
   onSave() {

@@ -69,8 +69,8 @@
           >
             Switch to {{ isLogin ? 'Signup' : 'Login' }}
           </ion-button>
-                      <ion-button  type="submit" color="primary" padding  [disabled]="!f.valid">
-                          <ion-label>دخول</ion-label>
+                      <ion-button  type="submit" color="primary"  expand="block" [disabled]="!f.valid">
+                          <ion-label>{{   isLogin ? 'دخول' : 'تسجيل' }}</ion-label>
                       </ion-button>
                 </ion-card-content>
               </ion-card>

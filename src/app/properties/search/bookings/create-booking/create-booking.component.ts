@@ -11,6 +11,7 @@ import { LanguagesService, Labels } from 'src/app/languages.service';
 
 import { PropertiesService } from 'src/app/properties/properties.service';
 import { BookingService } from 'src/app/bookings/booking.service';
+import { take } from 'rxjs/operators';
 
 
 
@@ -38,9 +39,12 @@ booking: Booking;
 
   ngOnInit() {
     console.log(this.bookedProperty.propertyName);
-   this.customerServie.getCustomer(this.authService.userId).subscribe(customer => {
-     this.customer = customer;
-   });   
+    this.authService.userId.pipe(take(1)).subscribe(userId => {
+
+      this.customerServie.getCustomer(userId).subscribe(customer => {
+        this.customer = customer;
+      });   
+    })
 
    this.languageService.arabicLabel.subscribe(labels => {
 
@@ -66,13 +70,18 @@ booking: Booking;
   
   bookingInfo(){
     console.log(this.bookedProperty)
-    this.booking = {
-      id: '',
-      propertyId: this.bookedProperty.id,
-      guestId: this.authService.userId,
-      date: this.form.value.startDate,
-      time: this.form.value.startTime
-    }
+    this.authService.userId.pipe(take(1)).subscribe(userId => {
+      if(!userId){
+        throw Error('could not find userId')
+      }
+      this.booking = {
+        id: '',
+        propertyId: this.bookedProperty.id,
+        guestId: userId,
+        date: this.form.value.startDate,
+        time: this.form.value.startTime
+      }
+    })
   }
   onBookProperty() {
     this.bookingInfo()

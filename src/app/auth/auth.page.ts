@@ -13,10 +13,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./auth.page.scss'],
 })
 export class AuthPage implements OnInit {
-token: string;
-form: FormGroup;
-@ViewChild('emailCtrl',{static: true}) username: IonInput;
-@ViewChild('passwordCtrl',{static: true}) password: IonInput;
+
 isLoading = false;
 isLogin = true;
 
@@ -33,35 +30,9 @@ isLogin = true;
    
   }
 
-  // onLogin() {
-  //   this.isLoading = true;
-  //   console.log(this.username.value, this.password.value)
-  //   this.authService.login();
-  //   this.loadingCtlr.create({keyboardClose: true, message: 'Logging in...'}).then(loadEl => {
-  //     loadEl.present();
-  //       setTimeout(()=> {
-  //         this.isLoading = false;
-  //         loadEl.dismiss();
-  //        this.router.navigateByUrl('/properties/tabs/discover');
-  //       },1000);
-  //   });
-  // }
-  // onLogin(username: Element, password: Element) {
-  //   this.isLoading = true;
-  //   console.log(this.username.value, this.password.value)
-  //   this.authService.login(this.username.value, this.password.value);
-  //   this.loadingCtl.create({keyboardClose: true, message: 'Logging in...'}).then(loadEl => {
-  //     loadEl.present();
-  //       setTimeout(()=> {
-  //         this.isLoading = false;
-  //         loadEl.dismiss();
-  //        this.router.navigateByUrl('/properties/tabs/discover');
-  //       },1000);
-  //   });
-  // }
+  
   authenticate(email: string, password: string) {
     this.isLoading = true;
-    
     this.loadingCtrl
       .create({ keyboardClose: true, message: 'Logging in...' })
       .then(loadingEl => {
@@ -72,12 +43,12 @@ isLogin = true;
         } else {
           authObs = this.authService.signup(email, password);
         }
-       authObs.subscribe(
+        authObs.subscribe(
           resData => {
             console.log(resData);
             this.isLoading = false;
             loadingEl.dismiss();
-            this.router.navigateByUrl('/properties/tabs');
+            this.router.navigateByUrl('/properties/tabs/discover');
           },
           errRes => {
             loadingEl.dismiss();
@@ -94,7 +65,7 @@ isLogin = true;
           }
         );
       });
-  } 
+  }
 
   onSwitchAuthMode() {
     this.isLogin = !this.isLogin;
@@ -104,21 +75,7 @@ isLogin = true;
     this.router.navigateByUrl('/customers/new');
   }
 
-  // onLogin() {
-  //   this.isLoading = true;
-  //   this.authService.login();
-  //   this.loadingCtrl
-  //     .create({ keyboardClose: true, message: 'Logging in...' })
-  //     .then(loadingEl => {
-  //       loadingEl.present();
-  //       setTimeout(() => {
-  //         this.isLoading = false;
-  //         loadingEl.dismiss();
-  //         this.router.navigateByUrl('/properties/tabs/discover');
-  //       }, 1500);
-  //     });
-  // }
-
+  
   onSubmit(form: NgForm) {
     if(!form.valid) {
       return;

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
 import { CallbackComponent } from './callback/callback.component';
-import { AuthResolver } from './auth-resolver.service';
+// import { AuthResolver } from './auth-resolver.service';
 
 
 const routes: Routes = [
@@ -18,7 +18,7 @@ const routes: Routes = [
  canActivate: [AuthGuard]
 },
 { path: 'callback', component: CallbackComponent, 
-resolve: {token: AuthResolver}
+// resolve: {token: AuthResolver}
 //  loadChildren: () => import('./callback/callback.component').then(m => m.CallbackComponent)
 },
   //  loadChildren: './properties/properties.module#PropertiesPageModule', canLoad: [AuthGuard] },

@@ -1,3 +1,4 @@
+import { switchMap, take } from 'rxjs/operators';
 
 import { Component, OnInit, Input, ElementRef, ViewChild, forwardRef, OnDestroy, Renderer2 } from "@angular/core";
 
@@ -165,30 +166,23 @@ setTimeout(function () {
                 console.log(this.bookings)
                 
               })
-
-              this.likesSub = this.likesService.likes.subscribe(likes => {
-                this.loadedLikes = likes
-                this.likes = this.loadedLikes.filter(like => like.guestId === this.authService.userId)
-                console.log(this.likes)
-               
-                 console.log(this.likes)
-                 if(this.theProperty){
-                  this.checkLike(this.theProperty.id)
-                  this.howManyLikes(this.theProperty.id)
-                }
+              this.authService.userId.pipe(take(1))
+               .subscribe(userId => {
+                 if(!userId){
+                   
+                 }
+                 this.viewsSub = this.viewsService.views.subscribe(views => {
+                  this.loadedViews = views
+                  this.views = this.loadedViews.filter(view => view.guestId === userId)
+                  console.log(this.views)
                })
-
-               this.viewsSub = this.viewsService.views.subscribe(views => {
-                this.loadedViews = views
-                this.views = this.loadedViews.filter(view => view.guestId === this.authService.userId)
-                console.log(this.views)
                
+               if(this.theProperty){
+                 this.onView(this.theProperty.id)
+               this.checkView(this.theProperty.id)
+               this.howManyViews(this.theProperty.id)
+              }
                  
-                 if(this.theProperty){
-                   this.onView(this.theProperty.id)
-                 this.checkView(this.theProperty.id)
-                 this.howManyViews(this.theProperty.id)
-                }
                })
 
            
@@ -326,21 +320,26 @@ setTimeout(function () {
     if (
       !this.likeOn 
     ) {
-       let like = {
-        id: '',
-        propertyId: this.theProperty.id,
-        guestId: this.authService.userId,
-        date: new Date(),
-        time: new Date()
-      }
-      // this.likes.push(like);
-      this.likesService.addLike(like)
-      
-      .subscribe(() => {
-        this.likeOn = true;
-        // this.router.navigateByUrl(`/properties/tabs/browser`);
-      });
-      console.log("Like is been added");
+      this.authService.userId.pipe(take(1)).subscribe(userId => {
+        if(!userId){
+          throw new Error('No user id found');
+        }
+        let like = {
+         id: '',
+         propertyId: this.theProperty.id,
+         guestId: userId,
+         date: new Date(),
+         time: new Date()
+       }
+       // this.likes.push(like);
+       this.likesService.addLike(like)
+       
+       .subscribe(() => {
+         this.likeOn = true;
+         // this.router.navigateByUrl(`/properties/tabs/browser`);
+       });
+       console.log("Like is been added");
+      })
     
     
   } else {
@@ -363,11 +362,14 @@ onView(id: string){
   if(this.viewOn){
     return
   }
-
+this.authService.userId.pipe(take(1)).subscribe(userId => {
+  if(!userId){
+    throw new Error('No user id found');
+  }
   let view = {
     id: '',
     propertyId: this.theProperty.id,
-    guestId: this.authService.userId,
+    guestId: userId,
     date: new Date(),
     time: new Date()
   }
@@ -379,6 +381,7 @@ onView(id: string){
     // this.router.navigateByUrl(`/properties/tabs/browser`);
   });
   console.log(this.theProperty.id + " is been viewed");
+})
 
 }
 
@@ -415,7 +418,7 @@ onView(id: string){
     if (!this.isBooked) {
       
       console.log(this.theProperty.id)
-      console.log(this.loadedBookings.filter(booking => booking.guestId = this.auth.userId))
+      // console.log(this.loadedBookings.filter(booking => booking.guestId = this.auth.userId))
       this.modalCtrl
         .create({
           component: CreateBookingComponent,
@@ -428,56 +431,29 @@ onView(id: string){
         .then((data) => {
           console.log(data.data);
           if(data.data){
-
-            let booking = {
-              id: '',
-              propertyId: this.theProperty.id,
-              guestId: this.authService.userId,
-              date: data.data.booking.date,
-              time: data.data.booking.time
-            }
-            this.bookings.push(booking);
-            this.bookingService
-             .addBooking(booking)
-              .subscribe(() => {
-                this.isBooked = true;
-                // this.router.navigateByUrl(`/properties/tabs/discover`);
-              });
+            this.authService.userId.pipe(take(1)).subscribe(userId => {
+               if(!userId){
+                throw new Error('No user id found');
+               }
+              let booking = {
+                id: '',
+                propertyId: this.theProperty.id,
+                guestId: userId,
+                date: data.data.booking.date,
+                time: data.data.booking.time
+              }
+              this.bookings.push(booking);
+              this.bookingService
+               .addBooking(booking)
+                .subscribe(() => {
+                  this.isBooked = true;
+                  // this.router.navigateByUrl(`/properties/tabs/discover`);
+                });
+            })
           }
         });
-    } else {
-      console.log(this.bookings.find(booking => booking.guestId === this.auth.userId))
-      this.actionSheetCtrl
-        .create({
-          header: this.labels.cancelBookingQuest,
-          buttons: [
-            {
-              text: this.labels.ok,
-              handler: () => {
-                // this.bookmarkOn = false;
-                this.bookings.forEach((resv, index) => {
-                  //  if( resv.customerId === this.authService.userId) {
-                    this.bookings.splice(index, 1);
-                    this.bookingService.cancelBooking(resv.id)
-                   .subscribe(() => {
-                     this.isBooked = false
-                      // this.router.navigateByUrl(`/properties/tabs/discover`);
-                    });
-
-                  //  }
-                });
-              },
-            },
-            {
-              text: this.labels.cancel,
-              role: "cancel",
-            },
-          ],
-        })
-        .then((actionEl) => {
-          actionEl.present();
-        });
-    }
+      }
+    
   }
 
   onList() {

@@ -19,11 +19,11 @@ import { CustomersPageModule } from './customers/customers.module';
 import { AuthPageModule } from './auth/auth.module';
 import { AuthGuard } from './auth/auth.guard';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { TokenInterceptor } from './token.interceptor';
+// import { TokenInterceptor } from './token.interceptor';
 import { IonicStorageModule } from '@ionic/storage';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 import { AuthService } from './auth.service';
-import { AuthResolver } from './auth-resolver.service';
+// import { AuthResolver } from './auth-resolver.service';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { TokenDatabaseService } from './database/token-database.service';
 import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
@@ -59,8 +59,7 @@ import { BrowserPageModule } from './properties/browser/browser.module';
       appId: "1:207270852349:web:e8134b68afc0454cae3094",
       measurementId: "G-8T79XCGGSD"
     }),
-    BrowserPageModule
-    ,
+    
     AngularFireStorageModule,
      IonicStorageModule.forRoot({
     name: '_mydb',
@@ -74,7 +73,7 @@ import { BrowserPageModule } from './properties/browser/browser.module';
     SQLite,
     TokenDatabaseService,
     SafariViewController,
-    AuthResolver,
+    // AuthResolver,
     Storage,
     LikesService,
     ViewsService,

@@ -16,7 +16,7 @@ export class HomePage {
     ) {}
       
       login(){
-        this.auth.login()
+        // this.auth.login()
         return 
       }
 }
