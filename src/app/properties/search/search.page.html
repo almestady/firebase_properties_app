@@ -350,7 +350,7 @@
                             *ngIf="likeOn"
                             class="ion-text-center"
                             style="margin-left: 3%"
-                            (click)="onLike(theProperty.id, $event)"
+                            (click)="onLike(theProperty.id)"
                             ><ion-icon
                               size="small"
                               name="heart"
@@ -359,7 +359,7 @@
                             ><ion-text
                               style="font-size: 8px;"
                               *ngIf="this.loadedLikes"
-                              >{{ howManyLikes(theProperty.id) }}</ion-text
+                              >{{ howManyLikes(theProperty.id) > 0 ? howManyLikes(theProperty.id) : null}}</ion-text
                             ></ion-label
                           >
                           <ion-label
@@ -375,7 +375,7 @@
                             ><ion-text
                               style="font-size: 8px;"
                               *ngIf="this.loadedLikes"
-                              >{{howManyLikes(theProperty.id)}}</ion-text
+                              >{{howManyLikes(theProperty.id) > 0 ? howManyLikes(theProperty.id) : null}}</ion-text
                             ></ion-label
                           >
                         </ion-col>

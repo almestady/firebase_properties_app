@@ -84,7 +84,8 @@ export class SearchPage implements OnInit, OnDestroy {
   loadedViews: View[] = [];
   @Input()theProperty: Property;
   propertyId: string
-   
+  currentLike: Like;
+
   constructor(
     private propertiesService: PropertiesService,
     private menuCtl: MenuController,
@@ -169,7 +170,7 @@ setTimeout(function () {
               this.authService.userId.pipe(take(1))
                .subscribe(userId => {
                  if(!userId){
-                   
+                   throw Error('Could not find userId')
                  }
                  this.viewsSub = this.viewsService.views.subscribe(views => {
                   this.loadedViews = views
@@ -182,6 +183,18 @@ setTimeout(function () {
                this.checkView(this.theProperty.id)
                this.howManyViews(this.theProperty.id)
               }
+
+              this.likesSub = this.likesService.likes.subscribe(likes => {
+                this.loadedLikes= likes
+                this.likes = this.loadedLikes;
+                console.log(this.likes)
+             })
+             
+             if(this.theProperty){
+            //    this.onLike(this.theProperty.id)
+             this.checkLike(this.theProperty.id)
+             this.howManyLikes(this.theProperty.id)
+            }
                  
                })
 
@@ -253,16 +266,16 @@ setTimeout(function () {
   checkLike(id: string) {
     this.likeOn = false
     if (this.likes) {
-      if (
-        this.likes.find(
-          (like) => like.propertyId === id
-        )
-      ) {
+      this.authService.userId.pipe(take(1)).subscribe(userId => {
+        if(!userId){
+          throw new Error('No user id found');
+        }
+        let likes = this.likes.filter(like => like.guestId === userId)
+        this.currentLike =likes.find((like) => like.propertyId === id)
+        if (this.currentLike) {
         this.likeOn = true;
-      } else {
-        this.likeOn = false;
-        
-      }
+      } 
+      })
     }
   }
 
@@ -285,14 +298,12 @@ setTimeout(function () {
   
   howManyLikes(id: string){
     if(this.likes){
-      let likes = this.loadedLikes.filter(like => like.propertyId === id)
+      let likes = this.likes.filter(like => like.propertyId === id)
       if(likes){
         if(likes.length === 0){
           return
         }
         return likes.length 
-      }else{
-        return 
       }
     }
   }
@@ -311,19 +322,19 @@ setTimeout(function () {
     }
   }
   
-  onLike(id: string, event: Event) {
+  onLike(id: string) {
     
     this.checkLike(this.theProperty.id)
     // let theLike = this.likes.find(
     //   (like) => like.propertyId = id
     // )
-    if (
-      !this.likeOn 
-    ) {
-      this.authService.userId.pipe(take(1)).subscribe(userId => {
-        if(!userId){
-          throw new Error('No user id found');
-        }
+    this.authService.userId.pipe(take(1)).subscribe(userId => {
+      if(!userId){
+        throw new Error('No user id found');
+      }
+            if (
+              !this.likeOn 
+              ) {
         let like = {
          id: '',
          propertyId: this.theProperty.id,
@@ -331,37 +342,39 @@ setTimeout(function () {
          date: new Date(),
          time: new Date()
        }
-       // this.likes.push(like);
        this.likesService.addLike(like)
-       
        .subscribe(() => {
+        // this.likes.push(like);
          this.likeOn = true;
          // this.router.navigateByUrl(`/properties/tabs/browser`);
        });
        console.log("Like is been added");
+      } else {
+        this.likes.forEach((like, index) => {
+           if( like.guestId === userId) {
+            this.likes.splice(index, 1);
+            this.likesService.cancelLike(like.id)
+            .subscribe(() => {
+              this.likeOn = false;
+              return
+              // this.router.navigateByUrl(`/properties/tabs/browser`);
+              
+            });
+          }
+    
+          //  }
+        });
+      }
       })
     
     
-  } else {
-    this.likes.forEach((like, index) => {
-      //  if( resv.customerId === this.authService.userId) {
-        this.likes.splice(index, 1);
-        this.likesService.cancelLike(like.id)
-        .subscribe(() => {
-          this.likeOn = false;
-          // this.router.navigateByUrl(`/properties/tabs/browser`);
-        });
-
-      //  }
-    });
    
-  }
 }
 
 onView(id: string){
-  if(this.viewOn){
-    return
-  }
+  // if(this.viewOn){
+  //   return
+  // }
 this.authService.userId.pipe(take(1)).subscribe(userId => {
   if(!userId){
     throw new Error('No user id found');
@@ -375,7 +388,6 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
   }
   // this.likes.push(like);
   this.viewsService.addView(view)
-  
   .subscribe(() => {
     this.viewOn = true;
     // this.router.navigateByUrl(`/properties/tabs/browser`);
