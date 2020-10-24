@@ -83,8 +83,8 @@ isLogin = true;
    const email = form.value.email;
    const password = form.value.password;
    console.log(email, password);
-   form.reset();
    this.authenticate(email, password);
+   form.reset();
   
   }
 

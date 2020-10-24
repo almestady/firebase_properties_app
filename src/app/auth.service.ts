@@ -24,14 +24,15 @@ import { HttpClient } from '@angular/common/http';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { EmailValidator } from '@angular/forms';
 import { User } from './user.model';
+import { Plugins } from '@capacitor/core'
 
 export interface AuthResponseData {
   kind: string;
   idToken: string;
   email: string;
   refreshToken: string;
-  localId: string;
   expiresIn: string;
+  localId: string;
   registered?: boolean; 
 }
 
@@ -54,23 +55,25 @@ get userId() {
         return user.id;
       } else {
         return null;
+      }user
+    })
+  );
+}
+
+
+get userIsAuthenticated() {
+  return this._user.asObservable().pipe(
+    map(user => {
+      if (user) {
+        return !!user.token;
+      } else {
+        return false;
       }
     })
   );
 }
 
-get userIsAuthenticated() {
-  return this._user.asObservable().pipe(
-    map(user => {
-    if(user){
-      return !!user.token
-    } else {
-      return false;
-    }
-  }
-    )
-    ) 
-}
+
 
 
 signup(email: string, password: string){
@@ -83,13 +86,14 @@ signup(email: string, password: string){
 login(email: string, password: string) {
  return  this.http.post<AuthResponseData>
    (`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
- {email:email, password: password} 
+ {email:email, password: password, returnSecureToken: true} 
  ).pipe(tap(this.setUserData.bind(this) ))
 
 }
 
 logout() {
   this._user.next(null);
+  Plugins.Storage.remove({key: 'authData'})
 }
 
   private setUserData(userData: AuthResponseData) {
@@ -105,7 +109,44 @@ logout() {
         userData.idToken,
         expirationTime
         )
-      )
+      );
+      this.storeAuthData(userData.localId, userData.idToken, expirationTime.toISOString(),  userData.email)
+}
+
+private storeAuthData
+(
+userId: string,
+token: string,
+tokenEpriationDate: string,
+email: string
+    ){
+  const data =  JSON.stringify({userId: userId, token: token, tokenExpirationDate: tokenEpriationDate})
+  Plugins.Storage.set({key:  'authData', value:data})
+}
+
+autoLogin(){
+ return from(Plugins.Storage.get({key: 'authData'})).pipe(map(storedData => {
+  if(!storedData || !storedData.value){
+     return null; 
+  }
+  const parsedData = JSON.parse(storedData.value) as {token: string; tokenExpirationDate: string; userId: string; email: string}
+  const expirationTime = new Date(parsedData.tokenExpirationDate);
+  if(expirationTime <= new Date()){
+    return;
+  }
+  const user = new User(parsedData.userId, parsedData.email, parsedData.token, expirationTime)
+
+  return user;
+  }),
+  tap(user => {
+    if(user){
+      this._user.next(user)
+    }
+  }),
+  map(user => {
+    return !!user;
+  })
+  )
 }
 
 }

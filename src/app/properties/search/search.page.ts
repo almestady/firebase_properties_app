@@ -351,7 +351,7 @@ setTimeout(function () {
        console.log("Like is been added");
       } else {
         this.likes.forEach((like, index) => {
-           if( like.guestId === userId) {
+           if( like.guestId === userId && like.propertyId === id) {
             this.likes.splice(index, 1);
             this.likesService.cancelLike(like.id)
             .subscribe(() => {
