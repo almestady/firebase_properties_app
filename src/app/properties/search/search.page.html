@@ -70,7 +70,7 @@
                                         *ngIf="this.isBooked"
                                         style="font-size: 15;padding-left: 0px; padding-right: 0px;padding-top: 0px;margin-top: 0px; margin-bottom: 0px"
                                         ><ion-icon
-                                          (click)="onBookMark()"
+                                          (click)="onBookMark(this.theProperty.id)"
                                           style="color: rgb(194, 82, 57)"
                                           size="large"
                                           name="ios-bookmark"

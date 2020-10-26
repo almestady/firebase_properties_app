@@ -205,13 +205,23 @@ setTimeout(function () {
     
     this.propertiesService.getProperties().subscribe(()=>{
 
-      this.bookingService.getBookings().subscribe(()=> {})
+      this.bookingService.getBookings().subscribe(()=> {
+        if(this.theProperty){
+          this.checkBookmark(this.theProperty.id)
+        }
+      })
 
-    this.likesService.getLikes().subscribe()
+    this.likesService.getLikes().subscribe(()=> {
+      if(this.theProperty){
+        this.checkLike(this.theProperty.id)
+      }
+    })
 
-    this.viewsService.getViews().subscribe()
-
-   
+    this.viewsService.getViews().subscribe(()=>{
+      if(this.theProperty){
+        this.checkView(this.theProperty.id)
+      }
+    })
       // this.checkBookmark(this.theProperty)
     }); 
   }
@@ -220,12 +230,19 @@ setTimeout(function () {
   checkBookmark(id: string) {
     this.theBooking = null;
     this.isBooked = false;
-    this.bookings.forEach(booking =>{
-      console.log(booking)
-      if(booking.propertyId === id){
-        this.isBooked = true;
-      } ;
-    } )
+
+  return  this.authService.userId.pipe(take(1)).subscribe(userId => {
+      if(!userId){
+        throw new Error('No user id found');
+      }
+
+      this.bookings.forEach(booking =>{
+        console.log(booking)
+        if(booking.propertyId === id && booking.guestId === userId){
+          this.isBooked = true;
+        } ;
+      } )
+    })
       
    
     // console.log(this.theBooking)
@@ -240,13 +257,13 @@ setTimeout(function () {
   clickedProperty(id: string) {
     // this.isBooked = true;
     console.log( id)
+    this.checkBookmark(id)
+    this.checkLike(id)
+    this.checkView(id)
+    this.onView(id)
     this.propertiesService.getProperty(id).subscribe((property) => {
     
       this.theProperty = property;
-      this.checkBookmark(id)
-      this.checkLike(id)
-      this.checkView(id)
-      this.onView(id)
     console.log(this.theProperty.propertyName)
     });
    
@@ -421,14 +438,14 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
       
   }
 
-  onBookMark() {
-   
+  onBookMark(id: string) {
+    let fetchedBooking:string;
     if(!this.bookings.length){
      this.bookings = [];
     }
     
+    
     if (!this.isBooked) {
-      
       console.log(this.theProperty.id)
       // console.log(this.loadedBookings.filter(booking => booking.guestId = this.auth.userId))
       this.modalCtrl
@@ -447,6 +464,7 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
                if(!userId){
                 throw new Error('No user id found');
                }
+                fetchedBooking = userId
               let booking = {
                 id: '',
                 propertyId: this.theProperty.id,
@@ -464,8 +482,45 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
             })
           }
         });
-      }
-    
+      }else {
+        this.actionSheetCtrl
+        .create({
+          header: this.labels.cancelBookingQuest,
+          buttons: [
+            {
+              text: this.labels.ok,
+              handler: () => {
+                // this.bookmarkOn = false;
+                this.authService.userId.pipe(take(1)).subscribe(userId => {
+                  if (!userId) {
+                    throw new Error('User not found!');
+                  }
+                  this.bookings.forEach((booking, index) => {
+                    if( booking.guestId === userId && booking.propertyId === id) {
+                      console.log("Hello...there...")
+                    this.bookings.splice(index, 1);
+                    this.bookingService.cancelBooking(booking.id)
+                      .subscribe(() => {
+                      this.isBooked = false;
+                      return;
+                      });
+  
+                     }
+                  })
+                })
+              },
+            },
+            {
+              text: this.labels.cancel,
+              role: "cancel",
+            },
+          ],
+        })
+        .then((actionEl) => {
+          actionEl.present();
+        });
+    }
+  
   }
 
   onList() {

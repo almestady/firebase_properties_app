@@ -22,14 +22,21 @@ export class BookingService {
   ) { }
 
   getBookings() {
-    return this.http
-      .get<{ [key: string]: Booking }>(
-        `https://propertiestag-25d9d.firebaseio.com/bookings.json?orderBy="guestId"&equalTo="${
-          this.authService.userId
-        }"`
-      )
-      .pipe(
-        map(bookingData => {
+    let fetchedUserId:String;
+    return this.authService.userId.pipe(take(1),switchMap(userId => {
+      if (!userId) {
+        throw new Error('No user id found!');
+      }
+      fetchedUserId = userId;
+      return this.authService.token;
+    }),
+    take(1), switchMap(token => {
+
+      return this.http
+        .get<{ [key: string]: Booking }>(
+          `https://propertiestag-25d9d.firebaseio.com/bookings.json?orderBy="guestId"&equalTo="${fetchedUserId}"&auth=${token}`
+        )
+    }),map(bookingData => {
           const bookings = [];
           for (const key in bookingData) {
             if (bookingData.hasOwnProperty(key)) {
@@ -54,14 +61,14 @@ export class BookingService {
 
   addBooking(newBooking: Booking) {
     let generatedId: string;
+    return this.authService.token.pipe(take(1), switchMap(token => {
 
-    return this.http
-      .post<{ name: string }>(
-        'https://propertiestag-25d9d.firebaseio.com/bookings.json',
-        { ...newBooking, id: null }
-      )
-      .pipe(
-        switchMap(resData => {
+      return this.http
+        .post<{ name: string }>(
+          `https://propertiestag-25d9d.firebaseio.com/bookings.json?auth=${token}`,
+          { ...newBooking, id: null }
+        )
+    }),switchMap(resData => {
           generatedId = resData.name;
           return this.bookings;
         }),
@@ -75,12 +82,13 @@ export class BookingService {
  
 
   cancelBooking(bookingId: string) {
-    return this.http
-      .delete(
-        `https://propertiestag-25d9d.firebaseio.com/bookings/${bookingId}.json`
-      )
-      .pipe(
-        switchMap(() => {
+    return this.authService.token.pipe(take(1), switchMap(token => {
+
+      return this.http
+        .delete(
+          `https://propertiestag-25d9d.firebaseio.com/bookings/${bookingId}.json?auth=${token}`
+        )
+    }),switchMap(() => {
           return this.bookings;
         }),
         take(1),

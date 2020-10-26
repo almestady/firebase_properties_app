@@ -21,12 +21,13 @@ export class LikesService {
   ) { }
 
   getLikes() {
-    return this.http
-      .get<{ [key: string]: Like }>(
-        `https://propertiestag-25d9d.firebaseio.com/likes.json`
-      )
-      .pipe(
-        map(likeData => {
+    return this.authService.token.pipe(take(1), switchMap(token => {
+
+      return this.http
+        .get<{ [key: string]: Like }>(
+          `https://propertiestag-25d9d.firebaseio.com/likes.json?auth=${token}`
+        )
+    }),map(likeData => {
           const likes = [];
           for (const key in likeData) {
             if (likeData.hasOwnProperty(key)) {
@@ -51,14 +52,14 @@ export class LikesService {
 
   addLike(newLike: Like) {
     let generatedId: string;
+   return this.authService.token.pipe(take(1), switchMap(token => {
 
-    return this.http
-      .post<{ name: string }>(
-        'https://propertiestag-25d9d.firebaseio.com/likes.json',
-        { ...newLike, id: null }
-      )
-      .pipe(
-        switchMap(resData => {
+     return this.http
+       .post<{ name: string }>(
+         `https://propertiestag-25d9d.firebaseio.com/likes.json?auth=${token}`,
+         { ...newLike, id: null }
+       )
+   }),switchMap(resData => {
           generatedId = resData.name;
           return this.likes;
         }),
@@ -72,12 +73,13 @@ export class LikesService {
  
 
   cancelLike(likeId: string) {
-    return this.http
-      .delete(
-        `https://propertiestag-25d9d.firebaseio.com/likes/${likeId}.json`
-      )
-      .pipe(
-        switchMap(() => {
+    return this.authService.token.pipe(take(1), switchMap(token => {
+
+      return this.http
+        .delete(
+          `https://propertiestag-25d9d.firebaseio.com/likes/${likeId}.json?auth=${token}`
+        )
+    }),switchMap(() => {
           return this.likes;
         }),
         take(1),

@@ -22,11 +22,13 @@ export class ViewsService {
   ) { }
 
   getViews() {
-    return this.http
-      .get<{ [key: string]: View }>(
-        `https://propertiestag-25d9d.firebaseio.com/views.json`
-      )
-      .pipe(
+    return this.authService.token.pipe(take(1), switchMap(token => {
+
+      return this.http
+        .get<{ [key: string]: View }>(
+          `https://propertiestag-25d9d.firebaseio.com/views.json?auth=${token}`
+        )
+    }),
         map(viewData => {
           const views = [];
           for (const key in viewData) {
@@ -52,14 +54,14 @@ export class ViewsService {
 
   addView(newView: View) {
     let generatedId: string;
+return this.authService.token.pipe(take(1),switchMap(token => {
 
-    return this.http
-      .post<{ name: string }>(
-        'https://propertiestag-25d9d.firebaseio.com/views.json',
-        { ...newView, id: null }
-      )
-      .pipe(
-        switchMap(resData => {
+  return this.http
+    .post<{ name: string }>(
+      `https://propertiestag-25d9d.firebaseio.com/views.json?auth=${token}`,
+      { ...newView, id: null }
+    )
+}),switchMap(resData => {
           generatedId = resData.name;
           return this.views;
         }),
@@ -73,12 +75,13 @@ export class ViewsService {
  
 
   cancelView(viewId: string) {
-    return this.http
-      .delete(
-        `https://propertiestag-25d9d.firebaseio.com/views/${viewId}.json`
-      )
-      .pipe(
-        switchMap(() => {
+    return this.authService.token.pipe(take(1), switchMap(token => {
+
+      return this.http
+        .delete(
+          `https://propertiestag-25d9d.firebaseio.com/views/${viewId}.json?auth=${token}`
+        )
+    }),switchMap(() => {
           return this.views;
         }),
         take(1),

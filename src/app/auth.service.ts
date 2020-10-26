@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import * as auth0 from 'auth0-js';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -39,9 +39,9 @@ export interface AuthResponseData {
 
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnDestroy {
   private _user = new BehaviorSubject<User>(null);
-  
+  private activeLogoutTimer: any;
    
 constructor(
   private http: HttpClient
@@ -53,6 +53,18 @@ get userId() {
     map(user => {
       if (user) {
         return user.id;
+      } else {
+        return null;
+      }user
+    })
+  );
+}
+
+get token(){
+  return this._user.asObservable().pipe(
+    map(user => {
+      if (user) {
+        return user.token;
       } else {
         return null;
       }user
@@ -92,6 +104,9 @@ login(email: string, password: string) {
 }
 
 logout() {
+  if(this.activeLogoutTimer){
+    clearTimeout(this.activeLogoutTimer);
+  }
   this._user.next(null);
   Plugins.Storage.remove({key: 'authData'})
 }
@@ -101,16 +116,15 @@ logout() {
     const expirationTime = new Date(
       new Date().getTime() + (+userData.expiresIn * 1000)
       );
-
-    this._user.next(
-      new User(
-        userData.localId,
-        userData.email,
-        userData.idToken,
-        expirationTime
-        )
-      );
-      this.storeAuthData(userData.localId, userData.idToken, expirationTime.toISOString(),  userData.email)
+   const user =  new User(
+    userData.localId,
+    userData.email,
+    userData.idToken,
+    expirationTime
+    )
+    this._user.next(user);
+    this.autoLogout(user.tokenDuration);
+    this.storeAuthData(userData.localId, userData.idToken, expirationTime.toISOString(),  userData.email)
 }
 
 private storeAuthData
@@ -141,12 +155,28 @@ autoLogin(){
   tap(user => {
     if(user){
       this._user.next(user)
+      this.autoLogout(user.tokenDuration);
     }
   }),
   map(user => {
     return !!user;
   })
   )
+}
+
+private autoLogout(duration: number) {
+  if(this.activeLogoutTimer){
+    clearTimeout(this.activeLogoutTimer);
+  }
+ this.activeLogoutTimer =  setTimeout(()=> {
+     this.logout()
+   }, duration)
+}
+
+ngOnDestroy(){
+  if(this.activeLogoutTimer){
+    clearTimeout(this.activeLogoutTimer);
+  }
 }
 
 }

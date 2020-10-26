@@ -37,10 +37,11 @@ loading = false
   getProperties(){
     // return this._properties.asObservable();
     // const props =
-     return this.http.get<{ [key: string]: Property }>(
-      'https://propertiestag-25d9d.firebaseio.com/properties.json')
-     .pipe(
-            map(resData => {
+   return this.authService.token.pipe(switchMap(token => {
+
+      return this.http.get<{ [key: string]: Property }>(
+       `https://propertiestag-25d9d.firebaseio.com/properties.json?auth=${token}`)
+    }),map(resData => {
                 const properties = [];
                 for (const key in resData) {
                   if (resData.hasOwnProperty(key)) {
@@ -89,38 +90,42 @@ loading = false
 
   addProperty(newProperty: Property){
     let generatedId: string;
- 
-    return this.http.post<{ name: string }>(
-      'https://propertiestag-25d9d.firebaseio.com/properties.json',
-       {
-         ...newProperty,
-          id:null
-        }).pipe(
-          switchMap(resData => {
-            generatedId = resData.name;
-            return this.properties;
-          }),
-          take(1),
-          tap(properties => {
-            newProperty.id = generatedId;
-            this._properties.next(properties.concat(newProperty))
-          })
-          // tap(resltData => {
-          //   console.log(resltData)
-          // }),
-          
-          
-        )
+   return this.authService.token.pipe(take(1),switchMap(token => {
+
+     return this.http.post<{ name: string }>(                     
+       `https://propertiestag-25d9d.firebaseio.com/properties.json?auth=${token}`,
+        {
+          ...newProperty,
+           id:null
+         });
+  }),switchMap(resData => {
+               console.log("hey....", resData.name)
+               generatedId = resData.name;
+               return this.properties;
+             }),
+             take(1),
+             tap(properties => {
+               newProperty.id = generatedId;
+               this._properties.next(properties.concat(newProperty))
+             })
+             // tap(resltData => {
+             //   console.log(resltData)
+             // }),
+             
+             
+           )
     
   }
 
   getProperty(id: string) {
-    return this.http
-      .get<Property>(
-        `https://propertiestag-25d9d.firebaseio.com/properties/${id}.json`
-      )
-      .pipe(
-        map(propertyData => {
+   return this.authService.token.pipe(take(1),switchMap(token => {
+
+      return this.http
+        .get<Property>(
+          `https://propertiestag-25d9d.firebaseio.com/properties/${id}.json?auth=${token}`
+        )
+    }),
+   map(propertyData => {
           return {
             id:id,
             address: propertyData.address,
@@ -156,7 +161,11 @@ loading = false
 
   updateProperty(property: Property) {
     let updatedProperties: Property[];
-    return this.properties.pipe(
+    let fetchedToken: string;
+ return  this.authService.token.pipe(take(1),switchMap(token  => {
+      fetchedToken = token;
+      return this.properties   
+    }),
       take(1),
       switchMap(properties => {
         if (!properties || properties.length <= 0) {
@@ -200,7 +209,7 @@ loading = false
                 updated_at: oldProperty.updated_at,
                };
         return this.http.put(
-          `https://propertiestag-25d9d.firebaseio.com/properties/${property.id}.json`,
+          `https://propertiestag-25d9d.firebaseio.com/properties/${property.id}.json?auth=${fetchedToken}`,
           { ...updatedProperties[updatedPropertyIndex], id: null }
         );
       }),
@@ -215,20 +224,23 @@ loading = false
         console.log(property)
         console.log(filePath)
         this.loading = true
-      const path = '/images/'+Math.random()+filePath
-      const storageRef = this.afStorage.ref(path);
-      const task = this.afStorage.upload(path, filePath);
+     return   this.authService.token.pipe(take(1),switchMap(token => {
+
+          const path = '/images/'+Math.random()+filePath
+          const storageRef = this.afStorage.ref (path);
+          const task = this.afStorage.upload(path, filePath);
+          return from(task)
+          .pipe(
+            switchMap(() => storageRef.getDownloadURL()),
+            tap(url => {
+              // use url here, e.g. assign it to a model
+            property.propertyPic = url
+            console.log(url)
+            this.addProperty(property).subscribe()
+          })
+           )
+        }))
        
-      return from(task)
-      .pipe(
-        switchMap(() => storageRef.getDownloadURL()),
-        tap(url => {
-          // use url here, e.g. assign it to a model
-        property.propertyPic = url
-        console.log(url)
-        this.addProperty(property).subscribe()
-      })
-       )
       }
 
 }

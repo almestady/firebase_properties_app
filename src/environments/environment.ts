@@ -13,7 +13,8 @@ export const environment = {
   audience: 'https://properties-golang-api',
   userId: '',
   googleMapsAPIKey: 'AIzaSyCQGAi0HmfmSzPEGImEYzJxiX5C7vtjKSo',
-  firebaseAPIKey: 'AIzaSyCFLk7p2LybX2Vpu9bIa2771ow94dXJFAo'
+  firebaseAPIKey: 'AIzaSyCFLk7p2LybX2Vpu9bIa2771ow94dXJFAo',
+   GOOGLE_APPLICATION_CREDENTIALS: "/home/user/Downloads/service-account-file.json"
 };
 
 /*
