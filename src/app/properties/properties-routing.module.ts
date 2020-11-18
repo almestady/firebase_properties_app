@@ -4,6 +4,10 @@ import { RouterModule, Routes } from "@angular/router";
 import { PropertiesPage } from "./properties.page";
 // import { loadavg } from 'os';
 import { loadingController } from "@ionic/core";
+import { canActivate, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
+
+const redirectUnauthorizedToLogin = () =>
+  redirectUnauthorizedTo(['/auth']);
 
 const routes: Routes = [
   {
@@ -15,6 +19,27 @@ const routes: Routes = [
             redirectTo: '/properties/tabs/discover',
             pathMatch: 'full'
         },
+        {
+          path: "browser",
+          children: [
+          {
+             path: "",
+            loadChildren: () =>
+              import("./browser/browser.module").then((m) => m.BrowserPageModule),
+          } ,
+          {
+            path: ":propertyId",
+            loadChildren: () =>
+            import("./search/search.module").then((m) => m.SearchPageModule)
+          }
+         
+          ]},
+        
+{
+  path: 'chat',
+  loadChildren: () => import('./chat/chat.module').then(m => m.ChatPageModule),
+  // ...canActivate(redirectUnauthorizedToLogin), 
+},
       {
         
         path: "discover",
@@ -36,23 +61,9 @@ const routes: Routes = [
                   ),
               },
            
-          {
-            path: "browser",
-            children: [
-            {
-               path: "",
-              loadChildren: () =>
-                import("./browser/browser.module").then((m) => m.BrowserPageModule),
-            } ,
-            {
-              path: "search",
-              loadChildren: () =>
-              import("./search/search.module").then((m) => m.SearchPageModule)
-            }
-           
-            ]
-          }
-        ,
+         
+          
+        
               {
                 path: ":propertyId",
                 loadChildren: () =>
@@ -103,38 +114,38 @@ const routes: Routes = [
               ),
             // loadChildren: './offers/edit-offer/edit-offer.module#EditOfferPageModule'
           },
-          {
-            path: "new",
-            loadChildren: () =>
-              import("./offers/new-offer/new-offer.module").then(
-                (m) => m.NewOfferPageModule
-              ),
-            // loadChildren: './offers/new-offer/new-offer.module#NewOfferPageModule'
-          },
-          {
-            path: "rents",
-            loadChildren: () =>
-              import("./offers/offer-rents/offer-rents.module").then(
-                (m) => m.OfferRentsPageModule
-              ),
-            // loadChildren: './offers/offer-rents/offer-rents.module#OfferRentsPageModule'
-          },
-          {
-            path: "sales",
-            loadChildren: () =>
-              import("./offers/offer-sales/offer-sales.module").then(
-                (m) => m.OfferSalesPageModule
-              ),
-            // loadChildren: './offers/offer-sales/offer-sales.module#OfferSalesPageModule'
-          },
-          {
-            path: ":propertyId",
-            loadChildren: () =>
-              import("./offers/offers-bookings/offers-bookings.module").then(
-                (m) => m.OffersBookingsPageModule
-              ),
-            // loadChildren: './offers/offers-bookings/offers-bookings.module#OffersBookingsPageModule'
-          },
+          // {
+          //   path: "new",
+          //   loadChildren: () =>
+          //     import("./offers/new-offer/new-offer.module").then(
+          //       (m) => m.NewOfferPageModule
+          //     ),
+          //   // loadChildren: './offers/new-offer/new-offer.module#NewOfferPageModule'
+          // },
+          // {
+          //   path: "rents",
+          //   loadChildren: () =>
+          //     import("./offers/offer-rents/offer-rents.module").then(
+          //       (m) => m.OfferRentsPageModule
+          //     ),
+          //   // loadChildren: './offers/offer-rents/offer-rents.module#OfferRentsPageModule'
+          // },
+          // {
+          //   path: "sales",
+          //   loadChildren: () =>
+          //     import("./offers/offer-sales/offer-sales.module").then(
+          //       (m) => m.OfferSalesPageModule
+          //     ),
+          //   // loadChildren: './offers/offer-sales/offer-sales.module#OfferSalesPageModule'
+          // },
+          // {
+          //   path: ":propertyId",
+          //   loadChildren: () =>
+          //     import("./offers/offers-bookings/offers-bookings.module").then(
+          //       (m) => m.OffersBookingsPageModule
+          //     ),
+          //   // loadChildren: './offers/offers-bookings/offers-bookings.module#OffersBookingsPageModule'
+          // },
           // ,
           // {
           //     path: 'offer-item',

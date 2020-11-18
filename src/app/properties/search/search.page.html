@@ -92,9 +92,9 @@
                                     </ion-col>
                                   </ion-row>
                                   <ion-row>
-                                    <ion-col size-xs="12"
+                                    <ion-col size="12"
                                       ><ion-label
-                                        class="ion-text-center;color:black"
+                                        class="ion-text-center"
                                       >
                                         {{theProperty.kind }}</ion-label
                                       ></ion-col
@@ -289,13 +289,13 @@
                             class="ion-text-center"
                             style="margin-right: 3%"
                             (click)="onList()"
-                            ><ion-icon size="small" name="list"></ion-icon>
+                            ><ion-icon size="small" name="chatbox-outline"></ion-icon>
                           </ion-label>
                           <ion-label
                             *ngIf="listActive"
                             class="ion-text-center"
                             style="margin-right: 3%; color:dodgerblue"
-                            ><ion-icon size="small" name="list"></ion-icon>
+                            ><ion-icon size="small" name="chatbox-outline"></ion-icon>
                           </ion-label>
                         </ion-col>
     
@@ -347,7 +347,7 @@
                         <ion-col size-xs="2">
                           <!-- <ion-label class="ion-text-right" style="margin-right: 3%;margin-bottom: 3%;">{{theProperty.endDate | date}}: {{this.labels.endDate}}</ion-label> -->
                           <ion-label
-                            *ngIf="likeOn"
+                            *ngIf="liked"
                             class="ion-text-center"
                             style="margin-left: 3%"
                             (click)="onLike(theProperty.id)"
@@ -359,11 +359,11 @@
                             ><ion-text
                               style="font-size: 8px;"
                               *ngIf="this.loadedLikes"
-                              >{{ howManyLikes(theProperty.id) > 0 ? howManyLikes(theProperty.id) : null}}</ion-text
+                              >{{ loadedLikes.length > 0 ? loadedLikes.length : null }}</ion-text
                             ></ion-label
                           >
                           <ion-label
-                            *ngIf="!likeOn"
+                            *ngIf="!liked"
                             class="ion-text-center"
                             style="margin-left: 3%"
                             (click)="onLike(theProperty._id,$event)"
@@ -375,7 +375,7 @@
                             ><ion-text
                               style="font-size: 8px;"
                               *ngIf="this.loadedLikes"
-                              >{{howManyLikes(theProperty.id) > 0 ? howManyLikes(theProperty.id) : null}}</ion-text
+                              >{{ loadedLikes.length > 0 ? loadedLikes.length : null}}</ion-text
                             ></ion-label
                           >
                         </ion-col>
@@ -393,7 +393,7 @@
                           ><ion-text
                             style="font-size: 8px;"
                             *ngIf="this.viewOn"
-                            >{{ howManyViews(theProperty.id) }}</ion-text
+                            >{{ howManyViews(this.theProperty.id)  }}</ion-text
                           ></ion-label
                         >
                           <ion-label
@@ -408,7 +408,7 @@
                             ><ion-text
                               *ngIf="this.viewOn"
                               style="font-size: 8px;"
-                              >{{loadedViews.length}}</ion-text
+                              >{{howManyViews(this.theProperty.id) }}</ion-text
                             >
                           </ion-label>
                         </ion-col>

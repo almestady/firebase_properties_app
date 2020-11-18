@@ -3,9 +3,10 @@ import { AuthResponseData, AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { LoadingController, IonInput, AlertController } from '@ionic/angular';
 import { present } from '@ionic/core/dist/types/utils/overlays';
-import { NgForm, FormGroup } from '@angular/forms';
+import { NgForm, FormGroup, FormBuilder } from '@angular/forms';
 import { View } from '../properties/view.model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { User } from '../user.model';
 
 @Component({
   selector: 'app-auth',
@@ -16,13 +17,23 @@ export class AuthPage implements OnInit {
 
 isLoading = false;
 isLogin = true;
+public userAuth: Subscription;
 
   constructor(
+    public fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController
-     ) { }
+     ) { 
+    //   this.userAuth = this.authService.signedIn.subscribe((user) => {
+    //     if (user) {
+           
+    //     } else {
+    //       this.router.navigate([ '/auth' ]);
+    //     }
+    // });
+     }
 
 
 
@@ -37,16 +48,47 @@ isLogin = true;
       .create({ keyboardClose: true, message: 'Logging in...' })
       .then(loadingEl => {
         loadingEl.present();
-        let authObs: Observable<AuthResponseData>;
+        let authObs: any;
         if (this.isLogin) {
-          authObs = this.authService.login(email, password);
+          authObs =  this.authService.login(email, password)
+            // this.isLoading = false;
+            // loadingEl.dismiss();
+            // this.router.navigate([ 'properties/tabs/discover' ]);
+          
+          // .then(login => {
+            
+            
+          // });
+          
+          // this.userAuth = this.authService.signedIn.subscribe(user => {
+          //   if(user){
+
+          //     this.router.navigate([ '/properties/tabs/discover' ]);
+          //   }
+          // },
+          // errRes => {
+          //   loadingEl.dismiss();
+          //   const code = errRes.error.error.message;
+          //   let message = 'Could not sign you up, please try again.';
+          //   if (code === 'EMAIL_EXISTS') {
+          //     message = 'This email address exists already!';
+          //   } else if (code === 'EMAIL_NOT_FOUND') {
+          //     message = 'E-Mail address could not be found.';
+          //   } else if (code === 'INVALID_PASSWORD') {
+          //     message = 'This password is not correct.';
+          //   }
+          //   this.showAlert(message);
+          // })
+          
+          // loadingEl.dismiss();
         } else {
-          authObs = this.authService.signup(email, password);
+          authObs = this.authService.signup({email, password})
+          
         }
         authObs.subscribe(
           resData => {
-            console.log(resData);
             this.isLoading = false;
+            console.log(resData);
             loadingEl.dismiss();
             this.router.navigateByUrl('/properties/tabs/discover');
           },

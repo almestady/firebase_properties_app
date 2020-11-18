@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { PropertiesPage } from './properties.page';
 import { PropertiesRoutingModule } from './properties-routing.module';
-import { OfferItemComponent } from './offers/offer-item/offer-item.component';
+// import { OfferItemComponent } from './offers/offer-item/offer-item.component';
 import { NewFormComponent } from './offers/new-property/new-form/new-form.component';
 import { ActivatedRoute } from '@angular/router';
 import { NewOfferPage } from './offers/new-offer/new-offer.page';

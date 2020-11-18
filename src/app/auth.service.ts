@@ -9,10 +9,10 @@ import Auth0Cordova from '@auth0/cordova';
 (window as any).global = window;
 declare let cordova: any;
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
-import { BehaviorSubject, from, throwError } from 'rxjs';
-import { Observable } from '@mobiscroll/angular-lite/src/js/util/observable';
+import { BehaviorSubject, from, of, throwError } from 'rxjs';
+// import { Observable } from '@mobiscroll/angular-lite/src/js/util/observable';
 // import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
-import { tap, catchError, concatMap, shareReplay, take, map } from 'rxjs/operators';
+import { tap, catchError, concatMap, shareReplay, take, map, mergeMap } from 'rxjs/operators';
 import { resolve } from 'url';
 import Auth0Client from '@auth0/auth0-spa-js/dist/typings/Auth0Client';
 import createAuth0Client from '@auth0/auth0-spa-js';
@@ -23,8 +23,13 @@ import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
 import { HttpClient } from '@angular/common/http';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { EmailValidator } from '@angular/forms';
-import { User } from './user.model';
+// import { User } from './user.model';
 import { Plugins } from '@capacitor/core'
+import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
+import { Message } from './services/chat.service';
+import 'rxjs/add/observable/fromPromise';
 
 export interface AuthResponseData {
   kind: string;
@@ -36,48 +41,83 @@ export interface AuthResponseData {
   registered?: boolean; 
 }
 
-
+export interface User {
+  uid: string;
+  email: string;
+  idToken: string;
+  refreshToken: string;
+  expiresIn: string;
+}
 
 @Injectable()
 export class AuthService implements OnDestroy {
-  private _user = new BehaviorSubject<User>(null);
+  private _user : Observable<firebase.User>;
   private activeLogoutTimer: any;
-   
+  public signedIn: Observable<any>;
+  public _userId = new BehaviorSubject<string>(null);
+  // user: Observable<firebase.User>;
+
 constructor(
-  private http: HttpClient
-){}
+  private http: HttpClient,
+  public afs: AngularFirestore,
+  public afAuth: AngularFireAuth
+){
 
-
-get userId() {
-  return this._user.asObservable().pipe(
-    map(user => {
-      if (user) {
-        return user.id;
-      } else {
-        return null;
-      }user
-    })
-  );
+  this._user = afAuth.authState;
+  this._user.subscribe(user => {
+    this._userId.next(user.uid)
+  })
+  // this.signedIn = new Observable((subscriber) => {
+  //           this.auth.onAuthStateChanged(subscriber);
+  //       });
+  // this.afAuth.onAuthStateChanged((user) => {
+  //   if(user){
+  //     this._user.next(user); 
+  //     this._userId.next(user.uid);      
+  //   }
+  // });
 }
 
+get user(){
+  return this._user
+}
+
+
+get userId(){
+  return this._userId.asObservable()
+}
+
+
+// get userId() {
+//   return this._user.asObservable().pipe(
+//     map(user => {
+//       if (user) {
+//         return user.id;
+//       } else {
+//         return null;
+//       }user
+//     })
+//   );
+// }
+
 get token(){
-  return this._user.asObservable().pipe(
+  return this._user.pipe(
     map(user => {
       if (user) {
-        return user.token;
+        return user;
       } else {
         return null;
-      }user
+      }
     })
   );
 }
 
 
 get userIsAuthenticated() {
-  return this._user.asObservable().pipe(
+  return this._user.pipe(
     map(user => {
       if (user) {
-        return !!user.token;
+        // return !!user.token;
       } else {
         return false;
       }
@@ -86,28 +126,64 @@ get userIsAuthenticated() {
 }
 
 
+async signup({ email, password }): Promise<any> {
+  const credential = await this.afAuth.createUserWithEmailAndPassword(
+    email,
+    password
+  );
 
-
-signup(email: string, password: string){
-  return this.http.post<AuthResponseData>
-  (`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`,
-   {email: email, password: password, returnSecureToken: true}
-   ).pipe(tap(this.setUserData.bind(this) ))
+  const uid = credential.user.uid;
+  
+  return   this.afs.doc(
+    `users/${uid}`
+  ).set({
+    uid,
+    email: credential.user.email,
+    idToken: credential.user.refreshToken,
+    refreshToken: credential.user.refreshToken,
+  expiresIn: credential.user.refreshToken
+  }) 
 }
 
-login(email: string, password: string) {
- return  this.http.post<AuthResponseData>
-   (`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
- {email:email, password: password, returnSecureToken: true} 
- ).pipe(tap(this.setUserData.bind(this) ))
+// signup(email: string, password: string){
+//   return this.http.post<AuthResponseData>
+//   (`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`,
+//    {email: email, password: password, returnSecureToken: true}
+//    ).pipe(tap(this.setUserData.bind(this) ))
+// }
 
+// login(email: string, password: string) {
+//  return  this.http.post<AuthResponseData>
+//    (`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
+//  {email:email, password: password, returnSecureToken: true} 
+//  ).pipe(tap(this.setUserData.bind(this) ))
+
+// }
+
+ login(email: string, password: string) {
+  try {
+      if (!email || !password) throw new Error('Invalid email and/or password');
+  return  from(this.afAuth.signInWithEmailAndPassword(email, password))
+    // .subscribe(credintals => {
+    //   this._userId.next(credintals.user.uid);
+    //   console.log(credintals.user.uid)
+    // })
+      // return true;
+  } catch (error) {
+      console.log('Sign in failed', error);
+      // return false;
+  }
+}
+
+getMessages(){
+  return this.afs.collection('messages').valueChanges({ idField: 'id' });
 }
 
 logout() {
   if(this.activeLogoutTimer){
     clearTimeout(this.activeLogoutTimer);
   }
-  this._user.next(null);
+  // this._user.next(null);
   Plugins.Storage.remove({key: 'authData'})
 }
 
@@ -116,14 +192,14 @@ logout() {
     const expirationTime = new Date(
       new Date().getTime() + (+userData.expiresIn * 1000)
       );
-   const user =  new User(
-    userData.localId,
-    userData.email,
-    userData.idToken,
-    expirationTime
-    )
-    this._user.next(user);
-    this.autoLogout(user.tokenDuration);
+   const user =  {
+    uid:userData.localId,
+    email:userData.email,
+    // userData.idToken,
+    // expirationTime
+   }
+    // this._user.next(user);
+    // this.autoLogout(user.tokenDuration);
     this.storeAuthData(userData.localId, userData.idToken, expirationTime.toISOString(),  userData.email)
 }
 
@@ -148,13 +224,13 @@ autoLogin(){
   if(expirationTime <= new Date()){
     return;
   }
-  const user = new User(parsedData.userId, parsedData.email, parsedData.token, expirationTime)
+  // const user = new User(parsedData.userId, parsedData.email, parsedData.token, expirationTime)
 
-  return user;
+  // return user;
   }),
   tap(user => {
     if(user){
-      this._user.next(user)
+      // this._user.next(user)
       this.autoLogout(user.tokenDuration);
     }
   }),

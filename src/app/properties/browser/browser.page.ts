@@ -18,10 +18,10 @@ export class BrowserPage implements OnInit {
   isLoading: boolean;
   labelsSub: Subscription;
   propertiesSub:Subscription;
-  listedloadedProperties: Property[];
-  relevantProperties: Property[];
+  listedloadedProperties: Property[] = [];
+  relevantProperties: Property[] = [];
   currentProperty: Property;
-  loadedProperties: Property[]
+  loadedProperties: Property[] = []
   showBig: boolean;
   smaleBox: boolean;
   bigBox: boolean;
@@ -68,11 +68,11 @@ export class BrowserPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.isLoading = true;
-    this.propertiesService.getProperties().subscribe(()=>{
-      this.isLoading = false;
+    // this.isLoading = true;
+    // this.propertiesService.getProperties().subscribe(()=>{
+    //   this.isLoading = false;
       
-    }); 
+    // }); 
   }
 
   setCurrentProperty(property: Property) {
@@ -96,7 +96,8 @@ export class BrowserPage implements OnInit {
   }
 
     openProperty(property: Property){
-    this.modalCtrl
+      // this.router.navigateByUrl(`properties/tabs/browser/${property.id}`)
+        this.modalCtrl
         .create({
           component: SearchPage,
           componentProps: { theProperty: property, id: 'theProperty'},

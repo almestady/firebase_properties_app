@@ -6,7 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { OffersPage } from './offers.page';
-import { OfferItemComponent } from './offer-item/offer-item.component';
+// import { OfferItemComponent } from './offer-item/offer-item.component';
 import { NewOfferPage } from './new-offer/new-offer.page';
 import { NewOfferPageModule } from './new-offer/new-offer.module';
 import { EditPage } from './edit/edit.page';
@@ -29,7 +29,7 @@ const routes: Routes = [
     // NewOfferPageModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [OffersPage, OfferItemComponent, EditPage],
+  declarations: [OffersPage],
   entryComponents: [EditPage ]
 })
 export class OffersPageModule {}

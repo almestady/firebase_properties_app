@@ -1,6 +1,8 @@
+import { LoginPageModule } from './pages/login/login.module';
+
 import { UploadComponent } from './shared/upload/upload.component';
 import { LikesService } from './shared/likes.service';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule } from '@angular/forms';
 import { MbscModule } from '@mobiscroll/angular-lite';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -38,17 +40,25 @@ import { PhotoViewer } from '@ionic-native/photo-viewer/ngx';
 import {AngularFireStorageModule} from '@angular/fire/storage'
 import {AngularFireModule} from '@angular/fire'
 import { BrowserPageModule } from './properties/browser/browser.module';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import * as admin from 'firebase-admin';
 
 @NgModule({
-  declarations: [AppComponent, CallbackComponent, UploadComponent],
+  declarations: [AppComponent,
+     CallbackComponent,
+      UploadComponent,
+    ],
   entryComponents: [],
   imports  : [ 
-    FormsModule,
+    // FormsModule,
     MbscModule,
     BrowserModule,
     HttpClientModule,
     IonicModule.forRoot(),
     AppRoutingModule,
+    AngularFireAuthModule,
+    AngularFirestoreModule,
     AngularFireModule.initializeApp({
       apiKey: "AIzaSyCFLk7p2LybX2Vpu9bIa2771ow94dXJFAo",
       authDomain: "propertiestag-25d9d.firebaseapp.com",
@@ -59,7 +69,7 @@ import { BrowserPageModule } from './properties/browser/browser.module';
       appId: "1:207270852349:web:e8134b68afc0454cae3094",
       measurementId: "G-8T79XCGGSD"
     }),
-    
+    LoginPageModule,
     AngularFireStorageModule,
      IonicStorageModule.forRoot({
     name: '_mydb',
@@ -82,10 +92,13 @@ import { BrowserPageModule } from './properties/browser/browser.module';
     File,
     Media,
     StreamingMedia,
-    PhotoViewer
+    PhotoViewer,
+    FormBuilder,
+,
     // {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor,
     //   multi: true},
    ],
   bootstrap: [AppComponent]
 })
+
 export class AppModule {}

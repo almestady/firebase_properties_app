@@ -1,3 +1,5 @@
+import { ChatPage } from './../chat/chat.page';
+import { async } from '@angular/core/testing';
 import { switchMap, take } from 'rxjs/operators';
 
 import { Component, OnInit, Input, ElementRef, ViewChild, forwardRef, OnDestroy, Renderer2 } from "@angular/core";
@@ -16,7 +18,7 @@ import {
 } from "@ionic/angular";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SegmentChangeEventDetail } from "@ionic/core";
-import { Subscription } from "rxjs";
+import { BehaviorSubject, Observable, Subscription } from "rxjs";
 // import { EditPage } from "./edit/edit.page";
 import { AuthService } from "src/app/auth.service";
 import { Labels, LanguagesService } from "src/app/languages.service";
@@ -54,7 +56,8 @@ export class SearchPage implements OnInit, OnDestroy {
   labelsSub: Subscription;
   currentProperty: Property;
   like_heart = "gray";
-  likeOn: boolean = false;
+  liked: boolean;
+  _likeOn = new BehaviorSubject<boolean> (false);
   updateSub: Subscription;
   redClickable: boolean = false;
   grayClickable: boolean = true;
@@ -117,7 +120,7 @@ export class SearchPage implements OnInit, OnDestroy {
           // })
         
       // }
-    // })
+    // }
   }
 
  getLogin(){
@@ -130,19 +133,31 @@ setTimeout(function () {
   }, 0);
 }
 
-  ngOnInit() {
-    this.onImage()
-    this.routes.paramMap.subscribe(paramMap => {
-      if (!paramMap.has('propertyId')) {
-        this.navCtrl.navigateBack('/properties/tabs/discover');
-        return;
-      }
-      this.propertyId = paramMap.get('propertyId')
-      this.propertiesService.getProperty(paramMap.get('propertyId')).subscribe(prop => {
-        console.log(prop)
-        this.theProperty = prop});
-    });     
+get likeOn(){
+  return this._likeOn.asObservable()
+}
 
+  ngOnInit() {
+    this.isLoading = true;
+    this.onImage()
+   
+    // this.routes.paramMap.subscribe(paramMap => {
+    //   if (!paramMap.has('propertyId')) {
+    //     this.navCtrl.navigateBack('/properties/tabs/discover');
+
+    //     console.log("no paramMap")
+    //     return;
+    //   }
+    //   this.propertyId = paramMap.get('propertyId')
+    //   this.propertiesService.getProperty(paramMap.get('propertyId')).subscribe(prop => {
+    //     console.log(prop)
+    //     this.theProperty = prop});
+    // });     
+   console.log(this.theProperty.id)
+    this.authService.userId.subscribe(userId => {
+      this.userId = userId;
+      
+    })
    
     console.log('Search Page init')
     this.labelsSub = this.languageService.arabicLabel.subscribe(
@@ -160,7 +175,7 @@ setTimeout(function () {
             
         }
         );
-        this.bookingsSub = this.bookingService.bookings.subscribe(bookings => {
+        this.bookingsSub = this.bookingService.bookings.subscribe((bookings) => {
                this.loadedBookings = bookings
                this.bookings = this.loadedBookings
               //  this.theBooking = bookings.find(booking => booking.propertyId = this.theProperty.id) ;
@@ -172,58 +187,68 @@ setTimeout(function () {
                  if(!userId){
                    throw Error('Could not find userId')
                  }
-                 this.viewsSub = this.viewsService.views.subscribe(views => {
-                  this.loadedViews = views
-                  this.views = this.loadedViews.filter(view => view.guestId === userId)
-                  console.log(this.views)
+                 this.likesSub = this.likesService.likes.subscribe((likes) => {
+                  this.loadedLikes= likes
+                  this.likes = this.loadedLikes.filter(like => like.guestId === userId);
+                  
+                  // console.log(this.likes.length)
                })
                
-               if(this.theProperty){
+              //  if(this.theProperty){
+              //    this.onLike(this.theProperty.id)
+               this.checkLike(this.theProperty.id)
+               this.howManyLikes(this.theProperty.id)
+              // }
+
+                 this.viewsSub = this.viewsService.views.subscribe((views) => {
+                  this.loadedViews = views
+                  this.views =  this.loadedViews.filter(view => view.guestId === userId)
+                  // console.log(this.views.length)
+               })
+               
+              //  if(this.theProperty){
                  this.onView(this.theProperty.id)
                this.checkView(this.theProperty.id)
                this.howManyViews(this.theProperty.id)
-              }
+              // }
 
-              this.likesSub = this.likesService.likes.subscribe(likes => {
-                this.loadedLikes= likes
-                this.likes = this.loadedLikes;
-                console.log(this.likes)
-             })
-             
-             if(this.theProperty){
-            //    this.onLike(this.theProperty.id)
-             this.checkLike(this.theProperty.id)
-             this.howManyLikes(this.theProperty.id)
-            }
+            
                  
                })
-
+    // this._likeOn.subscribe(isLiked => {
+    //   this.liked = isLiked;
+    // })
            
   }
 
   ionViewWillEnter() {
-    
-    this.propertiesService.getProperties().subscribe(()=>{
+    this._likeOn.subscribe()
+    this.likesService.getLikes()
+    this.viewsService.getViews()
+    this.checkView(this.theProperty.id)
+    this.checkLike(this.theProperty.id)
+    this.checkBookmark(this.theProperty.id)
+    // this.propertiesService.getProperties().subscribe(()=>{
 
-      this.bookingService.getBookings().subscribe(()=> {
-        if(this.theProperty){
-          this.checkBookmark(this.theProperty.id)
-        }
-      })
+    //   this.bookingService.getBookings().subscribe(()=> {
+    //     if(this.theProperty){
+    //       this.checkBookmark(this.theProperty.id)
+    //     }
+    //   })
 
-    this.likesService.getLikes().subscribe(()=> {
-      if(this.theProperty){
-        this.checkLike(this.theProperty.id)
-      }
-    })
+    // this.likesService.getLikes().subscribe(()=> {
+    //   if(this.theProperty){
+    //     this.checkLike(this.theProperty.id)
+    //   }
+    // })
 
-    this.viewsService.getViews().subscribe(()=>{
-      if(this.theProperty){
-        this.checkView(this.theProperty.id)
-      }
-    })
-      // this.checkBookmark(this.theProperty)
-    }); 
+    // this.viewsService.getViews().subscribe(()=>{
+    //   if(this.theProperty){
+    //     this.checkView(this.theProperty.id)
+    //   }
+    // })
+    //   // this.checkBookmark(this.theProperty)
+    // }); 
   }
 
 
@@ -281,29 +306,49 @@ setTimeout(function () {
 
 
   checkLike(id: string) {
-    this.likeOn = false
-    if (this.likes) {
-      this.authService.userId.pipe(take(1)).subscribe(userId => {
-        if(!userId){
-          throw new Error('No user id found');
+    this.liked = false
+    console.log(this.likes.length)
+    this.authService.userId.pipe(take(1)).subscribe(userId => {
+       if(!userId){
+         return
+       }
+      this.likesService.likes.subscribe(likes => {
+  
+        if (likes) {
+          let myLikes = likes.filter(like => like.guestId === userId)
+          let currentLike = myLikes.find((like) => like.propertyId === id)
+          
+          console.log(currentLike)
+          if (currentLike)
+           {
+    
+            this.liked = true;
+          } else {
+            this.liked = false;
+            
+          }
         }
-        let likes = this.likes.filter(like => like.guestId === userId)
-        this.currentLike =likes.find((like) => like.propertyId === id)
-        if (this.currentLike) {
-        this.likeOn = true;
-      } 
       })
-    }
+    })
+    // if (this.likes) {
+    //     this.currentLike =this.likes.find((like) => like.propertyId === id)
+    //     if (this.currentLike) {
+    //     this._likeOn.next(true);
+    //   } else{
+    //     this._likeOn.next(false);
+    //   }
+      
+    // }
   }
 
   checkView(id: string) {
     this.viewOn = false
+    // console.log(this.views.length)
     if (this.views) {
-      if (
-        this.views.find(
-          (view) => view.propertyId === id
-        )
-      ) {
+      let currentView = this.views.find((view) => view.propertyId === id)
+      if (currentView)
+       {
+        console.log(currentView)
         this.viewOn = true;
       } else {
         this.viewOn = false;
@@ -330,7 +375,7 @@ setTimeout(function () {
       let views = this.loadedViews.filter(view => view.propertyId === id)
       if(views){
         if(views.length === 0){
-          return
+          return  
         }
         return views.length 
       }else{
@@ -341,7 +386,7 @@ setTimeout(function () {
   
   onLike(id: string) {
     
-    this.checkLike(this.theProperty.id)
+    // this.checkLike(this.theProperty.id)
     // let theLike = this.likes.find(
     //   (like) => like.propertyId = id
     // )
@@ -350,7 +395,7 @@ setTimeout(function () {
         throw new Error('No user id found');
       }
             if (
-              !this.likeOn 
+              !this.liked 
               ) {
         let like = {
          id: '',
@@ -362,7 +407,7 @@ setTimeout(function () {
        this.likesService.addLike(like)
        .subscribe(() => {
         // this.likes.push(like);
-         this.likeOn = true;
+         this.liked = true;
          // this.router.navigateByUrl(`/properties/tabs/browser`);
        });
        console.log("Like is been added");
@@ -372,7 +417,7 @@ setTimeout(function () {
             this.likes.splice(index, 1);
             this.likesService.cancelLike(like.id)
             .subscribe(() => {
-              this.likeOn = false;
+              this.liked = false;
               return
               // this.router.navigateByUrl(`/properties/tabs/browser`);
               
@@ -388,6 +433,65 @@ setTimeout(function () {
    
 }
 
+//   onLike(id: string) {
+    
+//     // this.checkLike(this.theProperty.id)
+//     // let theLike = this.likes.find(
+//     //   (like) => like.propertyId = id
+//     // )
+    
+//     this.authService.userId.pipe(take(1)).subscribe(userId => {
+//       if(!userId){
+//         throw new Error('No user id found');
+//       }
+//       this.checkLike(id)
+      
+//             if (!this.liked) {
+//         let like = {
+//          id: '',
+//          propertyId: this.theProperty.id,
+//          guestId: userId,
+//          date: new Date(),
+//          time: new Date()
+//        }
+
+      
+//          this.likesService.addLike(like)
+       
+//           // this.likes.push(like);
+//            this.liked = true;
+//            // this.router.navigateByUrl(`/properties/tabs/browser`);
+         
+       
+//        console.log("Like is been added");
+//       } else {
+//         this.likes.forEach((like, index) => {
+//            if( like.guestId === userId && like.propertyId === id) {
+//             this.likes.splice(index, 1);
+//             this.likesService.cancelLike(like.id)
+//             .subscribe(() => {
+//               this.liked = false;
+//               return
+//               // this.router.navigateByUrl(`/properties/tabs/browser`);
+              
+//             });
+//           }
+    
+//           //  }
+//         });
+//       }
+//       })
+    
+    
+   
+// }
+
+ionViewWillLeave(){
+  this.propertiesService.getProperties().subscribe()
+  this.likesService.getLikes().subscribe()
+  this.viewsService.getViews().subscribe()
+}
+
 onView(id: string){
   // if(this.viewOn){
   //   return
@@ -396,7 +500,7 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
   if(!userId){
     throw new Error('No user id found');
   }
-  let view = {
+  let view: View = {
     id: '',
     propertyId: this.theProperty.id,
     guestId: userId,
@@ -524,14 +628,22 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
   }
 
   onList() {
-    this.listOfProperties = true;
-    this.listActive = true;
-    this.messageActive = false;
-    this.messages = false;
-    this.mapActive = false;
-    this.map = false;
-    this.imageActive = false;
-    this.image = false;
+    this.authService.userId.subscribe(userId => {
+      this.modalCtrl.create({component: ChatPage, componentProps: {userId: userId}, id:'chat'})
+      .then(modalEl => { 
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+
+    })
+    // this.listOfProperties = true;
+    // this.listActive = true;
+    // this.messageActive = false;
+    // this.messages = false;
+    // this.mapActive = false;
+    // this.map = false;
+    // this.imageActive = false;
+    // this.image = false;
   }
 
   onMessages() {

@@ -1,9 +1,13 @@
 {
-  "appId": "store.ulmestady.properties",
-  "appName": "Properties-Angular",
+  "appId": "io.ionic.properties",
+  "appName": "Properties",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
+  "server": {
+   
+     "iosScheme": "ionic"
+  },
   "cordova": {
     "preferences": {
       "ScrollEnabled": "false",

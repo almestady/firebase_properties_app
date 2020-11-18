@@ -14,7 +14,17 @@ export const environment = {
   userId: '',
   googleMapsAPIKey: 'AIzaSyCQGAi0HmfmSzPEGImEYzJxiX5C7vtjKSo',
   firebaseAPIKey: 'AIzaSyCFLk7p2LybX2Vpu9bIa2771ow94dXJFAo',
-   GOOGLE_APPLICATION_CREDENTIALS: "/home/user/Downloads/service-account-file.json"
+   GOOGLE_APPLICATION_CREDENTIALS: "/home/user/Downloads/service-account-file.json",
+   firebaseConfig :{
+    apiKey: "AIzaSyCFLk7p2LybX2Vpu9bIa2771ow94dXJFAo",
+    authDomain: "propertiestag-25d9d.firebaseapp.com",
+    databaseURL: "https://propertiestag-25d9d.firebaseio.com",
+    projectId: "propertiestag-25d9d",
+    storageBucket: "propertiestag-25d9d.appspot.com",
+    messagingSenderId: "207270852349",
+    appId: "1:207270852349:web:e8134b68afc0454cae3094",
+    measurementId: "G-8T79XCGGSD"
+  }
 };
 
 /*

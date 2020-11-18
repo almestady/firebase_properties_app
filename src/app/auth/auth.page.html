@@ -50,11 +50,11 @@
                          لاتتذكر رمزالدخول
                       </ion-label>
                       
-                        <ion-item>
-                          <ion-label class="new-account" margin  (click)="signup()">
+                        <!-- <ion-item>
+                          
                               حساب جديد
                             </ion-label>
-                          </ion-item>
+                          </ion-item> -->
                       
                       </ion-list>
                       <!-- <div text-center>
@@ -67,10 +67,12 @@
             expand="block"
             (click)="onSwitchAuthMode()"
           >
-            Switch to {{ isLogin ? 'Signup' : 'Login' }}
+          <ion-label class="new-account" margin >
+            {{ isLogin ? 'حساب جديد' : 'دخول' }}
+          </ion-label>
           </ion-button>
                       <ion-button  type="submit" color="primary"  expand="block" [disabled]="!f.valid">
-                          <ion-label>{{   isLogin ? 'دخول' : 'تسجيل' }}</ion-label>
+                          <ion-label>{{   isLogin ? 'تسجيل' : 'دخول' }}</ion-label>
                       </ion-button>
                 </ion-card-content>
               </ion-card>

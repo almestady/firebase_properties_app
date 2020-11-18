@@ -1,21 +1,36 @@
+import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
 import { CallbackComponent } from './callback/callback.component';
+
 // import { AuthResolver } from './auth-resolver.service';
+
+// Send unauthorized users to login
+const redirectUnauthorizedToLogin = () =>
+  redirectUnauthorizedTo(['auth']);
+ 
+// Automatically log in users
+const redirectLoggedInToHome = () => redirectLoggedInTo(['properties/tabs/discover']);
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'properties/tabs', pathMatch: 'full' },
-  { path: 'home',
-   loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)},
+  {
+    path: '',
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthPageModule),
+    
+  },
+  // { path: '', redirectTo: 'properties/tabs', pathMatch: 'full' },
+  // { path: 'home',
+  //  loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)},
   { path: 'auth',
    loadChildren: () => import('./auth/auth.module').then(m => m.AuthPageModule) },
   //  loadChildren: './auth/auth.module#AuthPageModule' },
   { path: 'properties',
   loadChildren: () => import('./properties/properties.module').then(m => m.PropertiesPageModule) ,
+  // ...canActivate(redirectLoggedInToHome),
   // canLoad: [AuthGuard]
- canActivate: [AuthGuard]
+//  canActivate: [AuthGuard]
 },
 { path: 'callback', component: CallbackComponent, 
 // resolve: {token: AuthResolver}
@@ -53,7 +68,8 @@ const routes: Routes = [
           //     pathMatch: 'full'
           // }
       ]
-   }
+   },
+  { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule' }
 ];
 
 @NgModule({
