@@ -23,8 +23,10 @@ export interface Message {
   createdAt: firebase.firestore.FieldValue;
   id: string;
   from: string;
+  to: string;
   msg: string;
   fromName: string;
+  property: string;
   myMsg: boolean;
 }
 
@@ -125,21 +127,25 @@ export class ChatService {
     
     ) {
       this.messagesCollection = afs.collection<Message>('messages');
-    this.messages = this.messagesCollection.valueChanges();
+    this.messages = this.messagesCollection.valueChanges({ idField: 'id' }) as Observable<Message[]>;
+  
 
     this.usersCollection = afs.collection<User>('users');
-    this.users = this.usersCollection.valueChanges({idField: 'id'});
+    this.users = this.usersCollection.valueChanges({ idField: 'id' }) as Observable<User[]>;
+  
 
     // this.afAuth.onAuthStateChanged((user) => {
     //   this.currentUser = user;      
     // });
-  }
+    }
+
   addChatMessage(message: Message) {
-    return from (this.messagesCollection.add(message)) ;
+    // return from (this.afs.collection('messages').add({...message})) ;
+    return from (this.messagesCollection.add({...message})) ;
   }
 
 getMessages(){
-  return this.afs.collection('messages').snapshotChanges();
+  return this.afs.collection('messages').snapshotChanges()
 }
 
   getUsers() { 

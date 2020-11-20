@@ -1,3 +1,4 @@
+import { Property } from './../property.model';
 import { switchMap, take } from 'rxjs/operators';
 import { AuthService } from './../../auth.service';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
@@ -50,6 +51,7 @@ export interface User {
 export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
   @Input()userId: string;
+  @Input()theProperty: Property;
 
   messages: Message[] = [];
   newMsg: string;
@@ -67,22 +69,27 @@ export class ChatPage implements OnInit {
 
   ngOnInit() {
 
-    this.chatService.messages.subscribe(messages => {
-      
-      this.messages = messages;
+    this.authService.user.subscribe(user => {
+
+      this.chatService.messages.subscribe(messages => {
+        
+        let mess = messages;
+        this.messages = mess.filter(msg => {(msg.from === user.uid )})
+        console.log(this.messages.length)
+      })
+  
+      this.chatService.users.subscribe(users => {
+        
+        // admin.auth().listUsers(10).then(users => {
+          console.log(users)
+          })
+      // })
     })
 
-    this.chatService.users.subscribe(users => {
-      
-      // admin.auth().listUsers(10).then(users => {
-        console.log(users)
-        })
-    // })
   }
 
   ionViewWillEnter(){
-    this.chatService.getMessages().subscribe()
-    
+    this.chatService.getMessages().subscribe()  
   }
 
   myMessage(msg: Message){
@@ -98,24 +105,26 @@ export class ChatPage implements OnInit {
     // })
   }
 
-  // sendMessage() {
-  //   let message
-  //   this.authService.userId.pipe(take(1)).subscribe(userId => {
+  sendMessage() {
+    let message
+    this.authService.user.pipe(take(1)).subscribe(user => {
       
-  //      message  = {
-  //     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-  //    id:'',
-  //   from: userId,
-  //   msg: this.newMsg,
-  //   fromName: 'Wael',
-  //   myMsg: true
-  //     }
-  //   })
-  //   this.chatService.addChatMessage(message).subscribe((msg) => {
-  //     this.newMsg = '';
-  //     this.content.scrollToBottom();
-  //   });
-  // }
+       message  = {
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+         id:'',
+         from: user.uid,
+         to: this.theProperty.userId,
+         msg: this.newMsg,
+         fromName: user.displayName,
+         property: this.theProperty.id,
+         myMsg: true
+      }
+    })
+    this.chatService.addChatMessage(message).subscribe((msg) => {
+      this.newMsg = '';
+      this.content.scrollToBottom();
+    });
+  }
 
   signOut() {
     this.modalCtrl.dismiss('chat')

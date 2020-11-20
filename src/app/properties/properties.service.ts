@@ -7,7 +7,7 @@ import { take, map, tap, delay, retry, catchError, switchMap, mergeMap, finalize
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {AngularFireStorage} from '@angular/fire/storage'
 import { analytics } from 'firebase';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,7 @@ export class PropertiesService {
 // };
 // headers = new HttpHeaders()
 //    .append('Content-Type' , 'application/json');
+private propertyDoc: AngularFirestoreDocument<Property>;
 loading = false
   constructor( 
     private authService: AuthService,
@@ -45,6 +46,25 @@ loading = false
   getProperties() {
     
     return this.afs.collection('properties').valueChanges({ idField: 'id' }) as Observable<Property[]>;
+  }
+
+  getProperty(id: string){
+    // this.propertyDoc = this.afs.doc<Property>('properties' + id);
+    let property = this.afs.doc<Property>('properties' + id).valueChanges();
+    return property
+  //  return this.afs.collection('properties').doc<Property>(id);
+  }
+
+  addProperty(property: Property){
+    return from (this.afs.collection('properties').add(property)) ;
+  }
+
+  updateProperty( property: Property){
+    return from(this.afs.collection("properties").doc(property.id).update(property));
+  }
+
+  deleteProperty(property: Property){
+    return from(this.afs.collection("properties").doc(property.id).delete())
   }
 
   // getProperties(){
@@ -153,82 +173,82 @@ loading = false
     
   // }
 
-  addProperty(newProperty: Property){
-    let generatedId: string;
-   return this.authService.token.pipe(take(1),switchMap(token => {
+  // addProperty(newProperty: Property){
+  //   let generatedId: string;
+  //  return this.authService.token.pipe(take(1),switchMap(token => {
 
-     return this.http.post<{ name: string }>(                     
-       `https://propertiestag-25d9d.firebaseio.com/properties.json?auth=${token}`,
-        {
-          ...newProperty,
-           id:null
-         });
-  }),switchMap(resData => {
-               console.log("hey....", resData.name)
-               generatedId = resData.name;
-               return this.properties;
-             }),
-             take(1),
-             tap(properties => {
-               newProperty.id = generatedId;
-               this._properties.next(properties.concat(newProperty))
-             })
-             // tap(resltData => {
-             //   console.log(resltData)
-             // }),
+  //    return this.http.post<{ name: string }>(                     
+  //      `https://propertiestag-25d9d.firebaseio.com/properties.json?auth=${token}`,
+  //       {
+  //         ...newProperty,
+  //          id:null
+  //        });
+  // }),switchMap(resData => {
+  //              console.log("hey....", resData.name)
+  //              generatedId = resData.name;
+  //              return this.properties;
+  //            }),
+  //            take(1),
+  //            tap(properties => {
+  //              newProperty.id = generatedId;
+  //              this._properties.next(properties.concat(newProperty))
+  //            })
+  //            // tap(resltData => {
+  //            //   console.log(resltData)
+  //            // }),
              
              
-           )
+  //          )
     
-  }
+  // }
 
-  updateProperty(property: Property) {
-    // convert object of type Employee to JSON object
-    // because Firestore understand JSON
-    const employeeObject = {...property};
-   return from(this.afs.doc('properties/' + property.id).update(property));
-  } 
+  // updateProperty(property: Property) {
+  //   // convert object of type Employee to JSON object
+  //   // because Firestore understand JSON
+  //   const employeeObject = {...property};
+  //  return from(this.afs.doc('properties/' + property.id).update(property));
+  // } 
   
-  deleteProperty(property: Property) {
-    this.afs.doc('properties/' + property.id).delete();
-  }
+  // deleteProperty(property: Property) {
+  //   this.afs.doc('properties/' + property.id).delete();
+  // }
 
-  getProperty(id: string){
-  return from(this.afs.collection('properties').doc(id).get())
-  .pipe(
-    map(propertyData => {
+  // getProperty(id: string){
+  // return from(this.afs.collection('properties').doc(id).get())
+  // .pipe(
+  //   map(propertyData => {
     
-          return {
-            id:id,
-            userId: propertyData.get('userId'),
-            address: propertyData.get('address'),
-            bathrooms: propertyData.get('bathrooms'),
-            bedrooms: propertyData.get('bedrooms'),
-            description: propertyData.get('description'),
-            display: propertyData.get('display'),
-            endDate: propertyData.get('endDate'),
-            garages: propertyData.get('garages'),
-            gardens: propertyData.get('gardens'),
-            hasOffer: propertyData.get('hasOffer'),
-            kind: propertyData.get('kind'),
-            ketchins: propertyData.get('ketchins'),
-            likes: propertyData.get('likes'),
-            livingrooms: propertyData.get('livingrooms'),
-            owner: propertyData.get('owner'),
-            price: propertyData.get('price'),
-            propertyName: propertyData.get('propertyName'),
-            propertyPic: propertyData.get('propertyPic'),
-            reservations: propertyData.get('reservations'),
-            space: propertyData.get('space'),
-            startDate: propertyData.get('startDate'),
-            tags: propertyData.get('tags'),
-            views: propertyData.get('views'),
-            location: propertyData.get('location'),
-            created_at: propertyData.get('created_at'),
-            updated_at: propertyData.get('updated_at'),
-           };
-        }));
-  }
+  //         return {
+  //           id:id,
+  //           userId: propertyData.get('userId'),
+  //           address: propertyData.get('address'),
+  //           bathrooms: propertyData.get('bathrooms'),
+  //           bedrooms: propertyData.get('bedrooms'),
+  //           description: propertyData.get('description'),
+  //           display: propertyData.get('display'),
+  //           endDate: propertyData.get('endDate'),
+  //           garages: propertyData.get('garages'),
+  //           gardens: propertyData.get('gardens'),
+  //           hasOffer: propertyData.get('hasOffer'),
+  //           kind: propertyData.get('kind'),
+  //           ketchins: propertyData.get('ketchins'),
+  //           likes: propertyData.get('likes'),
+  //           livingrooms: propertyData.get('livingrooms'),
+  //           owner: propertyData.get('owner'),
+  //           price: propertyData.get('price'),
+  //           propertyName: propertyData.get('propertyName'),
+  //           propertyPic: propertyData.get('propertyPic'),
+  //           reservations: propertyData.get('reservations'),
+  //           space: propertyData.get('space'),
+  //           startDate: propertyData.get('startDate'),
+  //           tags: propertyData.get('tags'),
+  //           views: propertyData.get('views'),
+  //           location: propertyData.get('location'),
+  //           created_at: propertyData.get('created_at'),
+  //           updated_at: propertyData.get('updated_at'),
+  //          };
+  //       }));
+  // }
   // getProperty(id: string) {
   //  return this.authService.token.pipe(take(1),switchMap(token => {
 

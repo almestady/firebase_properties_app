@@ -42,7 +42,7 @@ public userAuth: Subscription;
   }
 
   
-  authenticate(email: string, password: string) {
+  authenticate(email: string, password: string, displayName: string) {
     this.isLoading = true;
     this.loadingCtrl
       .create({ keyboardClose: true, message: 'Logging in...' })
@@ -82,7 +82,7 @@ public userAuth: Subscription;
           
           // loadingEl.dismiss();
         } else {
-          authObs = this.authService.signup({email, password})
+          authObs = this.authService.signup({email, password, displayName})
           
         }
         authObs.subscribe(

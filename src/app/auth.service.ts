@@ -44,14 +44,12 @@ export interface AuthResponseData {
 export interface User {
   uid: string;
   email: string;
-  idToken: string;
-  refreshToken: string;
-  expiresIn: string;
+  displayName: string;
 }
 
 @Injectable()
 export class AuthService implements OnDestroy {
-  private _user : Observable<firebase.User>;
+  private _user = new Observable<firebase.User>(null);
   private activeLogoutTimer: any;
   public signedIn: Observable<any>;
   public _userId = new BehaviorSubject<string>(null);
@@ -81,6 +79,7 @@ constructor(
 get user(){
   return this._user
 }
+
 
 
 get userId(){
@@ -126,7 +125,7 @@ get userIsAuthenticated() {
 }
 
 
-async signup({ email, password }): Promise<any> {
+async signup({ email, password, displayName }): Promise<any> {
   const credential = await this.afAuth.createUserWithEmailAndPassword(
     email,
     password
@@ -134,15 +133,13 @@ async signup({ email, password }): Promise<any> {
 
   const uid = credential.user.uid;
   
-  return   this.afs.doc(
+  return  from( this.afs.doc(
     `users/${uid}`
   ).set({
     uid,
     email: credential.user.email,
-    idToken: credential.user.refreshToken,
-    refreshToken: credential.user.refreshToken,
-  expiresIn: credential.user.refreshToken
-  }) 
+    displayName: credential.user.displayName
+  }) )
 }
 
 // signup(email: string, password: string){
@@ -163,7 +160,9 @@ async signup({ email, password }): Promise<any> {
  login(email: string, password: string) {
   try {
       if (!email || !password) throw new Error('Invalid email and/or password');
-  return  from(this.afAuth.signInWithEmailAndPassword(email, password))
+  return  from(this.afAuth.signInWithEmailAndPassword(email, password)).pipe(tap(data => {
+    // this._user.next(data.user);
+  }))
     // .subscribe(credintals => {
     //   this._userId.next(credintals.user.uid);
     //   console.log(credintals.user.uid)

@@ -1,3 +1,4 @@
+
 import { ChatPage } from './../chat/chat.page';
 import { async } from '@angular/core/testing';
 import { switchMap, take } from 'rxjs/operators';
@@ -252,6 +253,8 @@ get likeOn(){
   }
 
 
+
+
   checkBookmark(id: string) {
     this.theBooking = null;
     this.isBooked = false;
@@ -286,9 +289,9 @@ get likeOn(){
     this.checkLike(id)
     this.checkView(id)
     this.onView(id)
-    this.propertiesService.getProperty(id).subscribe((property) => {
+    this.propertiesService.getProperty(id).subscribe((doc) => {
     
-      this.theProperty = property;
+      this.theProperty = doc;
     console.log(this.theProperty.propertyName)
     });
    
@@ -627,9 +630,9 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
   
   }
 
-  onList() {
+  onList(property: Property) {
     this.authService.userId.subscribe(userId => {
-      this.modalCtrl.create({component: ChatPage, componentProps: {userId: userId}, id:'chat'})
+      this.modalCtrl.create({component: ChatPage, componentProps: {userId: userId, theProperty: property}, id:'chat'})
       .then(modalEl => { 
         modalEl.present();
         return modalEl.onDidDismiss();
