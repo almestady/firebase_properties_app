@@ -1,3 +1,5 @@
+import { ChatDetailPage } from './chat/chat-detail/chat-detail.page';
+import { ChatPageModule } from './chat/chat.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,6 +13,9 @@ import { PropertiesRoutingModule } from './properties-routing.module';
 import { NewFormComponent } from './offers/new-property/new-form/new-form.component';
 import { ActivatedRoute } from '@angular/router';
 import { NewOfferPage } from './offers/new-offer/new-offer.page';
+import { StartChatPageModule } from './chat/start-chat/start-chat.module';
+import { BrowserModule } from '@angular/platform-browser';
+import { ChatDetailPageModule } from './chat/chat-detail/chat-detail.module';
 
 
 
@@ -21,7 +26,11 @@ import { NewOfferPage } from './offers/new-offer/new-offer.page';
     CommonModule,
     FormsModule,
     IonicModule,
-   PropertiesRoutingModule
+   PropertiesRoutingModule,
+  //  BrowserModule,
+   ChatPageModule,
+   StartChatPageModule,
+   ChatDetailPageModule
   ], 
   declarations: [PropertiesPage]
 })

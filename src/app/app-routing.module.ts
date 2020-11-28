@@ -30,7 +30,7 @@ const routes: Routes = [
   loadChildren: () => import('./properties/properties.module').then(m => m.PropertiesPageModule) ,
   // ...canActivate(redirectLoggedInToHome),
   // canLoad: [AuthGuard]
-//  canActivate: [AuthGuard]
+ canActivate: [AuthGuard]
 },
 { path: 'callback', component: CallbackComponent, 
 // resolve: {token: AuthResolver}
@@ -69,7 +69,8 @@ const routes: Routes = [
           // }
       ]
    },
-  { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule' }
+  { path: 'login', loadChildren: './pages/login/login.module#LoginPageModule' },
+  { path: 'stat-chat', loadChildren: './chat/stat-chat/stat-chat.module#StatChatPageModule' }
 ];
 
 @NgModule({

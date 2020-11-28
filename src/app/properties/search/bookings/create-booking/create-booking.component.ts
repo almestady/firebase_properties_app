@@ -39,12 +39,12 @@ booking: Booking;
 
   ngOnInit() {
     console.log(this.bookedProperty.propertyName);
-    this.authService.userId.pipe(take(1)).subscribe(userId => {
+    // this.authService.userId.pipe(take(1)).subscribe(userId => {
 
-      this.customerServie.getCustomer(userId).subscribe(customer => {
+      this.customerServie.getCustomer(this.authService.currentUserId).subscribe(customer => {
         this.customer = customer;
       });   
-    })
+    // })
 
    this.languageService.arabicLabel.subscribe(labels => {
 
@@ -70,18 +70,18 @@ booking: Booking;
   
   bookingInfo(){
     console.log(this.bookedProperty)
-    this.authService.userId.pipe(take(1)).subscribe(userId => {
-      if(!userId){
-        throw Error('could not find userId')
-      }
+    // this.authService.userId.pipe(take(1)).subscribe(userId => {
+    //   if(!userId){
+    //     throw Error('could not find userId')
+    //   }
       this.booking = {
         id: '',
         propertyId: this.bookedProperty.id,
-        guestId: userId,
+        guestId: this.authService.currentUserId,
         date: this.form.value.startDate,
         time: this.form.value.startTime
       }
-    })
+    // })
   }
   onBookProperty() {
     this.bookingInfo()

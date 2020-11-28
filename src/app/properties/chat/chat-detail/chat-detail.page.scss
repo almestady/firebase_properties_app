@@ -1,0 +1,32 @@
+.message {
+    padding: 10px !important;
+    border-radius: 10px !important;
+    margin-bottom: 4px !important;
+
+    img {
+      width: 100%;
+    }
+  }
+  .my-message {
+    background: #d0cbcb;
+    color: #fff;
+  }
+  .other-message {
+    background: #e9e3bf;
+    color: rgb(0, 0, 0);
+  }
+
+.time {
+  color: #7d7d7d;
+  float: right;
+  font-size: small;
+}
+
+.message-input {
+    width: 100%;
+    border: 1px solid var(--ion-color-medium);
+    border-radius: 10px;
+    background: #fff;
+    resize: none;
+}
+

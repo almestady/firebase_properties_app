@@ -1,4 +1,3 @@
-import { StartChatPage } from './start-chat/start-chat.page';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,13 +5,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ChatPage } from './chat.page';
-import { StartChatPageModule } from './start-chat/start-chat.module';
+import { ChatDetailPage } from './chat-detail.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: ChatPage
+    component: ChatDetailPage
   }
 ];
 
@@ -21,9 +19,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes),
-    // StartChatPageModule,
+    RouterModule.forChild(routes)
   ],
-  declarations: [ChatPage]
+  declarations: [ChatDetailPage]
 })
-export class ChatPageModule {}
+export class ChatDetailPageModule {}

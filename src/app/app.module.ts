@@ -43,6 +43,7 @@ import { BrowserPageModule } from './properties/browser/browser.module';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import * as admin from 'firebase-admin';
+import { StartChatPageModule } from './properties/chat/start-chat/start-chat.module';
 
 @NgModule({
   declarations: [AppComponent,
@@ -52,6 +53,7 @@ import * as admin from 'firebase-admin';
   entryComponents: [],
   imports  : [ 
     // FormsModule,
+   
     MbscModule,
     BrowserModule,
     HttpClientModule,
@@ -94,6 +96,7 @@ import * as admin from 'firebase-admin';
     StreamingMedia,
     PhotoViewer,
     FormBuilder,
+
 ,
     // {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor,
     //   multi: true},

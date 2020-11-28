@@ -15,6 +15,7 @@ import * as admin from 'firebase-admin';
 export interface User {
   uid: string;
   email: string;
+  displayName: string;
 }
 
 @Component({
@@ -52,6 +53,7 @@ export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
   @Input()userId: string;
   @Input()theProperty: Property;
+  groups = [];
 
   messages: Message[] = [];
   newMsg: string;
@@ -68,28 +70,64 @@ export class ChatPage implements OnInit {
      }
 
   ngOnInit() {
-
-    this.authService.user.subscribe(user => {
-
-      this.chatService.messages.subscribe(messages => {
-        
-        let mess = messages;
-        this.messages = mess.filter(msg => {(msg.from === user.uid )})
-        console.log(this.messages.length)
+    this.chatService.getGroups().subscribe(groups => {
+      groups.forEach(grp => {
+        grp.forEach(gr => {
+          this.groups.push(gr);
+          this.groups.forEach(g => {console.log(g.data['title'], '   ' ,g.data['users'] )})
+        })
       })
+    });
+  // this.groups = null
+  // this.groups.forEach(grp => {console.log(grp)})
+  // console.log(this.groups)
   
-      this.chatService.users.subscribe(users => {
-        
-        // admin.auth().listUsers(10).then(users => {
-          console.log(users)
-          })
+    // this.authService.user.subscribe(user => {
+      console.log(this.authService.currentUserId)
+    // })
+
+    // this.authService.user.subscribe(user => {
+
+      // this.chatService.getChatMessages().subscribe(messages => {
+      //   let msgs = messages
+        // this.chatService.messages.subscribe(messages => {
+        // this.messages = messages
+        // let mgss = messages.filter(msg => {msg.from === user.uid})
+        // console.log(mgss.length)
+        // messages.docChanges().forEach(data => {
+        //   this.messages[data.doc.id] =  data.doc.data()
+        //  }) 
+      //  this.messages = msgs.filter(msg => {msg.from === user.uid})
+      //  this.messages = messages
+        // let mess = messages;
+      //   this.messages = this.messages.filter(msg => {(msg.from === this.authService.currentUserId )})
+      //   console.log(this.messages)
       // })
-    })
+  
+    //   this.chatService.users.subscribe(users => {
+        
+    //     // admin.auth().listUsers(10).then(users => {
+    //       console.log(users)
+    //       })
+    //   // })
+    // })
 
   }
 
+goToChat(){
+  this.modalCtrl.dismiss('chat')
+  this.router.navigateByUrl('/properties/tabs/browser/start-chat')
+}
+
+   signOut(){
+     this.authService.signOut().then(()=> {
+       this.router.navigateByUrl('/auth')
+     })
+   }
+
+
   ionViewWillEnter(){
-    this.chatService.getMessages().subscribe()  
+  //   this.chatService.getMessages().subscribe()  
   }
 
   myMessage(msg: Message){
@@ -105,33 +143,36 @@ export class ChatPage implements OnInit {
     // })
   }
 
-  sendMessage() {
-    let message
-    this.authService.user.pipe(take(1)).subscribe(user => {
-      
-       message  = {
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-         id:'',
-         from: user.uid,
-         to: this.theProperty.userId,
-         msg: this.newMsg,
-         fromName: user.displayName,
-         property: this.theProperty.id,
-         myMsg: true
-      }
-    })
-    this.chatService.addChatMessage(message).subscribe((msg) => {
-      this.newMsg = '';
-      this.content.scrollToBottom();
-    });
-  }
 
-  signOut() {
-    this.modalCtrl.dismiss('chat')
+
+  // sendMessage() {
+    
+  //   this.authService.user.pipe(take(1)).subscribe(user => {
+  //     console.log(user.displayName)
+  //     let message:Message    = {
+  //        id:'',
+  //       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  //        from: user.uid,
+  //        to: this.theProperty.userId,
+  //        msg: this.newMsg,
+  //        fromName: user.displayName,
+  //        property: this.theProperty.id,
+  //         myMsg: null
+  //     }
+  //     this.chatService.addChatMessage(message).subscribe((msg) => {
+  //   this.newMsg = '';
+  //   this.content.scrollToBottom();
+  //   })
+      
+  //   });
+  // }
+
+  // signOut() {
+  //   this.modalCtrl.dismiss('chat')
     // this.chatService.signOut().then(() => {
     //   this.router.navigateByUrl('/', { replaceUrl: true });
     // });
-  }
+  // }
  
 
 }

@@ -16,7 +16,7 @@ const routes: Routes = [
     children: [
         {
             path: '',
-            redirectTo: '/properties/tabs/discover',
+            redirectTo: '/properties/tabs/browser',
             pathMatch: 'full'
         },
         {
@@ -26,30 +26,48 @@ const routes: Routes = [
              path: "",
             loadChildren: () =>
               import("./browser/browser.module").then((m) => m.BrowserPageModule),
-          } ,
+          } 
+          ,
           {
-            path: ":propertyId",
-            loadChildren: () =>
-            import("./search/search.module").then((m) => m.SearchPageModule)
+                path: "chat",
+                children: [
+
+                  { path: ' ',
+                    loadChildren: () => import('./chat/chat.module').then(m => m.ChatPageModule)
+                },
+                {
+                  path: ":groupId",
+                  loadChildren: () => import('./chat/chat-detail/chat-detail.module').then(m => m.ChatDetailPageModule)
+                }
+                ]
+                // ...canActivate(redirectUnauthorizedToLogin), 
+          }
+          ,
+          {
+                path: "start-chat",
+                loadChildren: () => import('./chat/start-chat/start-chat.module').then(m => m.StartChatPageModule),
+          }
+              ,
+          {
+                path: ":propertyId",
+                loadChildren: () =>
+                import("./search/search.module").then((m) => m.SearchPageModule)
+          }
+            ]
           }
          
-          ]},
+          ,
         
-{
-  path: 'chat',
-  loadChildren: () => import('./chat/chat.module').then(m => m.ChatPageModule),
-  // ...canActivate(redirectUnauthorizedToLogin), 
-},
       {
         
         path: "discover",
         children: [
-          {
-            path: "",
-            loadChildren: () =>
-            import("./browser/browser.module").then((m) => m.BrowserPageModule),
+          // {
+          //   path: "",
+          //   loadChildren: () =>
+          //   import("./browser/browser.module").then((m) => m.BrowserPageModule),
              
-          },
+          // },
           {
             path: "bookings",
             children: [
@@ -166,6 +184,8 @@ const routes: Routes = [
     ],
   },
   { path: '', loadChildren: './browser/browser.module#BrowserPageModule' },
+  { path: 'chat-detail', loadChildren: './chat/chat-detail/chat-detail.module#ChatDetailPageModule' },
+  
   // },
 
   //         { path: '', redirectTo: '/properties/tabs/discover', pathMatch: 'full' },

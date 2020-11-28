@@ -155,10 +155,10 @@ get likeOn(){
     //     this.theProperty = prop});
     // });     
    console.log(this.theProperty.id)
-    this.authService.userId.subscribe(userId => {
-      this.userId = userId;
+    // this.authService.userId.subscribe(userId => {
+    //   this.userId = userId;
       
-    })
+    // })
    
     console.log('Search Page init')
     this.labelsSub = this.languageService.arabicLabel.subscribe(
@@ -183,14 +183,14 @@ get likeOn(){
                 console.log(this.bookings)
                 
               })
-              this.authService.userId.pipe(take(1))
-               .subscribe(userId => {
-                 if(!userId){
-                   throw Error('Could not find userId')
-                 }
+              // this.authService.userId.pipe(take(1))
+              //  .subscribe(userId => {
+              //    if(!userId){
+              //      throw Error('Could not find userId')
+              //    }
                  this.likesSub = this.likesService.likes.subscribe((likes) => {
                   this.loadedLikes= likes
-                  this.likes = this.loadedLikes.filter(like => like.guestId === userId);
+                  this.likes = this.loadedLikes.filter(like => like.guestId === this.authService.currentUserId);
                   
                   // console.log(this.likes.length)
                })
@@ -203,7 +203,7 @@ get likeOn(){
 
                  this.viewsSub = this.viewsService.views.subscribe((views) => {
                   this.loadedViews = views
-                  this.views =  this.loadedViews.filter(view => view.guestId === userId)
+                  this.views =  this.loadedViews.filter(view => view.guestId === this.authService.currentUserId)
                   // console.log(this.views.length)
                })
                
@@ -215,7 +215,7 @@ get likeOn(){
 
             
                  
-               })
+              //  })
     // this._likeOn.subscribe(isLiked => {
     //   this.liked = isLiked;
     // })
@@ -259,18 +259,18 @@ get likeOn(){
     this.theBooking = null;
     this.isBooked = false;
 
-  return  this.authService.userId.pipe(take(1)).subscribe(userId => {
-      if(!userId){
-        throw new Error('No user id found');
-      }
+  // return  this.authService.userId.pipe(take(1)).subscribe(userId => {
+  //     if(!userId){
+  //       throw new Error('No user id found');
+  //     }
 
       this.bookings.forEach(booking =>{
         console.log(booking)
-        if(booking.propertyId === id && booking.guestId === userId){
+        if(booking.propertyId === id && booking.guestId === this.authService.currentUserId){
           this.isBooked = true;
         } ;
       } )
-    })
+    // })
       
    
     // console.log(this.theBooking)
@@ -311,14 +311,14 @@ get likeOn(){
   checkLike(id: string) {
     this.liked = false
     console.log(this.likes.length)
-    this.authService.userId.pipe(take(1)).subscribe(userId => {
-       if(!userId){
-         return
-       }
+    // this.authService.userId.pipe(take(1)).subscribe(userId => {
+    //    if(!userId){
+    //      return
+    //    }
       this.likesService.likes.subscribe(likes => {
   
         if (likes) {
-          let myLikes = likes.filter(like => like.guestId === userId)
+          let myLikes = likes.filter(like => like.guestId === this.authService.currentUserId)
           let currentLike = myLikes.find((like) => like.propertyId === id)
           
           console.log(currentLike)
@@ -332,7 +332,7 @@ get likeOn(){
           }
         }
       })
-    })
+    // })
     // if (this.likes) {
     //     this.currentLike =this.likes.find((like) => like.propertyId === id)
     //     if (this.currentLike) {
@@ -393,17 +393,17 @@ get likeOn(){
     // let theLike = this.likes.find(
     //   (like) => like.propertyId = id
     // )
-    this.authService.userId.pipe(take(1)).subscribe(userId => {
-      if(!userId){
-        throw new Error('No user id found');
-      }
+    // this.authService.userId.pipe(take(1)).subscribe(userId => {
+    //   if(!userId){
+    //     throw new Error('No user id found');
+    //   }
             if (
               !this.liked 
               ) {
         let like = {
          id: '',
          propertyId: this.theProperty.id,
-         guestId: userId,
+         guestId: this.authService.currentUserId,
          date: new Date(),
          time: new Date()
        }
@@ -416,7 +416,7 @@ get likeOn(){
        console.log("Like is been added");
       } else {
         this.likes.forEach((like, index) => {
-           if( like.guestId === userId && like.propertyId === id) {
+           if( like.guestId === this.authService.currentUserId && like.propertyId === id) {
             this.likes.splice(index, 1);
             this.likesService.cancelLike(like.id)
             .subscribe(() => {
@@ -430,7 +430,7 @@ get likeOn(){
           //  }
         });
       }
-      })
+      // })
     
     
    
@@ -499,14 +499,14 @@ onView(id: string){
   // if(this.viewOn){
   //   return
   // }
-this.authService.userId.pipe(take(1)).subscribe(userId => {
-  if(!userId){
-    throw new Error('No user id found');
-  }
+// this.authService.userId.pipe(take(1)).subscribe(userId => {
+//   if(!userId){
+//     throw new Error('No user id found');
+//   }
   let view: View = {
     id: '',
     propertyId: this.theProperty.id,
-    guestId: userId,
+    guestId: this.authService.currentUserId,
     date: new Date(),
     time: new Date()
   }
@@ -517,7 +517,7 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
     // this.router.navigateByUrl(`/properties/tabs/browser`);
   });
   console.log(this.theProperty.id + " is been viewed");
-})
+// })
 
 }
 
@@ -567,15 +567,15 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
         .then((data) => {
           console.log(data.data);
           if(data.data){
-            this.authService.userId.pipe(take(1)).subscribe(userId => {
-               if(!userId){
-                throw new Error('No user id found');
-               }
-                fetchedBooking = userId
+            // this.authService.userId.pipe(take(1)).subscribe(userId => {
+            //    if(!userId){
+            //     throw new Error('No user id found');
+            //    }
+                // fetchedBooking = this.authService.currentUserId
               let booking = {
                 id: '',
                 propertyId: this.theProperty.id,
-                guestId: userId,
+                guestId: this.authService.currentUserId,
                 date: data.data.booking.date,
                 time: data.data.booking.time
               }
@@ -586,7 +586,7 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
                   this.isBooked = true;
                   // this.router.navigateByUrl(`/properties/tabs/discover`);
                 });
-            })
+            // })
           }
         });
       }else {
@@ -598,12 +598,12 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
               text: this.labels.ok,
               handler: () => {
                 // this.bookmarkOn = false;
-                this.authService.userId.pipe(take(1)).subscribe(userId => {
-                  if (!userId) {
-                    throw new Error('User not found!');
-                  }
+                // this.authService.userId.pipe(take(1)).subscribe(userId => {
+                //   if (!userId) {
+                //     throw new Error('User not found!');
+                //   }
                   this.bookings.forEach((booking, index) => {
-                    if( booking.guestId === userId && booking.propertyId === id) {
+                    if( booking.guestId === this.authService.currentUserId && booking.propertyId === id) {
                       console.log("Hello...there...")
                     this.bookings.splice(index, 1);
                     this.bookingService.cancelBooking(booking.id)
@@ -614,7 +614,7 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
   
                      }
                   })
-                })
+                // })
               },
             },
             {
@@ -631,14 +631,15 @@ this.authService.userId.pipe(take(1)).subscribe(userId => {
   }
 
   onList(property: Property) {
-    this.authService.userId.subscribe(userId => {
-      this.modalCtrl.create({component: ChatPage, componentProps: {userId: userId, theProperty: property}, id:'chat'})
+    // this.router.navigateByUrl(`properties/tabs/browser/chat`)
+
+      this.modalCtrl.create({component: ChatPage, componentProps: {userId: this.authService.user.uid, theProperty: property}, id:'chat'})
       .then(modalEl => { 
         modalEl.present();
         return modalEl.onDidDismiss();
       })
 
-    })
+    
     // this.listOfProperties = true;
     // this.listActive = true;
     // this.messageActive = false;

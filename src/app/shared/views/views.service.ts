@@ -95,20 +95,20 @@ export class ViewsService {
 //   }
  
 
-  cancelView(viewId: string) {
-    return this.authService.token.pipe(take(1), switchMap(token => {
+  // cancelView(viewId: string) {
+  //   return this.authService.token.pipe(take(1), switchMap(token => {
 
-      return this.http
-        .delete(
-          `https://propertiestag-25d9d.firebaseio.com/views/${viewId}.json?auth=${token}`
-        )
-    }),switchMap(() => {
-          return this.views;
-        }),
-        take(1),
-        tap(views => {
-          this._views.next(views.filter(b => b.id !== viewId));
-        })
-      );
-  }
+  //     return this.http
+  //       .delete(
+  //         `https://propertiestag-25d9d.firebaseio.com/views/${viewId}.json?auth=${token}`
+  //       )
+  //   }),switchMap(() => {
+  //         return this.views;
+  //       }),
+  //       take(1),
+  //       tap(views => {
+  //         this._views.next(views.filter(b => b.id !== viewId));
+  //       })
+  //     );
+  // }
 }

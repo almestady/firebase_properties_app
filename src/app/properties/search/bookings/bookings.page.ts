@@ -83,17 +83,17 @@ export class BookingsPage implements OnInit, OnDestroy {
     this.propertiesService.properties.subscribe(properties => {
         properties.filter(property => {
         property.reservations.forEach((resv, index) => {
-          this.authService.userId.pipe(take(1)).subscribe(userId => {
-            if(!userId){
-              throw Error('Could not find userId')
-            }
+          // this.authService.userId.pipe(take(1)).subscribe(userId => {
+          //   if(!userId){
+          //     throw Error('Could not find userId')
+          //   }
 
 
-            if ( resv.customerId === userId) {
+            if ( resv.customerId === this.authService.currentUserId) {
               this.listOfBookings.push(property);
               this.currentProperty =  this.listOfBookings[0];
             }
-          })
+          // })
         })
       })
     });
@@ -114,13 +114,13 @@ export class BookingsPage implements OnInit, OnDestroy {
           text: this.labels.ok,
           handler: () => {
             this.currentProperty.reservations.forEach((resv, index) => {
-              this.authService.userId.pipe(take(1)).subscribe(userId => {
-                if(!userId){
-                  throw Error('Could not find userId')
-                }
+              // this.authService.userId.pipe(take(1)).subscribe(userId => {
+              //   if(!userId){
+              //     throw Error('Could not find userId')
+              //   }
 
                 
-                if( resv.customerId === userId) {
+                if( resv.customerId === this.authService.currentUserId) {
                       this.currentProperty.reservations.splice(index, 1);
                       this.bookmarkOn = false;
                       this.propertiesService.updateProperty(this.currentProperty).subscribe(() => {
@@ -130,7 +130,7 @@ export class BookingsPage implements OnInit, OnDestroy {
                      });
                    
                 }
-              })
+              // })
             });
           }
       },
@@ -157,21 +157,21 @@ export class BookingsPage implements OnInit, OnDestroy {
   checkBookmark() {
     
     if(this.currentProperty) {
-      this.authService.userId.pipe(take(1)).subscribe(userId => {
-        if(!userId){
-          throw Error('Could not find userId')
-        }
+      // this.authService.userId.pipe(take(1)).subscribe(userId => {
+      //   if(!userId){
+      //     throw Error('Could not find userId')
+      //   }
 
         if (
           this.currentProperty.reservations.find(
-            resv => resv.customerId === userId
+            resv => resv.customerId === this.authService.currentUserId
           )
         ) {
           this.bookmarkOn = true;
         } else {
           this.bookmarkOn = false;
         }
-      })
+      // })
   }
   }
 
@@ -223,48 +223,49 @@ export class BookingsPage implements OnInit, OnDestroy {
 
     checkLike() {
       if(this.currentProperty) {
-        this.authService.userId.pipe(take(1)).subscribe(userId => {
-           if(!userId){
-             throw Error('Could not find userId')
-           }
+        // this.authService.userId.pipe(take(1)).subscribe(userId => {
+        //    if(!userId){
+        //      throw Error('Could not find userId')
+        //    }
 
           if (this.currentProperty.likes && 
             this.currentProperty.likes.find(
-              like => like.guestId === userId
+              like => like.guestId === this.authService.currentUserId
             )
           ) {
             this.likeOn = true;
           } else {
             this.likeOn = false;
           }
-        })
+        // })
       }
     }
 
     onLike(id: string, event: Event) {
       
-      this.authService.userId.pipe(take(1)).subscribe(userId => {
-        if (!this.likeOn) {
-          this.likeOn = true;
+      // this.authService.userId.pipe(take(1)).subscribe(userId => {
+      //   if (!this.likeOn) {
+      //     this.likeOn = true;
 
           if (
             !this.likes.find(
-              like => like.guestId = userId
+              like => like.guestId = this.authService.currentUserId
             )
           ) {
             this.likes.push(
              {id: '',
              time: new Date(),
              propertyId: '',
-              guestId:userId, date: new Date(),}
+              guestId:this.authService.currentUserId, date: new Date(),}
             );
             console.log("Like is been added");
+            console.log(this.likes[0].date);
           }
-          console.log(this.likes[0].date);
-        } else {
+        // }
+         else {
           this.likeOn = false;
           this.currentProperty.likes.forEach((like, index) => {
-            if (like.guestId === userId) {
+            if (like.guestId === this.authService.currentUserId) {
               this.currentProperty.likes.splice(index, 1);
             }
           });
@@ -277,7 +278,7 @@ export class BookingsPage implements OnInit, OnDestroy {
             this.currentProperty = oldcurrentProperty;
             this.likeOn = oldLikeOn;
           });
-        })
+        // })
     }
 
     clickedPrperty(id: string) {
