@@ -1,3 +1,4 @@
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Property } from './../property.model';
 import { switchMap, take } from 'rxjs/operators';
 import { AuthService } from './../../auth.service';
@@ -65,6 +66,7 @@ export class ChatPage implements OnInit {
     private afAuth: AngularFireAuth,
      private afs: AngularFirestore ,
      private modalCtrl: ModalController,
+     private camera: Camera
      ) { 
 
      }

@@ -1,16 +1,40 @@
+
 import { ChatService } from 'src/app/services/chat.service';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
 
-import { Observable } from 'rxjs';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { from, Observable } from 'rxjs';
+import { Component, OnInit, ViewChild, ElementRef, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonContent } from '@ionic/angular';
-import { map } from 'rxjs/operators';
+import { IonContent, Platform } from '@ionic/angular';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 
 import { AuthService } from '../../../auth.service';
+import { Plugins, Capacitor, CameraSource, CameraResultType } from '@capacitor/core';
 
+
+
+function base64toBlob(base64Data, contentType) {
+  contentType = contentType || '';
+  const sliceSize = 1024;
+  const byteCharacters = atob(base64Data);
+  const bytesLength = byteCharacters.length;
+  const slicesCount = Math.ceil(bytesLength / sliceSize);
+  const byteArrays = new Array(slicesCount);
+
+  for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+    const begin = sliceIndex * sliceSize;
+    const end = Math.min(begin + sliceSize, bytesLength);
+
+    const bytes = new Array(end - begin);
+    for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
+      bytes[i] = byteCharacters[offset].charCodeAt(0);
+    }
+    byteArrays[sliceIndex] = new Uint8Array(bytes);
+  }
+  return new Blob(byteArrays, { type: contentType });
+}
 
 @Component({
   selector: 'app-chat-detail',
@@ -23,14 +47,29 @@ export class ChatDetailPage implements OnInit {
   newMsg = '';
   chatTitle = '';
   chat = null;
+  imageFile: any;
+  usePicker = false;
+
+  selectedImage: string;
+@Output() imagePick = new EventEmitter<string | File>();
+@Input() showPreview = false;
+@ViewChild('filePicker',{ static: false}) filePickerRef: ElementRef<HTMLInputElement>;
   
   @ViewChild(IonContent) content: IonContent;
   @ViewChild('input', { read: ElementRef }) msgInput: ElementRef;
   
-  constructor(private route: ActivatedRoute, private auth: AuthService, private chatService: ChatService, 
-    private router: Router, ) { }
+  constructor(private route: ActivatedRoute,
+    private auth: AuthService, 
+    private chatService: ChatService, 
+    private router: Router,
+    private camera: Camera,
+    private platform: Platform
+    ) { }
 
   ngOnInit() {
+    if(this.platform.is('mobile') && !this.platform.is('hybrid') || this.platform.is('desktop')) {
+      this.usePicker = true;
+    }
     this.route.params.subscribe(data => {
       console.log('this is params:',data)
       this.chatService.getOneGroup(data.groupId).subscribe(res => {
@@ -88,7 +127,7 @@ export class ChatDetailPage implements OnInit {
   //     sourceType: this.camera.PictureSourceType.CAMERA,
   //     correctOrientation: true
   //   }
-
+     
   //   this.camera.getPicture(options).then(data => {
 
   //     let obj = this.chatService.addFileMessage(data, this.chat.id);
@@ -107,5 +146,79 @@ export class ChatDetailPage implements OnInit {
 
     
   // }
+
+  onPickImage() {
+    if ( !Capacitor.isPluginAvailable('Camera')) {
+      this.filePickerRef.nativeElement.click();
+      return;
+    }
+    Plugins.Camera.getPhoto({
+      quality: 50,
+      source: CameraSource.Prompt,
+      correctOrientation: true,
+      height: 320,
+      width: 200, 
+      resultType: CameraResultType.Base64
+    }).then(img => {
+     let image = base64toBlob(img.base64String.replace('data:image/jpeg;base64,', ''), 'image/jpeg');
+      let obj = this.chatService.addFileMessage(image, this.chat.id);
+      let task = obj.task;
+      task.then(()=> {
+        obj.ref.getDownloadURL()
+      
+      .subscribe(
+        (url) => {
+          console.log(url)
+          this.chatService.saveFileMessage(url, this.chat.id);
+        } )
+    })
+  })
+      
+      // this.selectedImage = image.dataUrl.toString();
+      // this.imagePick.emit(image.dataUrl)
+    
+    
+      .catch(err => {
+        console.log(err);
+        if(this.usePicker) {
+          this.filePickerRef.nativeElement.click();
+        }
+        return false;
+      }) 
+}
+  
+  onFileChosen(event: Event) {
+    const pickedFile = ( event.target as HTMLInputElement).files[0];
+    if( !pickedFile) {
+      return;
+    }
+    const fr = new FileReader();
+    fr.onload = () => {
+      const dataUrl = fr.result.toString();
+      this.selectedImage = dataUrl;
+      this.imagePick.emit(pickedFile)
+    };
+    fr.readAsDataURL(pickedFile);
+    console.log(pickedFile)
+  }
+  
+
+  onImagePicked(image: string | File ) {
+    
+    if(typeof image === 'string') {
+      try{
+        this.imageFile =  base64toBlob(image.replace('data:image/jpeg;base64,', ''), 'image/jpeg');
+      } catch(error){
+        console.log(error);
+        return;
+      }
+       
+    } else {
+      this.imageFile = image;
+    }
+    console.log('the picked image .....', this.imageFile)
+   
+    // this.formFourth.patchValue({propertyPicture:imageFile})
+    }
 
 }

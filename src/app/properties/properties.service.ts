@@ -356,7 +356,7 @@ loading = false
         console.log(property)
         console.log(filePath)
         this.loading = true
-     return   this.authService.token.pipe(take(1),switchMap(token => {
+    //  return   this.authService.token.pipe(take(1),switchMap(token => {
 
           const path = '/images/'+Math.random()+filePath
           const storageRef = this.afStorage.ref (path);
@@ -371,7 +371,7 @@ loading = false
             this.addProperty(property).subscribe()
           })
            )
-        }))
+        // }))
        
       }
 

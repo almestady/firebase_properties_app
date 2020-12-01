@@ -9,11 +9,32 @@ import { BehaviorSubject, from, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import * as admin from 'firebase-admin';
 import { AngularFireStorage } from '@angular/fire/storage';
+
 import * as firebase from 'firebase/app';
 import { forkJoin } from 'rxjs';
 import {  AngularFireStorageReference } from '@angular/fire/storage';
  
 
+function base64toBlob(base64Data, contentType) {
+  contentType = contentType || '';
+  const sliceSize = 1024;
+  const byteCharacters = atob(base64Data);
+  const bytesLength = byteCharacters.length;
+  const slicesCount = Math.ceil(bytesLength / sliceSize);
+  const byteArrays = new Array(slicesCount);
+
+  for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+    const begin = sliceIndex * sliceSize;
+    const end = Math.min(begin + sliceSize, bytesLength);
+
+    const bytes = new Array(end - begin);
+    for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
+      bytes[i] = byteCharacters[offset].charCodeAt(0);
+    }
+    byteArrays[sliceIndex] = new Uint8Array(bytes);
+  }
+  return new Blob(byteArrays, { type: contentType });
+}
 
 // export interface User {
 //   uid: string;
@@ -143,12 +164,26 @@ export class ChatService {
   }
  
   addFileMessage(file, chatId) {
-    let newName = `${new Date().getTime()}-${this.auth.currentUserId}.png`;
-    let storageRef: AngularFireStorageReference = this.storage.ref(`/files/${chatId}/${newName}`);
-    return {task: storageRef.putString(file, 'base64', { contentType: 'image/png'}), ref: storageRef };
-  }
+    const path = `${new Date().getTime()}-${this.auth.currentUserId}.png`
+          const storageRef: AngularFireStorageReference = this.storage.ref (path);
+          const task = this.storage.upload(path, file);
+          return {task:task, ref: storageRef };
+          
+          // return from(task)
+
+         
+
+    // let newName = `${new Date().getTime()}-${this.auth.currentUserId}.png`;
+    // let storageRef: AngularFireStorageReference = this.storage.ref(`/files/${chatId}/${newName}`);
+
+    // return {
+    //   task: storageRef.putString(file, 'base64', { contentType: 'image/png' }), 
+    //   ref: storageRef
+    // };
+  }                                        
  
   saveFileMessage(filepath, chatId) {
+
     return this.db.collection('groups/' + chatId + '/messages').add({
       file: filepath,
       from: this.auth.currentUserId,

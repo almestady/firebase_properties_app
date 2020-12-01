@@ -44,6 +44,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import * as admin from 'firebase-admin';
 import { StartChatPageModule } from './properties/chat/start-chat/start-chat.module';
+import { Camera } from '@ionic-native/camera/ngx';
 
 @NgModule({
   declarations: [AppComponent,
@@ -96,6 +97,7 @@ import { StartChatPageModule } from './properties/chat/start-chat/start-chat.mod
     StreamingMedia,
     PhotoViewer,
     FormBuilder,
+    Camera,
 
 ,
     // {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor,

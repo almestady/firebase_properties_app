@@ -1,3 +1,4 @@
+import { ImagePickerComponent } from './../../../../firebase_frontend-master/src/app/shared/pickers/image-picker/image-picker.component';
 import { ChatDetailPage } from './../chat/chat-detail/chat-detail.page';
 import { StartChatPage } from './../chat/start-chat/start-chat.page';
 import { ChatPageModule } from './../chat/chat.module';
@@ -11,6 +12,7 @@ import { IonicModule } from '@ionic/angular';
 import { BrowserPage } from './browser.page';
 import { StartChatPageModule } from '../chat/start-chat/start-chat.module';
 import { ChatDetailPageModule } from '../chat/chat-detail/chat-detail.module';
+import { ImagePicker } from '@ionic-native/image-picker/ngx';
 
 const routes: Routes = [
   {

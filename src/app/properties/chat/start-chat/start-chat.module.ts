@@ -1,3 +1,4 @@
+import { ImagePickerComponent } from './../../../../../firebase_frontend-master/src/app/shared/pickers/image-picker/image-picker.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +22,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [StartChatPage]
+  declarations: [StartChatPage, ImagePickerComponent]
 })
 export class StartChatPageModule {}
