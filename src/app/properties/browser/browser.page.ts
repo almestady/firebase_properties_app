@@ -39,9 +39,10 @@ export class BrowserPage implements OnInit {
 
   ) { }
 
-
+ 
   
   ngOnInit() {
+    
     this.showBig = false
     this.bigBox = false;
     this.smaleBox = true;
@@ -96,19 +97,19 @@ export class BrowserPage implements OnInit {
   }
 
     openProperty(property: Property){
-      // this.router.navigateByUrl(`properties/tabs/browser/${property.id}`)
-        this.modalCtrl
-        .create({
-          component: SearchPage,
-          componentProps: { theProperty: property, id: 'theProperty'},
-          cssClass: 'my-custom-class',
-          // animated: true,
-          // showBackdrop: true
-        })
-        .then((modalEl) => {
-           modalEl.present();
-          return modalEl.onDidDismiss();
-        })
+      this.router.navigateByUrl(`properties/tabs/browser/${property.id}`)
+        // this.modalCtrl
+        // .create({
+        //   component: SearchPage,
+        //   componentProps: { theProperty: property, id: 'theProperty'},
+        //   cssClass: 'my-custom-class',
+        //   // animated: true,
+        //   // showBackdrop: true
+        // })
+        // .then((modalEl) => {
+        //    modalEl.present();
+        //   return modalEl.onDidDismiss();
+        // })
         
   }
 

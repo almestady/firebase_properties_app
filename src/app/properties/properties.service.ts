@@ -50,8 +50,10 @@ loading = false
 
   getProperty(id: string){
     // this.propertyDoc = this.afs.doc<Property>('properties' + id);
-    let property = this.afs.doc<Property>('properties' + id).valueChanges();
-    return property
+    console.log('starting getting property')
+    return this.afs.doc(`properties/${id}`).snapshotChanges();
+    // let property = this.afs.doc<Property>('properties' + id).valueChanges();
+    // return property
   //  return this.afs.collection('properties').doc<Property>(id);
   }
 

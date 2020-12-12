@@ -1,4 +1,4 @@
-import { LoginPageModule } from './pages/login/login.module';
+
 
 import { UploadComponent } from './shared/upload/upload.component';
 import { LikesService } from './shared/likes.service';
@@ -45,6 +45,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import * as admin from 'firebase-admin';
 import { StartChatPageModule } from './properties/chat/start-chat/start-chat.module';
 import { Camera } from '@ionic-native/camera/ngx';
+import { ChatDetailPageModule } from './properties/chat/chat-detail/chat-detail.module';
 
 @NgModule({
   declarations: [AppComponent,
@@ -57,8 +58,9 @@ import { Camera } from '@ionic-native/camera/ngx';
    
     MbscModule,
     BrowserModule,
+   
     HttpClientModule,
-    IonicModule.forRoot(),
+    IonicModule.forRoot(),  
     AppRoutingModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
@@ -72,7 +74,7 @@ import { Camera } from '@ionic-native/camera/ngx';
       appId: "1:207270852349:web:e8134b68afc0454cae3094",
       measurementId: "G-8T79XCGGSD"
     }),
-    LoginPageModule,
+
     AngularFireStorageModule,
      IonicStorageModule.forRoot({
     name: '_mydb',

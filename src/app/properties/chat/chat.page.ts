@@ -3,8 +3,8 @@ import { Property } from './../property.model';
 import { switchMap, take } from 'rxjs/operators';
 import { AuthService } from './../../auth.service';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { IonContent, ModalController } from '@ionic/angular';
+import { Router, ActivatedRoute } from '@angular/router';
+import { IonContent, ModalController, NavController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { ChatService, Message } from 'src/app/services/chat.service';
 // import { timeStamp } from 'console';
@@ -53,8 +53,9 @@ export interface User {
 export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
   @Input()userId: string;
-  @Input()theProperty: Property;
+ thePropertyId: string;
   groups = [];
+  
 
   messages: Message[] = [];
   newMsg: string;
@@ -64,14 +65,27 @@ export class ChatPage implements OnInit {
     private router: Router,
     private authService: AuthService,
     private afAuth: AngularFireAuth,
-     private afs: AngularFirestore ,
-     private modalCtrl: ModalController,
-     private camera: Camera
+    private afs: AngularFirestore ,
+    private modalCtrl: ModalController,
+    private camera: Camera,
+    private routes: ActivatedRoute,
+    private navCtrl: NavController
      ) { 
 
      }
 
   ngOnInit() {
+    this.routes.paramMap.subscribe(paramMap => {
+      // if (!paramMap.has('propertyId')) {
+        
+      //   this.navCtrl.navigateBack('/properties/tabs/browser');
+        
+      //   console.log("no paramMap")
+      //   return;
+      // }
+      console.log('the paramMaps propertyId', paramMap.get('propertyId'))
+      this.thePropertyId = paramMap.get('propertyId')
+    })
     this.chatService.getGroups().subscribe(groups => {
       groups.forEach(grp => {
         grp.forEach(gr => {
@@ -80,6 +94,8 @@ export class ChatPage implements OnInit {
         })
       })
     });
+
+
   // this.groups = null
   // this.groups.forEach(grp => {console.log(grp)})
   // console.log(this.groups)
@@ -122,10 +138,11 @@ goToChat(){
 }
 
    signOut(){
-     this.authService.signOut().then(()=> {
-       this.router.navigateByUrl('/auth')
-     })
-   }
+     console.log('This is theProperty ID value: ', this.thePropertyId)
+    
+      this.router.navigateByUrl(`properties/tabs/browser/${this.thePropertyId}`)
+     
+   }  
 
 
   ionViewWillEnter(){

@@ -28,9 +28,9 @@ import { ChatDetailPageModule } from './chat/chat-detail/chat-detail.module';
     IonicModule,
    PropertiesRoutingModule,
   //  BrowserModule,
-   ChatPageModule,
-   StartChatPageModule,
-   ChatDetailPageModule
+  //  ChatPageModule,
+  //  StartChatPageModule,
+  //  ChatDetailPageModule
   ], 
   declarations: [PropertiesPage]
 })

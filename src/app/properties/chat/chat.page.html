@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-button (click)="signout()">
+      <ion-button (click)="signOut()">
         <ion-icon name="log-out" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -26,7 +26,7 @@
 
   <ion-list>
     <ion-item button  *ngFor="let group of groups" text-wrap
-    [routerLink]="[ 'properties', 'tabs', 'browser', 'chat', group.id]">
+    [routerLink]="['./chat-detail', group.id]">                                                                      
       <ion-label txt-wrap>
        <ion-text color="primary">
          <h3>{{ group.data.title }}</h3>
@@ -37,7 +37,7 @@
   </ion-list>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button routerLink="properties/tabs/browser/start-chat">
+    <ion-fab-button routerLink="start-chat">
     <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

@@ -1,3 +1,4 @@
+import { BrowserPage } from './../../../firebase_frontend-master/src/app/properties/browser/browser.page';
 import { UploadComponent } from './../shared/upload/upload.component';
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
@@ -5,6 +6,8 @@ import { PropertiesPage } from "./properties.page";
 // import { loadavg } from 'os';
 import { loadingController } from "@ionic/core";
 import { canActivate, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
+import { ChatPage } from './chat/chat.page';
+import { chdir } from 'process';
 
 const redirectUnauthorizedToLogin = () =>
   redirectUnauthorizedTo(['/auth']);
@@ -16,7 +19,7 @@ const routes: Routes = [
     children: [
         {
             path: '',
-            redirectTo: '/properties/tabs/browser',
+            redirectTo: 'browser',
             pathMatch: 'full'
         },
         {
@@ -27,32 +30,39 @@ const routes: Routes = [
             loadChildren: () =>
               import("./browser/browser.module").then((m) => m.BrowserPageModule),
           } 
+          
           ,
           {
                 path: "chat",
                 children: [
-
-                  { path: ' ',
-                    loadChildren: () => import('./chat/chat.module').then(m => m.ChatPageModule)
+                  
+                  { path: ':propertyId',
+                  children: [
+                    {
+                      path: '',
+                        loadChildren: () => import('./chat/chat.module').then(m => m.ChatPageModule),
+                    },
+                    {
+                      path: "chat-detail/:groupId",
+                        loadChildren: () => import('./chat/chat-detail/chat-detail.module').then(m => m.ChatDetailPageModule)
+                    }
+                    ,
+                    {
+                      path: 'start-chat',
+                      loadChildren: () => import('./chat/start-chat/start-chat.module').then(m => m.StartChatPageModule)
+                    },
+                  ]
                 },
-                {
-                  path: ":groupId",
-                  loadChildren: () => import('./chat/chat-detail/chat-detail.module').then(m => m.ChatDetailPageModule)
-                }
                 ]
                 // ...canActivate(redirectUnauthorizedToLogin), 
           }
           ,
           {
-                path: "start-chat",
-                loadChildren: () => import('./chat/start-chat/start-chat.module').then(m => m.StartChatPageModule),
-          }
-              ,
-          {
                 path: ":propertyId",
                 loadChildren: () =>
                 import("./search/search.module").then((m) => m.SearchPageModule)
           }
+            
             ]
           }
          
@@ -184,7 +194,7 @@ const routes: Routes = [
     ],
   },
   { path: '', loadChildren: './browser/browser.module#BrowserPageModule' },
-  { path: 'chat-detail', loadChildren: './chat/chat-detail/chat-detail.module#ChatDetailPageModule' },
+  
   
   // },
 

@@ -71,7 +71,36 @@ export class BookingsPage implements OnInit, OnDestroy {
       } else{
 
         this.propertiesService.getProperty(paramMap.get('propertyId')).subscribe(prop => {
-          this.currentProperty = prop;
+          this.currentProperty = {
+            id: prop.payload.id,
+            address:  prop.payload.data()['address'],
+           bathrooms:  prop.payload.data()['bathrooms'],
+           bedrooms:  prop.payload.data()['bedrooms'],
+           description: prop.payload.data()['description'],
+           display:  prop.payload.data()['display'],
+           endDate:  prop.payload.data()['endDate'],
+           garages:  prop.payload.data()['garages'],
+           gardens:  prop.payload.data()['gardens'],
+           hasOffer:  prop.payload.data()['hasOffer'],
+           ketchins:  prop.payload.data()['ketchins'],
+           kind:  prop.payload.data()['kind'],
+           likes:  prop.payload.data()['likes'],
+           livingrooms:  prop.payload.data()['livingrooms'],
+           owner:  prop.payload.data()['owner'],
+           price:  prop.payload.data()['price'],
+           propertyName:  prop.payload.data()['propertyName'],
+           propertyPic:  prop.payload.data()['propertyPic'],
+           reservations: prop.payload.data()['reservations'],
+           space:  prop.payload.data()['space'],
+           startDate:  prop.payload.data()['startDate'],
+           tags:  prop.payload.data()['tags'],
+           userId:  prop.payload.data()['userId'],
+           views:  prop.payload.data()['views'],
+           location:  prop.payload.data()['location'],
+           updated_at: prop.payload.data()['updated_at'],
+           created_at: prop.payload.data()['created_at']           
+}
+
           this.checkHasOffer();
           this.checkBookmark();
           this.checkLike();
@@ -282,9 +311,37 @@ export class BookingsPage implements OnInit, OnDestroy {
     }
 
     clickedPrperty(id: string) {
-      this.propertiesService.getProperty(id).subscribe(property => {
-        this.currentProperty = property;
-        
+      this.propertiesService.getProperty(id).subscribe(prop => {
+        this.currentProperty =  {
+          id: prop.payload.id,
+          address:  prop.payload.data()['address'],
+         bathrooms:  prop.payload.data()['bathrooms'],
+         bedrooms:  prop.payload.data()['bedrooms'],
+         description: prop.payload.data()['description'],
+         display:  prop.payload.data()['display'],
+         endDate:  prop.payload.data()['endDate'],
+         garages:  prop.payload.data()['garages'],
+         gardens:  prop.payload.data()['gardens'],
+         hasOffer:  prop.payload.data()['hasOffer'],
+         ketchins:  prop.payload.data()['ketchins'],
+         kind:  prop.payload.data()['kind'],
+         likes:  prop.payload.data()['likes'],
+         livingrooms:  prop.payload.data()['livingrooms'],
+         owner:  prop.payload.data()['owner'],
+         price:  prop.payload.data()['price'],
+         propertyName:  prop.payload.data()['propertyName'],
+         propertyPic:  prop.payload.data()['propertyPic'],
+         reservations: prop.payload.data()['reservations'],
+         space:  prop.payload.data()['space'],
+         startDate:  prop.payload.data()['startDate'],
+         tags:  prop.payload.data()['tags'],
+         userId:  prop.payload.data()['userId'],
+         views:  prop.payload.data()['views'],
+         location:  prop.payload.data()['location'],
+         updated_at: prop.payload.data()['updated_at'],
+         created_at: prop.payload.data()['created_at']
+          
+}
         this.checkLike();
         this.checkBookmark();
       });

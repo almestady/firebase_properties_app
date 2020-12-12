@@ -1,3 +1,4 @@
+// import { ProfilePageModule } from './../browser/chat/profile/profile.module';
 import { StartChatPage } from './start-chat/start-chat.page';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -22,6 +23,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
+    
     // StartChatPageModule,
   ],
   declarations: [ChatPage]

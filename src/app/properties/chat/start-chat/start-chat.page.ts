@@ -41,7 +41,7 @@ participant = '';
 
   createGroup(){
    this.chatService.createGroup(this.title, this.users).then(()=> {
-     this.router.navigateByUrl('chat')
+     this.router.navigateByUrl(`properties/tabs/chat/chat-detail`)
    });
   }
 

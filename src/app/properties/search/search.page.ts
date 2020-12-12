@@ -1,7 +1,8 @@
+import { ChatService } from 'src/app/services/chat.service';
 
 import { ChatPage } from './../chat/chat.page';
 import { async } from '@angular/core/testing';
-import { switchMap, take } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 
 import { Component, OnInit, Input, ElementRef, ViewChild, forwardRef, OnDestroy, Renderer2 } from "@angular/core";
 
@@ -19,7 +20,7 @@ import {
 } from "@ionic/angular";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SegmentChangeEventDetail } from "@ionic/core";
-import { BehaviorSubject, Observable, Subscription } from "rxjs";
+import { BehaviorSubject, forkJoin, Observable, Subscription } from "rxjs";
 // import { EditPage } from "./edit/edit.page";
 import { AuthService } from "src/app/auth.service";
 import { Labels, LanguagesService } from "src/app/languages.service";
@@ -35,6 +36,7 @@ import { Storage } from '@ionic/storage';
 import { BookingService } from 'src/app/bookings/booking.service';
 import { LikesService } from 'src/app/shared/likes.service';
 import { ViewsService } from 'src/app/shared/views/views.service';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 
 @Component({
@@ -86,9 +88,11 @@ export class SearchPage implements OnInit, OnDestroy {
   views: View[];
   viewsSub: Subscription;
   loadedViews: View[] = [];
-  @Input()theProperty: Property;
+  // @Input()
+  theProperty: Property ;
   propertyId: string
   currentLike: Like;
+  users = [] ;
 
   constructor(
     private propertiesService: PropertiesService,
@@ -105,7 +109,9 @@ export class SearchPage implements OnInit, OnDestroy {
     private bookingService: BookingService,
     private likesService: LikesService,
     private viewsService: ViewsService,
-    private routes: ActivatedRoute
+    private routes: ActivatedRoute,
+    private chatService: ChatService,
+    private afs: AngularFirestore 
   ) {
     // this.storage.getI('accessToken').then(token => {
 
@@ -141,24 +147,54 @@ get likeOn(){
   ngOnInit() {
     this.isLoading = true;
     this.onImage()
+    
+    this.routes.paramMap.subscribe(paramMap => {
+      if (!paramMap.has('propertyId')) {
+        
+        this.navCtrl.navigateBack('/properties/tabs/browser');
+        
+        console.log("no paramMap")
+        return;
+      }
+      this.propertyId = paramMap.get('propertyId')
+      this.propertiesService.getProperty(paramMap.get('propertyId')).subscribe(prop => {
+        console.log('This is the Property .....',prop)
+        this.theProperty = {
+                                       id: prop.payload.id,
+                                       address:  prop.payload.data()['address'],
+                                      bathrooms:  prop.payload.data()['bathrooms'],
+                                      bedrooms:  prop.payload.data()['bedrooms'],
+                                      description: prop.payload.data()['description'],
+                                      display:  prop.payload.data()['display'],
+                                      endDate:  prop.payload.data()['endDate'],
+                                      garages:  prop.payload.data()['garages'],
+                                      gardens:  prop.payload.data()['gardens'],
+                                      hasOffer:  prop.payload.data()['hasOffer'],
+                                      ketchins:  prop.payload.data()['ketchins'],
+                                      kind:  prop.payload.data()['kind'],
+                                      likes:  prop.payload.data()['likes'],
+                                      livingrooms:  prop.payload.data()['livingrooms'],
+                                      owner:  prop.payload.data()['owner'],
+                                      price:  prop.payload.data()['price'],
+                                      propertyName:  prop.payload.data()['propertyName'],
+                                      propertyPic:  prop.payload.data()['propertyPic'],
+                                      reservations: prop.payload.data()['reservations'],
+                                      space:  prop.payload.data()['space'],
+                                      startDate:  prop.payload.data()['startDate'],
+                                      tags:  prop.payload.data()['tags'],
+                                      userId:  prop.payload.data()['userId'],
+                                      views:  prop.payload.data()['views'],
+                                      location:  prop.payload.data()['location'],
+                                      updated_at: prop.payload.data()['updated_at'],
+                                      created_at: prop.payload.data()['created_at']
+                                       
+        }
+       this.isLoading = false;
+       this.onView(this.theProperty.id)
+      });
+    });     
+   console.log(this.theProperty)
    
-    // this.routes.paramMap.subscribe(paramMap => {
-    //   if (!paramMap.has('propertyId')) {
-    //     this.navCtrl.navigateBack('/properties/tabs/discover');
-
-    //     console.log("no paramMap")
-    //     return;
-    //   }
-    //   this.propertyId = paramMap.get('propertyId')
-    //   this.propertiesService.getProperty(paramMap.get('propertyId')).subscribe(prop => {
-    //     console.log(prop)
-    //     this.theProperty = prop});
-    // });     
-   console.log(this.theProperty.id)
-    // this.authService.userId.subscribe(userId => {
-    //   this.userId = userId;
-      
-    // })
    
     console.log('Search Page init')
     this.labelsSub = this.languageService.arabicLabel.subscribe(
@@ -179,7 +215,7 @@ get likeOn(){
         this.bookingsSub = this.bookingService.bookings.subscribe((bookings) => {
                this.loadedBookings = bookings
                this.bookings = this.loadedBookings
-              //  this.theBooking = bookings.find(booking => booking.propertyId = this.theProperty.id) ;
+               this.theBooking = bookings.find(booking => booking.propertyId === this.theProperty.id) ;
                 console.log(this.bookings)
                 
               })
@@ -190,27 +226,28 @@ get likeOn(){
               //    }
                  this.likesSub = this.likesService.likes.subscribe((likes) => {
                   this.loadedLikes= likes
+                  this.loadedLikes = this.loadedLikes.filter(like => like.propertyId === this.theProperty.id)
                   this.likes = this.loadedLikes.filter(like => like.guestId === this.authService.currentUserId);
                   
                   // console.log(this.likes.length)
+                  this.checkLike(this.theProperty.id)
+                  this.howManyLikes(this.theProperty.id)
                })
                
               //  if(this.theProperty){
               //    this.onLike(this.theProperty.id)
-               this.checkLike(this.theProperty.id)
-               this.howManyLikes(this.theProperty.id)
               // }
 
                  this.viewsSub = this.viewsService.views.subscribe((views) => {
                   this.loadedViews = views
                   this.views =  this.loadedViews.filter(view => view.guestId === this.authService.currentUserId)
                   // console.log(this.views.length)
-               })
+                  this.checkView(this.theProperty.id)
+                  this.howManyViews(this.theProperty.id)
+                })
+                this.onView(this.theProperty.id)
                
               //  if(this.theProperty){
-                 this.onView(this.theProperty.id)
-               this.checkView(this.theProperty.id)
-               this.howManyViews(this.theProperty.id)
               // }
 
             
@@ -226,6 +263,7 @@ get likeOn(){
     this._likeOn.subscribe()
     this.likesService.getLikes()
     this.viewsService.getViews()
+    this.onView(this.theProperty.id)
     this.checkView(this.theProperty.id)
     this.checkLike(this.theProperty.id)
     this.checkBookmark(this.theProperty.id)
@@ -252,7 +290,9 @@ get likeOn(){
     // }); 
   }
 
-
+goToBrowser(){
+  this.router.navigateByUrl(`properties/tabs/browser`)
+}
 
 
   checkBookmark(id: string) {
@@ -282,27 +322,27 @@ get likeOn(){
   }        
   
 
-  clickedProperty(id: string) {
-    // this.isBooked = true;
-    console.log( id)
-    this.checkBookmark(id)
-    this.checkLike(id)
-    this.checkView(id)
-    this.onView(id)
-    this.propertiesService.getProperty(id).subscribe((doc) => {
+  // clickedProperty(id: string) {
+  //   // this.isBooked = true;
+  //   console.log( id)
+  //   this.checkBookmark(id)
+  //   this.checkLike(id)
+  //   this.checkView(id)
+  //   this.onView(id)
+  //   this.propertiesService.getProperty(id).subscribe((doc) => {
     
-      this.theProperty = doc;
-    console.log(this.theProperty.propertyName)
-    });
+  //     this.theProperty = doc;
+  //   console.log(this.theProperty.propertyName)
+  //   });
    
 
     
-        // if (this.theProperty) {
-        //   this.addView();
-        //   this.checkLike();
-        //   this.checkBookmark();
-        // }
-  }
+  //       // if (this.theProperty) {
+  //       //   this.addView();
+  //       //   this.checkLike();
+  //       //   this.checkBookmark();
+  //       // }
+  // }
 
   
 
@@ -324,12 +364,8 @@ get likeOn(){
           console.log(currentLike)
           if (currentLike)
            {
-    
-            this.liked = true;
-          } else {
-            this.liked = false;
-            
-          }
+             this.liked = true;
+          } 
         }
       })
     // })
@@ -397,8 +433,9 @@ get likeOn(){
     //   if(!userId){
     //     throw new Error('No user id found');
     //   }
+   
             if (
-              !this.liked 
+              !this.liked
               ) {
         let like = {
          id: '',
@@ -408,15 +445,16 @@ get likeOn(){
          time: new Date()
        }
        this.likesService.addLike(like)
-       .subscribe(() => {
+       .subscribe((k) => {
         // this.likes.push(like);
          this.liked = true;
+         return;
          // this.router.navigateByUrl(`/properties/tabs/browser`);
        });
        console.log("Like is been added");
       } else {
         this.likes.forEach((like, index) => {
-           if( like.guestId === this.authService.currentUserId && like.propertyId === id) {
+           if( like.propertyId === id) {
             this.likes.splice(index, 1);
             this.likesService.cancelLike(like.id)
             .subscribe(() => {
@@ -505,7 +543,7 @@ onView(id: string){
 //   }
   let view: View = {
     id: '',
-    propertyId: this.theProperty.id,
+    propertyId: id,
     guestId: this.authService.currentUserId,
     date: new Date(),
     time: new Date()
@@ -541,7 +579,8 @@ onView(id: string){
   }
 
   goBack(){
-    this.modalCtrl.dismiss('theProperty');
+    // this.modalCtrl.dismiss('theProperty');
+    this.navCtrl.navigateBack('properties/tabs/browser')
       
   }
 
@@ -630,14 +669,93 @@ onView(id: string){
   
   }
 
-  onList(property: Property) {
-    // this.router.navigateByUrl(`properties/tabs/browser/chat`)
+  addUser(userId: string){
+    let obs = this.chatService.findUser(userId)
+    
+    forkJoin(obs).subscribe(res => {
+      console.log('res:',res)
+      for( let data of res){
+        if(data.length > 0){
+           console.log('this is the data:  ',data)
+           let _user = {
+             email:data[0].data['email'],
+             id: data[0].id,
+             nickname: data[0].data['nickname']
+           }
+          this.users.push(_user)
+          console.log('users: ',this.users)
+        }
+      }
+    })
+  }
+  
+  onChat(property: Property) {
+    let groupId: string;
+    let nickname: any;
+    console.log('This is current User ID:  ', this.authService.currentUserId)
+    console.log('This is property User ID:  ', property.userId)
 
-      this.modalCtrl.create({component: ChatPage, componentProps: {userId: this.authService.user.uid, theProperty: property}, id:'chat'})
-      .then(modalEl => { 
-        modalEl.present();
-        return modalEl.onDidDismiss();
-      })
+    
+    this.afs.collection(`users/${property.userId}`).snapshotChanges().pipe(
+      take(1),
+      map(actions => actions.map(a => {
+        nickname = a.payload.doc.data()['nickname'];
+        const id = a.payload.doc.id;
+        console.log('This is nickname....',nickname, '   the id: ', id)
+        
+      }))
+    );
+
+      // this.addUser(this.authService.currentUserId)
+      // console.log('This is the nickname....', nickname)
+      // this.addUser(nickname)
+
+    this.createGroup((new Date()).toString, this.users).then((gId)=> {
+      groupId = gId;
+      console.log('This is the owner groupId', groupId)
+    });
+    this.router.navigateByUrl(`properties/tabs/chat/chat-detail/${groupId}`)
+  }
+
+  createGroup(title, users) {
+    console.log('The nickname of the current user is......', this.auth.currentUserId)
+    let current = {
+      email: this.auth.currentUser.email,
+      id: this.auth.currentUserId,
+      nickname: this.auth.nickname
+    };
+ 
+    let allUsers = [current, ...users];
+    console.log('The All Users....', allUsers)
+    return this.afs.collection('groups').add({
+      title: title,
+      users: allUsers
+    }).then(res => {
+      console.log('This is working', res)
+      let promises = [];
+ 
+      for (let usr of allUsers) {
+        console.log('Adding groups: ', res.id , '   collection to every user: ', usr)
+        let oneAdd = this.afs.collection(`users/${usr['id']}/groups`).add({
+          id: res.id
+        });
+        
+      }
+      return res.id;
+    })
+  }
+
+  onList(property: Property) {
+    if(this.theProperty.id){
+
+      this.router.navigateByUrl(`properties/tabs/browser/chat/${this.theProperty.id}`)
+    }
+    
+      // this.modalCtrl.create({component: ChatPage, componentProps: {userId: this.authService.user.uid, theProperty: property}, id:'chat'})
+      // .then(modalEl => { 
+      //   modalEl.present();
+      //   return modalEl.onDidDismiss();
+      // })
 
     
     // this.listOfProperties = true;

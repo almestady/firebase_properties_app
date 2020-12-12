@@ -51,7 +51,7 @@ export class ChatDetailPage implements OnInit {
   usePicker = false;
 
   selectedImage: string;
-@Output() imagePick = new EventEmitter<string | File>();
+ imagePick = new EventEmitter<string | File>();
 @Input() showPreview = false;
 @ViewChild('filePicker',{ static: false}) filePickerRef: ElementRef<HTMLInputElement>;
   
@@ -111,10 +111,10 @@ export class ChatDetailPage implements OnInit {
   }
 
   leave() {
-    let newUsers = this.chat.users.filter(usr => usr.id != this.auth.currentUserId);
-
+    console.log('This is the filter......',this.chat.users)
+    let newUsers = this.chat.users.filter(usr => usr.id !== this.auth.currentUserId);
     this.chatService.leaveGroup(this.chat.id, newUsers).subscribe(res => {
-      this.router.navigateByUrl('/chats');
+      this.router.navigateByUrl('properties/tabs/browser/chat');
     });
   }
 
@@ -174,8 +174,7 @@ export class ChatDetailPage implements OnInit {
     })
   })
       
-      // this.selectedImage = image.dataUrl.toString();
-      // this.imagePick.emit(image.dataUrl)
+      
     
     
       .catch(err => {
@@ -204,7 +203,7 @@ export class ChatDetailPage implements OnInit {
   
 
   onImagePicked(image: string | File ) {
-    
+    console.log('image picked...')
     if(typeof image === 'string') {
       try{
         this.imageFile =  base64toBlob(image.replace('data:image/jpeg;base64,', ''), 'image/jpeg');

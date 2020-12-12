@@ -96,22 +96,17 @@ export class OffersPage implements OnInit, OnDestroy {
     });
     this.isLoading = true;
 
-    this.authService.userId.pipe(take(1)).subscribe(userId => {
-        if(!userId){
-          throw Error('Could not find userId')
-        }
-
 
         this.porpsSub = this.propertiesService.properties.subscribe((properties: Property[]) => {
          console.log(properties)
          
          this.listedProperties = properties.filter(
-           prop => prop.userId === userId  
+           prop => prop.userId === this.authService.currentUserId  
            );
            this.currentProperty = this.listedProperties[0];
            
            this.myOfferedProperties = properties.filter(
-             prop => prop.userId === userId && prop.display 
+             prop => prop.userId === this.authService.currentUserId && prop.display 
              );
              this.isLoading = false;
         });
@@ -124,7 +119,7 @@ export class OffersPage implements OnInit, OnDestroy {
           this.checkBookmark();
           this.onList();
         }
-      })
+      
   }
  
   ionViewWillEnter() {
@@ -158,13 +153,10 @@ export class OffersPage implements OnInit, OnDestroy {
       this.currentProperty.reservations = [];
     }
 
-    this.authService.userId.pipe(take(1)).subscribe(userId => {
-        if(!userId){
-          throw Error('Could not find userId')
-        }
+   
 
-        if (!this.currentProperty.reservations.find(resv => resv.customerId = userId)) {
-          console.log(this.currentProperty.reservations.find(resv => resv.customerId = userId))
+        if (!this.currentProperty.reservations.find(resv => resv.customerId = this.authService.currentUserId)) {
+          console.log(this.currentProperty.reservations.find(resv => resv.customerId = this.authService.currentUserId))
           this.modalCtrl
             .create({
               component: CreateBookingComponent,
@@ -177,7 +169,7 @@ export class OffersPage implements OnInit, OnDestroy {
             .then((data) => {
               console.log(data.data);
               this.currentProperty.reservations.push({
-                customerId: userId,
+                customerId: this.authService.currentUserId,
                 onDate: new Date(),
               });
               this.propertiesService
@@ -188,7 +180,7 @@ export class OffersPage implements OnInit, OnDestroy {
                 });
             });
         } else {
-          console.log(this.currentProperty.reservations.find(resv => resv.customerId = userId))
+          console.log(this.currentProperty.reservations.find(resv => resv.customerId = this.authService.currentUserId))
           this.actionSheetCtrl
             .create({
               header: this.labels.cancelBookingQuest,
@@ -221,19 +213,15 @@ export class OffersPage implements OnInit, OnDestroy {
             });
         }
         
-      })
+      
   }
 
   checkLike() {
     if (this.currentProperty.likes) {
-        this.authService.userId.pipe(take(1)).subscribe(userId => {
-            if(!userId){
-              throw Error('Could not find userId')
-            }
 
             if (
               this.currentProperty.likes.find(
-                (like) => like.guestId === userId
+                (like) => like.guestId === this.authService.currentUserId
               )
             ) {
               this.likeOn = true;
@@ -241,7 +229,7 @@ export class OffersPage implements OnInit, OnDestroy {
               this.likeOn = false;
             }
 
-          })
+          
     }
   }
 
@@ -301,7 +289,37 @@ export class OffersPage implements OnInit, OnDestroy {
   clickedPrperty(id: string) {
     this.propertiesService
       .getProperty(id)
-      .subscribe(property => (this.currentProperty = property));
+      .subscribe(prop => (this.currentProperty = 
+        {
+          id: prop.payload.id,
+          address:  prop.payload.data()['address'],
+         bathrooms:  prop.payload.data()['bathrooms'],
+         bedrooms:  prop.payload.data()['bedrooms'],
+         description: prop.payload.data()['description'],
+         display:  prop.payload.data()['display'],
+         endDate:  prop.payload.data()['endDate'],
+         garages:  prop.payload.data()['garages'],
+         gardens:  prop.payload.data()['gardens'],
+         hasOffer:  prop.payload.data()['hasOffer'],
+         ketchins:  prop.payload.data()['ketchins'],
+         kind:  prop.payload.data()['kind'],
+         likes:  prop.payload.data()['likes'],
+         livingrooms:  prop.payload.data()['livingrooms'],
+         owner:  prop.payload.data()['owner'],
+         price:  prop.payload.data()['price'],
+         propertyName:  prop.payload.data()['propertyName'],
+         propertyPic:  prop.payload.data()['propertyPic'],
+         reservations: prop.payload.data()['reservations'],
+         space:  prop.payload.data()['space'],
+         startDate:  prop.payload.data()['startDate'],
+         tags:  prop.payload.data()['tags'],
+         userId:  prop.payload.data()['userId'],
+         views:  prop.payload.data()['views'],
+         location:  prop.payload.data()['location'],
+         updated_at: prop.payload.data()['updated_at'],
+         created_at: prop.payload.data()['created_at']           
+}
+        ));
   }
 
   public notify(property: Property) {
@@ -332,10 +350,7 @@ async  onFilterUpdate(filter: string) {
   }
 
   onLike(id: string, event: Event) {
-    this.authService.userId.pipe(take(1)).subscribe(userId => {
-        if(!userId){
-          throw Error('Could not find userId')
-        }
+   
 
 
 
@@ -344,14 +359,14 @@ async  onFilterUpdate(filter: string) {
     
           if (
             !this.currentProperty.likes.find(
-              like => like.guestId === userId
+              like => like.guestId === this.authService.currentUserId
             )
           ) {
             this.currentProperty.likes.push(
               {id: '',
               time: new Date(),
               propertyId: '',
-              guestId:userId, date: new Date()}
+              guestId:this.authService.currentUserId, date: new Date()}
             );
             console.log("Like is been added");
           }
@@ -359,7 +374,7 @@ async  onFilterUpdate(filter: string) {
         } else {
           this.likeOn = false;
           this.likes.forEach((like, index) => {
-            if (like.guestId === userId) {
+            if (like.guestId === this.authService.currentUserId) {
               this.currentProperty.likes.splice(index, 1);
             }
           });
@@ -372,19 +387,15 @@ async  onFilterUpdate(filter: string) {
             this.currentProperty = oldCurrentProperty;
             this.likeOn = oldLikeOn;
           });
-      })
+      
   }
 
   checkBookmark() {
     console.log(this.currentProperty.id);
     this.bookingService.bookings.subscribe(bookings => {
-        this.authService.userId.pipe(take(1)).subscribe(userId => {
-            if(!userId){
-              throw Error('Could not find userId')
-            }
-            
+
             const books = bookings.filter(booking => {
-               (booking.propertyId === this.currentProperty.id && booking.guestId === userId)
+               (booking.propertyId === this.currentProperty.id && booking.guestId === this.authService.currentUserId)
              } )
                
                if(books){
@@ -394,9 +405,9 @@ async  onFilterUpdate(filter: string) {
                 this.bookmarkOn = false;
               }
           })
-      }
+      
     
-    )
+    
   }
 
   onList() {

@@ -110,14 +110,11 @@ save() {
 
 
  formInfo() {
-  this.authService.userId.pipe(take(1)).subscribe(userId => {
-    if(!userId){
-      throw Error('Could not find userId')
-    }
+  
 
     this.property = { 
       id:'',
-      userId: userId,
+      userId: this.authService.currentUserId,
       propertyName: this.form.value.propertyName,
       description: this.form.value.description,
       propertyPic: this.formFourth.value.propertyPicture,
@@ -144,7 +141,7 @@ save() {
       created_at: new Date(),
       updated_at: new Date()
     };
-  })
+  
  }
 
   onSave() {

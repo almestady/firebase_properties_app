@@ -73,7 +73,7 @@ export class ChatService {
   constructor(private db: AngularFirestore, private auth: AuthService, private storage: AngularFireStorage) { }
  
   findUser(value) {
-  console.log()
+  console.log('this is the value.....',value)
     let email = this.db.collection('users', ref => ref.where('email', '==', value)).snapshotChanges().pipe(
       take(1),
       map(actions => actions.map(a => {
@@ -91,7 +91,7 @@ export class ChatService {
         return { id, data };
       }))
     );
-    console.log('emai is:  ', email, '   ',nickname)
+    console.log('email is:  ', email, '   ',nickname)
     return [email, nickname];
 
   }
@@ -124,6 +124,7 @@ export class ChatService {
     })
   }
  
+
   getGroups() {
     return this.db.collection(`users/${this.auth.currentUserId}/groups`).snapshotChanges().pipe(
       map(actions => actions.map(a => {

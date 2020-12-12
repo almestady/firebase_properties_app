@@ -32,7 +32,35 @@ export class NewOfferPage implements OnInit {
 
   ngOnInit() {
     this.propertiesService.getProperty(this.propertyId).subscribe(
-      property => this.property =  property
+      prop => this.property =  {
+        id: prop.payload.id,
+        address:  prop.payload.data()['address'],
+       bathrooms:  prop.payload.data()['bathrooms'],
+       bedrooms:  prop.payload.data()['bedrooms'],
+       description: prop.payload.data()['description'],
+       display:  prop.payload.data()['display'],
+       endDate:  prop.payload.data()['endDate'],
+       garages:  prop.payload.data()['garages'],
+       gardens:  prop.payload.data()['gardens'],
+       hasOffer:  prop.payload.data()['hasOffer'],
+       ketchins:  prop.payload.data()['ketchins'],
+       kind:  prop.payload.data()['kind'],
+       likes:  prop.payload.data()['likes'],
+       livingrooms:  prop.payload.data()['livingrooms'],
+       owner:  prop.payload.data()['owner'],
+       price:  prop.payload.data()['price'],
+       propertyName:  prop.payload.data()['propertyName'],
+       propertyPic:  prop.payload.data()['propertyPic'],
+       reservations: prop.payload.data()['reservations'],
+       space:  prop.payload.data()['space'],
+       startDate:  prop.payload.data()['startDate'],
+       tags:  prop.payload.data()['tags'],
+       userId:  prop.payload.data()['userId'],
+       views:  prop.payload.data()['views'],
+       location:  prop.payload.data()['location'],
+       updated_at: prop.payload.data()['updated_at'],
+       created_at: prop.payload.data()['created_at']           
+}
     );
     // this.propertiesService.properties.subscribe(properties => {
     //   this.property = properties.find(
