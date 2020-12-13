@@ -85,7 +85,7 @@ export class SearchPage implements OnInit, OnDestroy {
   likes: Like[] = []
   loadedLikes: Like[] =[]
   viewOn: boolean;
-  views: View[];
+  views: View[] = [];
   viewsSub: Subscription;
   loadedViews: View[] = [];
   // @Input()
@@ -534,28 +534,30 @@ ionViewWillLeave(){
 }
 
 onView(id: string){
-  // if(this.viewOn){
-  //   return
-  // }
-// this.authService.userId.pipe(take(1)).subscribe(userId => {
-//   if(!userId){
-//     throw new Error('No user id found');
-//   }
-  let view: View = {
-    id: '',
-    propertyId: id,
-    guestId: this.authService.currentUserId,
-    date: new Date(),
-    time: new Date()
+this.viewsService.views.subscribe(views => {
+  let currentView = views.filter(view => view.guestId === this.authService.currentUserId)
+  console.log('This view test...', currentView.find(view => view.propertyId === id ))
+  if(!currentView.find(view => view.propertyId === id)){
+  
+    let view: View = {
+      id: '',
+      propertyId: id,
+      guestId: this.authService.currentUserId,
+      date: new Date(),
+      time: new Date()
+    }
+    // this.likes.push(like);
+    this.viewsService.addView(view)
+    .subscribe(() => {
+      this.viewOn = true;
+      // this.router.navigateByUrl(`/properties/tabs/browser`);
+      return;
+    });
+    console.log(this.theProperty.id + " is been viewed");
+  // })
   }
-  // this.likes.push(like);
-  this.viewsService.addView(view)
-  .subscribe(() => {
-    this.viewOn = true;
-    // this.router.navigateByUrl(`/properties/tabs/browser`);
-  });
-  console.log(this.theProperty.id + " is been viewed");
-// })
+})
+
 
 }
 

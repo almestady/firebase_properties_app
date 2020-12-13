@@ -64,10 +64,17 @@ const routes: Routes = [
           }
             
             ]
+          },
+          {
+            path: "myproperties",
+            children: [
+              {
+                path: "",
+                loadChildren: () => import("./myproperties/myproperties.module").then(m => m.MypropertiesPageModule)
+              }
+            ]
           }
-         
-          ,
-        
+        ,
       {
         
         path: "discover",
@@ -194,6 +201,7 @@ const routes: Routes = [
     ],
   },
   { path: '', loadChildren: './browser/browser.module#BrowserPageModule' },
+  { path: 'myproperties', loadChildren: './myproperties/myproperties.module#MypropertiesPageModule' },
   
   
   // },
