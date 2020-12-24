@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button [defaultHref]="['properties/tabs/browser']" >
-        
-      </ion-back-button>
+      <ion-button [defaultHref]="['properties/tabs/browser']"  >
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title class="ion-text-center">{{labels.discoverOffers}}</ion-title>
@@ -18,7 +18,7 @@
       <ion-row class="ion-text-center" style="margin-top: 0px; padding-top: 0px">
         <ion-col size-xs="12" style="scroll-behavior: auto;">
           <ion-item-sliding #slidingItem *ngIf="loadedProperties">
-            <ion-list lines="none">
+          <ion-list lines="none">
               <!-- *************************************** -->
               <ion-item *ngIf="!theProperty"
                 ><ion-label class="ion-text-center"
@@ -231,7 +231,7 @@
                         </ion-col>
                       </ion-row>
                       <ion-row size-xs="12">
-                        <ion-col >
+                        <ion-col style="padding: 0%;margin: 0%;">
                           
                            
                               <ion-label *ngIf="messages" class="ion-text-center"  style="margin-right: 30px; margin-left: 30px"
@@ -241,12 +241,12 @@
                          
                               <ion-grid *ngIf="map">
                                 <ion-row>
-                                  <ion-col size-sm="6" offset-sm="3" clsss="ion-text-center; padding"  style="margin-right: 30px; margin-left: 30px">
+                                  <ion-col size-sm="12" offset-sm="" clsss="ion-text-center; "  >
                                     {{ theProperty.location.address }}
                                   </ion-col>
                                 </ion-row>
                                 <ion-row>
-                                  <ion-col size-sm="6" offset-sm="3" clsss="ion-text-center; padding"  style="margin-right: 35px; margin-left: 35px">
+                                  <ion-col size-sm="12" offset-sm="" clsss="ion-text-center;"  ß>
                                     <ion-img
                                       role="button"
                                       (click)="onShowFullMap()"
@@ -288,14 +288,14 @@
                             *ngIf="!listActive"
                             class="ion-text-center"
                             style="margin-right: 3%"
-                            (click)="onList(theProperty)"
+                            (click)="onChat(theProperty)"
                             ><ion-icon size="small" name="chatbox-outline"></ion-icon>
                           </ion-label>
                           <ion-label
                             *ngIf="listActive"
                             class="ion-text-center"
                             style="margin-right: 3%; color:dodgerblue"
-                            ><ion-icon size="small" name="chatbox-outline"></ion-icon>
+                            ><ion-icon size="small" name="chatbubbles-outline"></ion-icon>
                           </ion-label>
                         </ion-col>
     

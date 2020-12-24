@@ -12,6 +12,7 @@ import * as firebase from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as admin from 'firebase-admin';
+import { ChatDetailPage } from './chat-detail/chat-detail.page';
 
 export interface User {
   uid: string;
@@ -131,6 +132,15 @@ export class ChatPage implements OnInit {
     // })
 
   }
+
+  letsChat(groupId: string){
+    this.modalCtrl.create({component: ChatDetailPage, componentProps: {groupId: groupId}, id:'chat'})
+    .then(modalEl => { 
+      modalEl.present();
+      return modalEl.onDidDismiss();
+    })
+  }
+
 
 goToChat(){
   this.modalCtrl.dismiss('chat')

@@ -43,7 +43,7 @@ loading = false
   //   return this._properties.asObservable();
   // }
 
-  getProperties() {
+  getProperties() {  
     
     return this.afs.collection('properties').valueChanges({ idField: 'id' }) as Observable<Property[]>;
   }

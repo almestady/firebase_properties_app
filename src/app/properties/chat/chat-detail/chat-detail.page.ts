@@ -1,3 +1,5 @@
+import { Group, GroupsService } from './../groups.service';
+import { ModalController } from '@ionic/angular';
 
 import { ChatService } from 'src/app/services/chat.service';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
@@ -54,28 +56,41 @@ export class ChatDetailPage implements OnInit {
  imagePick = new EventEmitter<string | File>();
 @Input() showPreview = false;
 @ViewChild('filePicker',{ static: false}) filePickerRef: ElementRef<HTMLInputElement>;
-  
+@Input()groupId: string;
   @ViewChild(IonContent) content: IonContent;
   @ViewChild('input', { read: ElementRef }) msgInput: ElementRef;
-  
+  isLoading = false;
+group: Group;
   constructor(private route: ActivatedRoute,
     private auth: AuthService, 
     private chatService: ChatService, 
     private router: Router,
     private camera: Camera,
-    private platform: Platform
+    private platform: Platform,
+    private modalCtrl: ModalController,
+    private groupsService: GroupsService
     ) { }
 
   ngOnInit() {
+    console.log('The GROUP ID IS', this.groupId)
+    this.isLoading= true;
     if(this.platform.is('mobile') && !this.platform.is('hybrid') || this.platform.is('desktop')) {
       this.usePicker = true;
     }
-    this.route.params.subscribe(data => {
-      console.log('this is params:',data)
-      this.chatService.getOneGroup(data.groupId).subscribe(res => {
-        this.chat = res;
+    // this.route.params.subscribe(data => {
+      // console.log('this is params:',data)
+      console.log(this.groupId)
+      this.groupsService.getProperty(this.groupId).subscribe(prop => {
+
+        console.log('This is the Chat .....',prop.payload.id)
+        this.chat = {
+          id: prop.payload.id,
+          title: prop.payload.data()['title'],
+          users: prop.payload.data()['users'],
+          messages: prop.payload.data()['messages'],
+        }
         console.log('my chat: ', this.chat);
-        this.messages = this.chatService.getChatMessages(res.id).pipe(
+        this.messages = this.chatService.getChatMessages(prop.payload.id).pipe(
           map(messages => {
             for (let msg of messages) {
               console.log('this is the message: ', msg.data)
@@ -86,11 +101,26 @@ export class ChatDetailPage implements OnInit {
           })
         );
       })
-    })
+      // this.chatService.getOneGroup(this.groupId).subscribe(res => {
+      //   this.isLoading= false;
+      //   this.chat = res;
+      //   console.log('my chat: ', this.chat);
+      //   this.messages = this.chatService.getChatMessages(res.id).pipe(
+      //     map(messages => {
+      //       for (let msg of messages) {
+      //         console.log('this is the message: ', msg.data)
+      //         msg.data['user'] = this.getMsgFromName(msg.data['from']);
+      //       }
+      //       console.log('messages: ', messages);
+      //       return messages;
+      //     })
+      //   );
+      // })
+    // })
   }
 
   getMsgFromName(userId) {
-    for (let usr of this.chat.data.users) {
+    for (let usr of this.chat['users']) {
       console.log('this is the nickname   ' ,usr)
       if (usr.id === userId) {
         return usr['nickname'];
@@ -114,8 +144,12 @@ export class ChatDetailPage implements OnInit {
     console.log('This is the filter......',this.chat.users)
     let newUsers = this.chat.users.filter(usr => usr.id !== this.auth.currentUserId);
     this.chatService.leaveGroup(this.chat.id, newUsers).subscribe(res => {
-      this.router.navigateByUrl('properties/tabs/browser/chat');
+      this.router.navigateByUrl('properties/tabs/browser');
     });
+  }
+
+  goBack(){
+    this.modalCtrl.dismiss('chat')
   }
 
   // sendFile() {

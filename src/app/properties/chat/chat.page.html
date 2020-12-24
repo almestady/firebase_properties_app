@@ -26,7 +26,7 @@
 
   <ion-list>
     <ion-item button  *ngFor="let group of groups" text-wrap
-    [routerLink]="['./chat-detail', group.id]">                                                                      
+    (click)="letsChat(group.id)">                                                                      
       <ion-label txt-wrap>
        <ion-text color="primary">
          <h3>{{ group.data.title }}</h3>

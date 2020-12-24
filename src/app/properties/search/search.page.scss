@@ -112,11 +112,16 @@ ion-label {
 }
 
 .location-img {
-    widht:10rem;
-    height: 25rem;
+    height: 250px;
+    width: 100%;
+    // width:10rem;
+    // height: 25rem;
     // max-height: 30vh;
     object-fit: cover;
     border-radius: 8px;
+    display:  block;
+    margin:0;
+    padding: 0;
 }
 
 .img-wrapper {

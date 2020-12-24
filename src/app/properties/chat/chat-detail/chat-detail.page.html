@@ -1,9 +1,9 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button [routerLink]="chat"></ion-back-button>
+      <ion-button (click)="goBack()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-title>{{ chat?.data.title }}</ion-title>
+    <ion-title></ion-title>
     <ion-buttons slot="end">
       <ion-button color="danger" fill="clear" (click)="leave()">
         Leave Chat

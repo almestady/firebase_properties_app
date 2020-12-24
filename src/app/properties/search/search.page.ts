@@ -1,8 +1,10 @@
+import { Group, GroupsService } from './../chat/groups.service';
+import { ChatDetailPage } from './../chat/chat-detail/chat-detail.page';
 import { ChatService } from 'src/app/services/chat.service';
 
-import { ChatPage } from './../chat/chat.page';
+import { ChatPage, User } from './../chat/chat.page';
 import { async } from '@angular/core/testing';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap, retry } from 'rxjs/operators';
 
 import { Component, OnInit, Input, ElementRef, ViewChild, forwardRef, OnDestroy, Renderer2 } from "@angular/core";
 
@@ -20,7 +22,7 @@ import {
 } from "@ionic/angular";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SegmentChangeEventDetail } from "@ionic/core";
-import { BehaviorSubject, forkJoin, Observable, Subscription } from "rxjs";
+import { BehaviorSubject, forkJoin, from, Observable, Subscription } from "rxjs";
 // import { EditPage } from "./edit/edit.page";
 import { AuthService } from "src/app/auth.service";
 import { Labels, LanguagesService } from "src/app/languages.service";
@@ -111,7 +113,8 @@ export class SearchPage implements OnInit, OnDestroy {
     private viewsService: ViewsService,
     private routes: ActivatedRoute,
     private chatService: ChatService,
-    private afs: AngularFirestore 
+    private afs: AngularFirestore,
+    private groupsService: GroupsService
   ) {
     // this.storage.getI('accessToken').then(token => {
 
@@ -160,7 +163,7 @@ get likeOn(){
       this.propertiesService.getProperty(paramMap.get('propertyId')).subscribe(prop => {
         console.log('This is the Property .....',prop)
         this.theProperty = {
-                                       id: prop.payload.id,
+                            id: prop.payload.id,
                                        address:  prop.payload.data()['address'],
                                       bathrooms:  prop.payload.data()['bathrooms'],
                                       bedrooms:  prop.payload.data()['bedrooms'],
@@ -691,52 +694,174 @@ this.viewsService.views.subscribe(views => {
     })
   }
   
+
+  isSessionExit(property: Property){
+    if(this.authService.currentUserId === property.userId){
+      // this.router.navigateByUrl(`chat/${property.id}`)
+      this.modalCtrl.create({component: ChatPage, componentProps: {userId: property.userId, theProperty: property}, id:'chat'})
+      .then(modalEl => { 
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+      return null;
+    }else{
+    // console.log('Property userId is:  ',userId)
+    let groupId:string;
+    let usr1, usr2: boolean;
+   return this.groupsService.groups.pipe(map(groups => {
+      // console.log('These are the groups',groups)
+      let grps = groups;
+      let flag = 0;
+      grps.forEach(group => {
+        flag ++;
+        // console.log('This is the group\'s users', group.users)
+        usr1 = false;
+        usr2 = false;
+        group.users.forEach(usr => {
+        
+          if(usr.id === this.authService.currentUserId){
+            usr1 = true;
+          }
+          if(usr.id === property.userId){
+             usr2 = true;
+          }
+        //   let usr1 = group.users.find(usr => usr.id === this.authService.currentUserId);
+        //  let usr2 = group.users.find(usr => usr.id === userId);
+      })
+          if( usr1 && usr2){ 
+             console.log('usr1  ',usr1, 'usr2  ', usr2)
+            
+            console.log('I have found the group......',group.id);
+            groupId = group.id;
+            console.log('Senddddddinnnnnnnnnnnnnng', groupId)
+            // this.onChat(groupId);
+            // this.onChat(groupId)
+          }
+        })
+        if(groupId){
+          return  groupId;
+
+        }
+      }))
+    }
+    // return from(null)
+  }
+
+  
+  
   onChat(property: Property) {
-    let groupId: string;
-    let nickname: any;
-    console.log('This is current User ID:  ', this.authService.currentUserId)
-    console.log('This is property User ID:  ', property.userId)
+     this.isSessionExit(this.theProperty).pipe(take(1), map(groupId =>{
+      console.log('This is gId ', groupId)
+      return groupId
+    })).subscribe(groupId => {
+      console.log('Starting modal : ', groupId)
+      if(groupId !== undefined){
+        this.modalCtrl.create({component: ChatDetailPage, componentProps: {groupId: groupId}, id:'chat'})
+        .then(modalEl => { 
+          modalEl.present();
+          return modalEl.onDidDismiss();
+        })
+        return;
+      }else{
+        let groupId: string;
+        let nickname: string;
+        console.log('This is current User ID:  ', this.authService.currentUserId)
+        console.log('This is property User ID:  ', this.theProperty.userId)
+    
+        console.log('What a PROPERTY', this.theProperty)
+      return this.afs.collection<User[]>(`users`).snapshotChanges()
+          // this.afs.collection('users').valueChanges({ idField: 'id' })
+          .pipe(
+          // take(1),
+          map(changes => changes.map(({ payload: { doc } }) => {
+            const data = doc.data();
+            const id = doc.id
+            return { id, ...data };
+          })),
+          map((users) => users.find(doc => doc.id === this.theProperty.userId && doc.id !== this.authService.currentUserId))
+             
+            ).subscribe(usr => {
+              if(usr){
+                console.log('I am here:   ', usr)
+    
+                this.users.push(usr)
+                let current = {
+                  email: this.auth.currentUser.email,
+                  id: this.auth.currentUserId,
+                  nickname: this.auth.nickname
+                };
+                this.users.push(current)
+                if(this.users){
+                  console.log('I am the users',this.users)
+                  
+                  this.createGroup('The Owner', this.users).then((gId)=> {
+                          groupId = gId;
+                          console.log('This is the owner groupId', groupId)
+                          
+                          // this.router.navigateByUrl(`chat/chat-detail/${groupId}`)
+                           this.modalCtrl.create({component: ChatDetailPage, componentProps: { groupId: groupId}, id:'chat'})
+          .then(modalEl => { 
+            modalEl.present();
+            return modalEl.onDidDismiss();
+          })
+                        });
+                }
+              }
+            })
+      }
+    });
 
     
-    this.afs.collection(`users/${property.userId}`).snapshotChanges().pipe(
-      take(1),
-      map(actions => actions.map(a => {
-        nickname = a.payload.doc.data()['nickname'];
-        const id = a.payload.doc.id;
-        console.log('This is nickname....',nickname, '   the id: ', id)
-        
-      }))
-    );
+  // *******************************************************
+  //****************************************************** */
+      //   ))
+      // .subscribe(users => {
+      //   let theUsers = users;
+      //     let user = theUsers.find(usr => {usr.id === property.userId} )
+      //     console.log('The User is:  ', user)
+      //     if(!user){
+      //       console.log('Can not find user',theUsers)
+      //       return
+      //     }
+      //     this.users.push(user)
+          
+      //     console.log('Current users are :  ', this.users)
+      //     this.createGroup((new Date()).toString, this.users).then((gId)=> {
+      //       groupId = gId;
+      //       console.log('This is the owner groupId', groupId)
+      //     });
+      //   })
+       
+      
 
       // this.addUser(this.authService.currentUserId)
       // console.log('This is the nickname....', nickname)
-      // this.addUser(nickname)
-
-    this.createGroup((new Date()).toString, this.users).then((gId)=> {
-      groupId = gId;
-      console.log('This is the owner groupId', groupId)
-    });
-    this.router.navigateByUrl(`properties/tabs/chat/chat-detail/${groupId}`)
+    //   this.addUser(nickname)
+    // this.router.navigateByUrl(`properties/tabs/chat/chat-detail/${groupId}`)
   }
 
   createGroup(title, users) {
-    console.log('The nickname of the current user is......', this.auth.currentUserId)
-    let current = {
-      email: this.auth.currentUser.email,
-      id: this.auth.currentUserId,
-      nickname: this.auth.nickname
-    };
+    console.log('The USERS......', users)
+    // let current = {
+    //   email: this.auth.currentUser.email,
+    //   id: this.auth.currentUserId,
+    //   nickname: this.auth.nickname
+    // };
+
+    // if(users.length = 0){
+    //   return;
+    // }
  
-    let allUsers = [current, ...users];
-    console.log('The All Users....', allUsers)
+    // let allUsers = [current, ...users];
+    // console.log('The All Users....', allUsers)
     return this.afs.collection('groups').add({
       title: title,
-      users: allUsers
+      users: users
     }).then(res => {
       console.log('This is working', res)
       let promises = [];
  
-      for (let usr of allUsers) {
+      for (let usr of users) {
         console.log('Adding groups: ', res.id , '   collection to every user: ', usr)
         let oneAdd = this.afs.collection(`users/${usr['id']}/groups`).add({
           id: res.id
