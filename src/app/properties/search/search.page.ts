@@ -708,6 +708,7 @@ this.viewsService.views.subscribe(views => {
     // console.log('Property userId is:  ',userId)
     let groupId:string;
     let usr1, usr2: boolean;
+    let thisProperty: boolean;
    return this.groupsService.groups.pipe(map(groups => {
       // console.log('These are the groups',groups)
       let grps = groups;
@@ -725,17 +726,20 @@ this.viewsService.views.subscribe(views => {
           if(usr.id === property.userId){
              usr2 = true;
           }
-        //   let usr1 = group.users.find(usr => usr.id === this.authService.currentUserId);
-        //  let usr2 = group.users.find(usr => usr.id === userId);
-      })
-          if( usr1 && usr2){ 
-             console.log('usr1  ',usr1, 'usr2  ', usr2)
-            
-            console.log('I have found the group......',group.id);
-            groupId = group.id;
-            console.log('Senddddddinnnnnnnnnnnnnng', groupId)
-            // this.onChat(groupId);
-            // this.onChat(groupId)
+          //   let usr1 = group.users.find(usr => usr.id === this.authService.currentUserId);
+          //  let usr2 = group.users.find(usr => usr.id === userId);
+        })
+        if( usr1 && usr2 ){ 
+                  if(group.propertyId === property.id){
+                   
+                    console.log('usr1  ',usr1, 'usr2  ', usr2, ' thisProperty ', thisProperty)
+                    
+                    console.log('I have found the group......',group.id);
+                    groupId = group.id;
+                    console.log('Senddddddinnnnnnnnnnnnnng', groupId)
+                    // this.onChat(groupId);
+                    // this.onChat(groupId)
+                  }
           }
         })
         if(groupId){
@@ -794,7 +798,7 @@ this.viewsService.views.subscribe(views => {
                 if(this.users){
                   console.log('I am the users',this.users)
                   
-                  this.createGroup('The Owner', this.users).then((gId)=> {
+                  this.createGroup(this.theProperty.description, this.users).then((gId)=> {
                           groupId = gId;
                           console.log('This is the owner groupId', groupId)
                           
@@ -856,7 +860,8 @@ this.viewsService.views.subscribe(views => {
     // console.log('The All Users....', allUsers)
     return this.afs.collection('groups').add({
       title: title,
-      users: users
+      users: users,
+      propertyId: this.theProperty.id,
     }).then(res => {
       console.log('This is working', res)
       let promises = [];

@@ -3,7 +3,7 @@ import { Property } from './../property.model';
 import { switchMap, take } from 'rxjs/operators';
 import { AuthService } from './../../auth.service';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, Data } from '@angular/router';
 import { IonContent, ModalController, NavController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { ChatService, Message } from 'src/app/services/chat.service';
@@ -54,6 +54,7 @@ export interface User {
 export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
   @Input()userId: string;
+  theProperty: Property;
  thePropertyId: string;
   groups = [];
   
@@ -90,7 +91,12 @@ export class ChatPage implements OnInit {
     this.chatService.getGroups().subscribe(groups => {
       groups.forEach(grp => {
         grp.forEach(gr => {
-          this.groups.push(gr);
+          if(gr.data['propertyId'] === this.theProperty.id){
+
+            this.groups.push(gr);
+          }
+          console.log('Hiiiiiiiiiii ',gr.data['propertyId'])
+          this.groups.find(group => group.data['propertyId'] === this.theProperty.id)
           this.groups.forEach(g => {console.log(g.data['title'], '   ' ,g.data['users'] )})
         })
       })

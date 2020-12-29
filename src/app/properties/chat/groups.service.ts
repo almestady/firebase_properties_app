@@ -19,6 +19,7 @@ export interface Group {
   title: string;
   users: User[];
   messages: Message[];
+  propertyId: string;
 }
 
 @Injectable({
