@@ -31,8 +31,13 @@
     <ion-row>
       <ion-col size="12" size-sm="8" offset-sm="2" class="ion-text-center" style="scroll-behavior: auto;">
         <div class="pins" >
-          <ion-card class="pin" *ngFor="let property of loadedProperties"  (click)="openProperty(property)">
-              <img [src]="property.propertyPic" >
+          <ion-card class="pin" *ngFor="let property of relevantProperties">
+              <img [src]="property.propertyPic" (click)="onEdit(propertyId)">
+              <div class="option" *ngIf="editable">
+                <ion-icon  name="pencil-outline" (click)="openProperty(property)"></ion-icon>
+                <ion-icon  name="trash-outline"></ion-icon>
+                <ion-icon  name="share-outline"></ion-icon>
+              </div>
           </ion-card>
         </div>
       </ion-col>

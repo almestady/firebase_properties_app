@@ -143,6 +143,15 @@ ion-label {
     -moz-background-size: cover;
     background-size: cover;
 }
+/* DOES NOT WORK - not specific enough */
+.action-sheet-group {
+    background: #e5e5e5;
+  }
+  
+  /* Works - pass "my-custom-class" in cssClass to increase specificity */
+  .my-custom-class .action-sheet-group {
+    background: #e5e5e5;
+  }
 
 // ion-img {
 //     display: inline-block;

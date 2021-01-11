@@ -155,8 +155,8 @@ goToChat(){
 
    signOut(){
      console.log('This is theProperty ID value: ', this.thePropertyId)
-    
-      this.router.navigateByUrl(`properties/tabs/browser/${this.thePropertyId}`)
+      this.modalCtrl.dismiss('chat')
+      // this.router.navigateByUrl(`properties/tabs/browser/${this.thePropertyId}`)
      
    }  
 

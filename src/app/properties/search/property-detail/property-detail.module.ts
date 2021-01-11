@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { PropertyDetailPage } from './property-detail.page';
 
-import { NewFormComponent } from '../../offers/new-property/new-form/new-form.component';
+// import { NewFormComponent } from '../../offers/new-property/new-form/new-form.component';
 import { CreateBookingComponent } from 'src/app/properties/search/bookings/create-booking/create-booking.component';
 
 const routes: Routes = [

@@ -304,14 +304,15 @@
                             *ngIf="!messageActive"
                             class="ion-text-center"
                             style="margin-right: 3%"
-                            (click)="onMessages()"
-                            ><ion-icon size="small" name="mail"></ion-icon>
+                            (click)="showPrompt()"
+                            ><ion-icon size="small" name="hand-right-outline"></ion-icon>
                           </ion-label>
                           <ion-label
                             *ngIf="messageActive"
                             class="ion-text-center"
                             style="margin-right: 3%; color:dodgerblue;"
-                            ><ion-icon size="small" name="mail"></ion-icon>
+                            (click)="onOffer()"
+                            ><ion-icon size="small" name="hand-right-outline"></ion-icon>
                           </ion-label>
                         </ion-col>
                         <ion-col size-xs="2">
@@ -433,35 +434,35 @@
                                 <ion-label
                                   class="ion-text-right"
                                   style="margin-right: 0% ; color: rgb(255, 153, 0)"
-                                  ><ion-icon name="star"></ion-icon>
+                                  ><ion-icon name="star" (click)="onRate(1)"></ion-icon>
                                 </ion-label>
                               </ion-col>
                               <ion-col size-xs="1">
                                 <ion-label
                                   class="ion-text-right"
                                   style="margin-right: 0% ; color: rgb(255, 153, 0)"
-                                  ><ion-icon name="star"></ion-icon>
+                                  ><ion-icon name="star" (click)="onRate(2)"></ion-icon>
                                 </ion-label>
                               </ion-col>
                               <ion-col size-xs="1">
                                 <ion-label
                                   class="ion-text-right"
                                   style="margin-right: 0% ; color: rgb(255, 153, 0)"
-                                  ><ion-icon name="star"></ion-icon>
+                                  ><ion-icon name="star" (click)="onRate(3)"></ion-icon>
                                 </ion-label>
                               </ion-col>
                               <ion-col size-xs="1">
                                 <ion-label
                                   class="ion-text-right"
                                   style="margin-right: 0%"
-                                  ><ion-icon name="star"></ion-icon>
+                                  ><ion-icon name="star" (click)="onRate(4)"></ion-icon>
                                 </ion-label>
                               </ion-col>
                               <ion-col size-xs="1">
                                 <ion-label
                                   class="ion-text-right"
                                   style="margin-right: 3%"
-                                  ><ion-icon name="star"></ion-icon>
+                                  ><ion-icon name="star" (click)="onRate(5)"></ion-icon>
                                 </ion-label>
                               </ion-col>
                             </ion-row>

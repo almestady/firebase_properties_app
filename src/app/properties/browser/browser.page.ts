@@ -70,7 +70,7 @@ export class BrowserPage implements OnInit {
 
   ionViewWillEnter() {
     // this.isLoading = true;
-    // this.propertiesService.getProperties().subscribe(()=>{
+    this.propertiesService.getProperties()
     //   this.isLoading = false;
       
     // }); 

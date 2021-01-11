@@ -8,6 +8,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {AngularFireStorage} from '@angular/fire/storage'
 import { analytics } from 'firebase';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
+import * as firebase from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class PropertiesService {
   private _properties = new BehaviorSubject<Property[]>([]);
   private propertiesCollection: AngularFirestoreCollection<Property>;
 
-  properties: Observable<Property[]>;
+  // properties: Observable<Property[]>;
 // apiURL = 'http://159.89.146.255:8001/api';
 // // apiURL = 'http://localhost:8000/api';
 // httpOptions = {
@@ -35,17 +36,21 @@ loading = false
     private afStorage: AngularFireStorage,
     public afs: AngularFirestore
   ) {
-    this.propertiesCollection = this.afs.collection<Property>('properties');
-    this.properties = this.propertiesCollection.valueChanges({ idField: 'id' }) as Observable<Property[]>;
+    // this.propertiesCollection = this.afs.collection<Property>('properties');
+    // this.properties = this.propertiesCollection.valueChanges({ idField: 'id' }) as Observable<Property[]>;
   }
 
-  // get properties() {
-  //   return this._properties.asObservable();
-  // }
+  get properties() {
+    return this._properties.asObservable();
+  }
 
   getProperties() {  
-    
-    return this.afs.collection('properties').valueChanges({ idField: 'id' }) as Observable<Property[]>;
+    // this.propertiesCollection = this.afs.collection<Property>('properties');
+     (this.afs.collection('properties').valueChanges({ idField: 'id' }) as Observable<Property[]>).subscribe(
+       properties => {
+         this._properties.next(properties);
+       }
+     );
   }
 
   getProperty(id: string){
@@ -67,6 +72,11 @@ loading = false
 
   deleteProperty(property: Property){
     return from(this.afs.collection("properties").doc(property.id).delete())
+  }
+
+  getSomeOneProperties(userId: string){
+    return from(firebase.firestore().collection("properties").
+   where("userId", "==",userId ).get())
   }
 
   // getProperties(){

@@ -1,3 +1,6 @@
+import { RatesService } from './../rates.service';
+
+import { OffersComponent } from './../offers/offers.component';
 import { Group, GroupsService } from './../chat/groups.service';
 import { ChatDetailPage } from './../chat/chat-detail/chat-detail.page';
 import { ChatService } from 'src/app/services/chat.service';
@@ -19,6 +22,7 @@ import {
   IonDatetime,
   ActionSheetController,
   NavController,
+  AlertController,
 } from "@ionic/angular";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SegmentChangeEventDetail } from "@ionic/core";
@@ -39,7 +43,15 @@ import { BookingService } from 'src/app/bookings/booking.service';
 import { LikesService } from 'src/app/shared/likes.service';
 import { ViewsService } from 'src/app/shared/views/views.service';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { OffersService } from '../offers.service';
 
+interface Rate{
+  id: string;
+  stars: number;
+  userId: string;
+  propertyId: string;
+  date: Date;
+}
 
 @Component({
   selector: "app-search",
@@ -95,6 +107,7 @@ export class SearchPage implements OnInit, OnDestroy {
   propertyId: string
   currentLike: Like;
   users = [] ;
+  rates: Rate [] = [];
 
   constructor(
     private propertiesService: PropertiesService,
@@ -114,7 +127,11 @@ export class SearchPage implements OnInit, OnDestroy {
     private routes: ActivatedRoute,
     private chatService: ChatService,
     private afs: AngularFirestore,
-    private groupsService: GroupsService
+    private groupsService: GroupsService,
+    private actionSheetController: ActionSheetController,
+    public alertCtrl: AlertController, 
+    private offersService: OffersService,
+    private ratesService: RatesService
   ) {
     // this.storage.getI('accessToken').then(token => {
 
@@ -150,7 +167,8 @@ get likeOn(){
   ngOnInit() {
     this.isLoading = true;
     this.onImage()
-    
+  
+
     this.routes.paramMap.subscribe(paramMap => {
       if (!paramMap.has('propertyId')) {
         
@@ -194,6 +212,7 @@ get likeOn(){
         }
        this.isLoading = false;
        this.onView(this.theProperty.id)
+       this.getPropertyRates();
       });
     });     
    console.log(this.theProperty)
@@ -250,6 +269,7 @@ get likeOn(){
                 })
                 this.onView(this.theProperty.id)
                
+                // this.ratesService.getRates()
               //  if(this.theProperty){
               // }
 
@@ -263,6 +283,7 @@ get likeOn(){
   }
 
   ionViewWillEnter() {
+    // this.ratesService.getRates()
     this._likeOn.subscribe()
     this.likesService.getLikes()
     this.viewsService.getViews()
@@ -531,7 +552,7 @@ goToBrowser(){
 // }
 
 ionViewWillLeave(){
-  this.propertiesService.getProperties().subscribe()
+  this.propertiesService.getProperties()
   this.likesService.getLikes().subscribe()
   this.viewsService.getViews().subscribe()
 }
@@ -673,6 +694,261 @@ this.viewsService.views.subscribe(views => {
     }
   
   }
+
+ 
+
+  showPrompt() {
+    let prompt = this.alertCtrl.create({
+      message: "الرجاء تحديد سعر تراه مناسبا للمنتج، وشكرا",
+      inputs: [
+        {
+          name: 'offerPrice',
+          placeholder: 'سعر المنتج',
+        },
+      ],
+      buttons: [
+        {
+          text: 'التراجع',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'إرسال',
+          handler: data => {
+            console.log('Saved clicked', data.offerPrice);
+            this.onOk(data.offerPrice)
+            // document.getElementById("isi").innerHTML = data.password;
+          }
+        }
+      ]
+    });
+    prompt.then(altEl => {
+      altEl.present();
+    });
+
+  }
+
+  onOk(offerPrice: number){
+  //  this.offersService.offers()
+    let offer = {
+      createdAt: new Date(),
+      propertyId: this.theProperty.id,
+      userId: this.authService.currentUserId,
+      offerPrice: offerPrice,
+    }
+     
+    this.offersService.addOffer(offer).subscribe(offer =>{
+      
+    })
+  }
+  
+  async onOffer() {
+    this.modalCtrl.create({component: OffersComponent,
+       componentProps: {theProperty: this.theProperty},
+       id:'offer'})
+    .then(modalEl => { 
+      modalEl.present();
+      return modalEl.onDidDismiss();
+    })
+      // const actionSheet = await this.actionSheetController.create({
+      //   header: 'ضع سعرك هنا',
+      //   cssClass: 'my-custom-class',
+      //   buttons: [{
+      //     text: 'Delete',
+      //     role: 'destructive',
+      //     icon: 'trash',
+      //     handler: () => {
+      //       console.log('Delete clicked');
+      //     }
+      //   }, {
+      //     text: 'Cancel',
+      //     icon: 'close',
+      //     role: 'cancel',
+      //     handler: () => {
+      //       console.log('Cancel clicked');
+      //     }
+      //   }]
+      // });
+      // await actionSheet.present();
+    }
+  
+    onRate(no_of_stars: number){
+      let prompt = this.alertCtrl.create({
+        message: "الرجاء تقييم المنتج، وشكرا",
+        // inputs: [
+        //   {
+        //     name: 'stars',
+        //     placeholder: 'سعر المنتج',
+        //   },
+        // ],
+        buttons: [
+          {
+            text: 'التراجع',
+            handler: data => {
+              console.log('Cancel clicked');
+            }
+          },
+          {
+            text: 'موافق',
+            handler: data => {
+              console.log('Saved clicked', no_of_stars);
+              // this.ratesService.getRates()
+              this.addARate(no_of_stars)
+              
+              // document.getElementById("isi").innerHTML = data.password;
+            }
+          }
+        ]
+      });
+      prompt.then(altEl => {
+        altEl.present();
+      });
+  
+    }
+
+    addARate(stars: number){
+      let done: boolean;
+      // this.ratesService.getRates()
+  
+
+      this.ratesService.rates.pipe(take(1),map(rates => {
+        this.rates = rates;
+       
+        this.rates.filter(rate => rate.userId === this.authService.currentUserId);
+        if(this.rates.length){
+          // let theRates = this.rates.slice(1);
+          console.log('All the Rates........', this.rates)
+          if(!this.rates.find(rate => rate.propertyId === this.theProperty.id)){
+            let myrate={
+              id: '',
+              stars: stars,
+              date: new Date(),
+              propertyId: this.theProperty.id,
+              userId: this.authService.currentUserId,
+              
+            }
+            this.ratesService.addRate(myrate).subscribe(()=> {
+              console.log('Rate is added')
+            })
+            this.getPropertyRates()
+            return;
+          } else {
+            console.log('Sorry!!! You have already rated this property')
+            
+             this.alertCtrl.create({
+              message: "لقد قمت مسبقا بتقييم المنتج. قل ترغب بإلغائه ؟",
+              // inputs: [
+              //   {
+              //     name: 'stars',
+              //     placeholder: 'سعر المنتج',
+              //   },
+              // ],
+              buttons: [
+                {
+                  text: 'التراجع',
+                  handler: data => {
+                    console.log('Cancel clicked');
+                  }
+                },
+                {
+                  text: 'إلغاء التقييم',
+                  handler: data => {
+                    this.rates.forEach((rate, index) => {
+                      if( rate.propertyId === this.theProperty.id) {
+                        this.rates.splice(index, 1);
+                        this.ratesService.cancelRate(rate.id)
+                        .subscribe(() => {
+                          console.log('تم الإلغاء');
+                         return;
+                       })
+                    
+                    // document.getElementById("isi").innerHTML = data.password;
+                  }
+                })
+                  }
+                }
+              ]
+            }).then(loadEl => {loadEl.present();})
+          }
+        }
+         
+       else {
+
+        let myrate = {
+          id: '',
+          stars: stars,
+          date: new Date(),
+          propertyId: this.theProperty.id,
+          userId: this.authService.currentUserId,
+        }
+
+        this.ratesService.addRate(myrate).pipe(take(1),map(()=> {
+          console.log('Rate is added')
+          this.getPropertyRates()
+        })).subscribe()
+      }
+        return rates;
+      })).subscribe(rates => {
+        // if(this.rates.length !== 0 ){
+         
+        })
+    }
+
+
+    getPropertyRates(){
+     
+        let no_of_5 = 0;
+        let no_of_4 = 0;
+        let no_of_3 = 0;
+        let no_of_2 = 0;
+        let no_of_1 = 0;
+      
+        let theRates: Rate[] = [];
+        this.ratesService.rates.subscribe(rates => {
+          // console.log(rates, 'That\'s right')
+          rates.forEach(rate => {
+            if(rate.propertyId === this.theProperty.id){
+              theRates.push(rate)
+            }
+          })
+          if(theRates){
+            theRates.forEach(rate => {
+              if(rate.stars === 5){
+                no_of_5 * 5;
+                console.log(no_of_5)
+              }
+              if(rate.stars === 4){
+                no_of_4 + 1;
+                console.log(no_of_4)
+              }
+              if(rate.stars === 3){
+                no_of_3 + 1;
+                console.log(no_of_3)
+              }
+              if(rate.stars === 2){
+                no_of_2 + 1;
+                console.log(no_of_2)
+              }          
+              if(rate.stars === 1){
+                no_of_1 + 1
+                console.log(no_of_1)
+              } 
+            })
+          }
+          // let rate = (5*no_of_5 + 4*no_of_4 + 3*no_of_3 + 2*no_of_2 + 1*no_of_1) / (no_of_5+no_of_4+no_of_3+no_of_2+no_of_1)
+          let rate = 5 *  no_of_5
+          console.log('The rating is:  ', rate)
+          return rate
+        })
+       
+
+      
+    //  this.ratesService.calculateStars(this.theProperty.id).subscribe(rate => {
+    //  })
+     
+    }
+
 
   addUser(userId: string){
     let obs = this.chatService.findUser(userId)

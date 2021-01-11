@@ -1,0 +1,27 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>
+    
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <!-- <form [formGroup]="form"> -->
+      <form >
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label> حدد سعر للمنتج</ion-label>
+            <ion-input required type="number"  formControlName="offerPrice" (keyup)="onDone($event.target.value)"></ion-input>
+          </ion-item>
+         
+            <ion-button (click)="onOk()"> OK </ion-button>
+         
+            <ion-button (click)="onCancel()"> Cancel </ion-button>
+         
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    </form>
+  </ion-card-content>
+</ion-card>

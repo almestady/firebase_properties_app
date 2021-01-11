@@ -23,6 +23,11 @@ const routes: Routes = [
             pathMatch: 'full'
         },
         {
+          path: "myproperties",
+              loadChildren: () => import("./myproperties/myproperties.module").then(m => m.MypropertiesPageModule)
+        }
+      ,
+        {
           path: "browser",
           children: [
           {
@@ -65,16 +70,7 @@ const routes: Routes = [
             
             ]
           },
-          {
-            path: "myproperties",
-            children: [
-              {
-                path: "",
-                loadChildren: () => import("./myproperties/myproperties.module").then(m => m.MypropertiesPageModule)
-              }
-            ]
-          }
-        ,
+          
       {
         
         path: "discover",
@@ -128,27 +124,27 @@ const routes: Routes = [
       {
         path: "offers",
         children: [
-          {
-            path: "",
-            loadChildren: () =>
-              import("./offers/offers.module").then((m) => m.OffersPageModule),
-          },
-          {
-            path: "edit/:offerId",
-            loadChildren: () =>
-              import("./offers/edit/edit.module").then(
-                (m) => m.EditPageModule
-              ),
+          // {
+          //   path: "",
+          //   loadChildren: () =>
+          //     import("./offers/offers.module").then((m) => m.OffersPageModule),
+          // },
+          // {
+          //   path: "edit/:offerId",
+          //   loadChildren: () =>
+          //     import("./offers/edit/edit.module").then(
+          //       (m) => m.EditPageModule
+          //     ),
+          //   // loadChildren: './offers/edit-offer/edit-offer.module#EditOfferPageModule'
+          // },
+          // {
+          //   path: "new_property",
+          //   loadChildren: () =>
+          //     import("./offers/new-property/new-property.module").then(
+          //       (m) => m.NewPropertyPageModule
+          //     ),
             // loadChildren: './offers/edit-offer/edit-offer.module#EditOfferPageModule'
-          },
-          {
-            path: "new_property",
-            loadChildren: () =>
-              import("./offers/new-property/new-property.module").then(
-                (m) => m.NewPropertyPageModule
-              ),
-            // loadChildren: './offers/edit-offer/edit-offer.module#EditOfferPageModule'
-          },
+          // },
           // {
           //   path: "new",
           //   loadChildren: () =>
