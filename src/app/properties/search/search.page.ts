@@ -774,36 +774,116 @@ this.viewsService.views.subscribe(views => {
     }
   
     onRate(no_of_stars: number){
-      let prompt = this.alertCtrl.create({
-        message: "الرجاء تقييم المنتج، وشكرا",
-        // inputs: [
-        //   {
-        //     name: 'stars',
-        //     placeholder: 'سعر المنتج',
-        //   },
-        // ],
-        buttons: [
-          {
-            text: 'التراجع',
-            handler: data => {
-              console.log('Cancel clicked');
-            }
-          },
-          {
-            text: 'موافق',
-            handler: data => {
-              console.log('Saved clicked', no_of_stars);
-              // this.ratesService.getRates()
-              this.addARate(no_of_stars)
+      this.ratesService.rates.pipe(take(1),map(rates => {
+        this.rates = rates;
+       
+        this.rates.filter(rate => rate.userId === this.authService.currentUserId);
+        if(this.rates.length){
+          // let theRates = this.rates.slice(1);
+          console.log('All the Rates........', this.rates)
+          if(this.rates.find(rate => rate.propertyId === this.theProperty.id)){
+            console.log('Sorry!!! You have already rated this property')
+            
+            this.alertCtrl.create({
+             message: "لقد قمت مسبقا بتقييم المنتج. قل ترغب بإلغائه ؟",
+             // inputs: [
+             //   {
+             //     name: 'stars',
+             //     placeholder: 'سعر المنتج',
+             //   },
+             // ],
+             buttons: [
+               {
+                 text: 'التراجع',
+                 handler: data => {
+                   console.log('Cancel clicked');
+                 }
+               },
+               {
+                 text: 'إلغاء التقييم',
+                 handler: data => {
+                   this.rates.forEach((rate, index) => {
+                     if( rate.propertyId === this.theProperty.id) {
+                       this.rates.splice(index, 1);
+                       this.ratesService.cancelRate(rate.id)
+                       .subscribe(() => {
+                         console.log('تم الإلغاء');
+                        return;
+                      })
+                   
+                   // document.getElementById("isi").innerHTML = data.password;
+                 }
+               })
+                 }
+               }
+             ]
+           }).then(loadEl => {loadEl.present();})
+          } 
+        }else {
+          let prompt = this.alertCtrl.create({
+            message:  ` من خمس نجمات \:  \" ${no_of_stars} \"  هو تقييمك للمنتج  `  ,
+            // inputs: [
+            //   {
+            //     name: 'stars',
+            //     placeholder: 'سعر المنتج',
+            //   },
+            // ],
+            buttons: [
+              {
+                text: 'التراجع',
+                handler: data => {
+                  console.log('Cancel clicked');
+                }
+              },
+              {
+                text: 'موافق',
+                handler: data => {
+                  console.log('Saved clicked', no_of_stars);
+                  // this.ratesService.getRates()
+                  this.addARate(no_of_stars)
+                  
+                  // document.getElementById("isi").innerHTML = data.password;
+                }
+              }
+            ]
+          });
+          prompt.then(altEl => {
+            altEl.present();
+          });
+         }
+      
+      })).subscribe()
+          
+      // let prompt = this.alertCtrl.create({
+      //   message:  ` من خمس نجمات \:  \" ${no_of_stars} \"  هو تقييمك للمنتج  `  ,
+      //   // inputs: [
+      //   //   {
+      //   //     name: 'stars',
+      //   //     placeholder: 'سعر المنتج',
+      //   //   },
+      //   // ],
+      //   buttons: [
+      //     {
+      //       text: 'التراجع',
+      //       handler: data => {
+      //         console.log('Cancel clicked');
+      //       }
+      //     },
+      //     {
+      //       text: 'موافق',
+      //       handler: data => {
+      //         console.log('Saved clicked', no_of_stars);
+      //         // this.ratesService.getRates()
+      //         this.addARate(no_of_stars)
               
-              // document.getElementById("isi").innerHTML = data.password;
-            }
-          }
-        ]
-      });
-      prompt.then(altEl => {
-        altEl.present();
-      });
+      //         // document.getElementById("isi").innerHTML = data.password;
+      //       }
+      //     }
+      //   ]
+      // });
+      // prompt.then(altEl => {
+      //   altEl.present();
+      // });
   
     }
 
@@ -833,44 +913,45 @@ this.viewsService.views.subscribe(views => {
             })
             this.getPropertyRates()
             return;
-          } else {
-            console.log('Sorry!!! You have already rated this property')
+          } 
+          // else {
+            // console.log('Sorry!!! You have already rated this property')
             
-             this.alertCtrl.create({
-              message: "لقد قمت مسبقا بتقييم المنتج. قل ترغب بإلغائه ؟",
-              // inputs: [
-              //   {
-              //     name: 'stars',
-              //     placeholder: 'سعر المنتج',
-              //   },
-              // ],
-              buttons: [
-                {
-                  text: 'التراجع',
-                  handler: data => {
-                    console.log('Cancel clicked');
-                  }
-                },
-                {
-                  text: 'إلغاء التقييم',
-                  handler: data => {
-                    this.rates.forEach((rate, index) => {
-                      if( rate.propertyId === this.theProperty.id) {
-                        this.rates.splice(index, 1);
-                        this.ratesService.cancelRate(rate.id)
-                        .subscribe(() => {
-                          console.log('تم الإلغاء');
-                         return;
-                       })
+            //  this.alertCtrl.create({
+            //   message: "لقد قمت مسبقا بتقييم المنتج. قل ترغب بإلغائه ؟",
+            //   // inputs: [
+            //   //   {
+            //   //     name: 'stars',
+            //   //     placeholder: 'سعر المنتج',
+            //   //   },
+            //   // ],
+            //   buttons: [
+            //     {
+            //       text: 'التراجع',
+            //       handler: data => {
+            //         console.log('Cancel clicked');
+            //       }
+            //     },
+            //     {
+            //       text: 'إلغاء التقييم',
+            //       handler: data => {
+            //         this.rates.forEach((rate, index) => {
+            //           if( rate.propertyId === this.theProperty.id) {
+            //             this.rates.splice(index, 1);
+            //             this.ratesService.cancelRate(rate.id)
+            //             .subscribe(() => {
+            //               console.log('تم الإلغاء');
+            //              return;
+            //            })
                     
-                    // document.getElementById("isi").innerHTML = data.password;
-                  }
-                })
-                  }
-                }
-              ]
-            }).then(loadEl => {loadEl.present();})
-          }
+            //         // document.getElementById("isi").innerHTML = data.password;
+            //       }
+            //     })
+            //       }
+            //     }
+            //   ]
+            // }).then(loadEl => {loadEl.present();})
+          // }
         }
          
        else {
