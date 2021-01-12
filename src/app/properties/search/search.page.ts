@@ -108,6 +108,26 @@ export class SearchPage implements OnInit, OnDestroy {
   currentLike: Like;
   users = [] ;
   rates: Rate [] = [];
+  
+  star_1_half: boolean;
+  star_1_full: boolean;
+  star_1_empty: boolean;
+
+  star_2_half: boolean;
+  star_2_full: boolean;
+  star_2_empty: boolean;
+
+  star_3_half: boolean;
+  star_3_full: boolean;
+  star_3_empty: boolean;
+
+  star_4_half: boolean;
+  star_4_full: boolean;
+  star_4_empty: boolean;
+
+  star_5_half: boolean;
+  star_5_full: boolean;
+  star_5_empty: boolean;
 
   constructor(
     private propertiesService: PropertiesService,
@@ -133,6 +153,7 @@ export class SearchPage implements OnInit, OnDestroy {
     private offersService: OffersService,
     private ratesService: RatesService
   ) {
+    
     // this.storage.getI('accessToken').then(token => {
 
       // if(!this.auth.accessToken){
@@ -168,6 +189,7 @@ get likeOn(){
     this.isLoading = true;
     this.onImage()
   
+    this.getPropertyRates()
 
     this.routes.paramMap.subscribe(paramMap => {
       if (!paramMap.has('propertyId')) {
@@ -291,6 +313,11 @@ get likeOn(){
     this.checkView(this.theProperty.id)
     this.checkLike(this.theProperty.id)
     this.checkBookmark(this.theProperty.id)
+
+    this.getPropertyRates()
+    
+    
+
     // this.propertiesService.getProperties().subscribe(()=>{
 
     //   this.bookingService.getBookings().subscribe(()=> {
@@ -808,6 +835,7 @@ this.viewsService.views.subscribe(views => {
                        this.ratesService.cancelRate(rate.id)
                        .subscribe(() => {
                          console.log('تم الإلغاء');
+                         this.getPropertyRates()
                         return;
                       })
                    
@@ -818,73 +846,44 @@ this.viewsService.views.subscribe(views => {
                }
              ]
            }).then(loadEl => {loadEl.present();})
-          } 
+          } else {
+            this.askForRate(no_of_stars);
+           }
         }else {
-          let prompt = this.alertCtrl.create({
-            message:  ` من خمس نجمات \:  \" ${no_of_stars} \"  هو تقييمك للمنتج  `  ,
-            // inputs: [
-            //   {
-            //     name: 'stars',
-            //     placeholder: 'سعر المنتج',
-            //   },
-            // ],
-            buttons: [
-              {
-                text: 'التراجع',
-                handler: data => {
-                  console.log('Cancel clicked');
-                }
-              },
-              {
-                text: 'موافق',
-                handler: data => {
-                  console.log('Saved clicked', no_of_stars);
-                  // this.ratesService.getRates()
-                  this.addARate(no_of_stars)
-                  
-                  // document.getElementById("isi").innerHTML = data.password;
-                }
-              }
-            ]
-          });
-          prompt.then(altEl => {
-            altEl.present();
-          });
+          this.askForRate(no_of_stars);
          }
       
       })).subscribe()
           
-      // let prompt = this.alertCtrl.create({
-      //   message:  ` من خمس نجمات \:  \" ${no_of_stars} \"  هو تقييمك للمنتج  `  ,
-      //   // inputs: [
-      //   //   {
-      //   //     name: 'stars',
-      //   //     placeholder: 'سعر المنتج',
-      //   //   },
-      //   // ],
-      //   buttons: [
-      //     {
-      //       text: 'التراجع',
-      //       handler: data => {
-      //         console.log('Cancel clicked');
-      //       }
-      //     },
-      //     {
-      //       text: 'موافق',
-      //       handler: data => {
-      //         console.log('Saved clicked', no_of_stars);
-      //         // this.ratesService.getRates()
-      //         this.addARate(no_of_stars)
-              
-      //         // document.getElementById("isi").innerHTML = data.password;
-      //       }
-      //     }
-      //   ]
-      // });
-      // prompt.then(altEl => {
-      //   altEl.present();
-      // });
+     
   
+    }
+
+    askForRate(no_of_stars: number){
+      this.alertCtrl.create({
+        message:  ` من خمس نجمات \:  \" ${no_of_stars} \"  هو تقييمك للمنتج  `  ,
+        
+        buttons: [
+          {
+            text: 'التراجع',
+            handler: data => {
+              console.log('Cancel clicked');
+            }
+          },
+          {
+            text: 'موافق',
+            handler: data => {
+              console.log('Saved clicked', no_of_stars);
+              // this.ratesService.getRates()
+              this.addARate(no_of_stars)
+              
+              // document.getElementById("isi").innerHTML = data.password;
+            }
+          }
+        ]
+      }).then(altEl => {
+        altEl.present();
+      });
     }
 
     addARate(stars: number){
@@ -914,44 +913,7 @@ this.viewsService.views.subscribe(views => {
             this.getPropertyRates()
             return;
           } 
-          // else {
-            // console.log('Sorry!!! You have already rated this property')
-            
-            //  this.alertCtrl.create({
-            //   message: "لقد قمت مسبقا بتقييم المنتج. قل ترغب بإلغائه ؟",
-            //   // inputs: [
-            //   //   {
-            //   //     name: 'stars',
-            //   //     placeholder: 'سعر المنتج',
-            //   //   },
-            //   // ],
-            //   buttons: [
-            //     {
-            //       text: 'التراجع',
-            //       handler: data => {
-            //         console.log('Cancel clicked');
-            //       }
-            //     },
-            //     {
-            //       text: 'إلغاء التقييم',
-            //       handler: data => {
-            //         this.rates.forEach((rate, index) => {
-            //           if( rate.propertyId === this.theProperty.id) {
-            //             this.rates.splice(index, 1);
-            //             this.ratesService.cancelRate(rate.id)
-            //             .subscribe(() => {
-            //               console.log('تم الإلغاء');
-            //              return;
-            //            })
-                    
-            //         // document.getElementById("isi").innerHTML = data.password;
-            //       }
-            //     })
-            //       }
-            //     }
-            //   ]
-            // }).then(loadEl => {loadEl.present();})
-          // }
+         
         }
          
        else {
@@ -985,8 +947,9 @@ this.viewsService.views.subscribe(views => {
         let no_of_2 = 0;
         let no_of_1 = 0;
       
+       
         let theRates: Rate[] = [];
-        this.ratesService.rates.subscribe(rates => {
+        this.ratesService.rates.pipe(take(1),map(rates => {
           // console.log(rates, 'That\'s right')
           rates.forEach(rate => {
             if(rate.propertyId === this.theProperty.id){
@@ -996,39 +959,253 @@ this.viewsService.views.subscribe(views => {
           if(theRates){
             theRates.forEach(rate => {
               if(rate.stars === 5){
-                no_of_5 * 5;
+                no_of_5= +1;
                 console.log(no_of_5)
               }
               if(rate.stars === 4){
-                no_of_4 + 1;
+                no_of_4 = +1;
                 console.log(no_of_4)
               }
               if(rate.stars === 3){
-                no_of_3 + 1;
+                no_of_3 = +1;
                 console.log(no_of_3)
               }
               if(rate.stars === 2){
-                no_of_2 + 1;
+                no_of_2 = +1;
                 console.log(no_of_2)
               }          
               if(rate.stars === 1){
-                no_of_1 + 1
+                no_of_1 = +1
                 console.log(no_of_1)
               } 
             })
           }
-          // let rate = (5*no_of_5 + 4*no_of_4 + 3*no_of_3 + 2*no_of_2 + 1*no_of_1) / (no_of_5+no_of_4+no_of_3+no_of_2+no_of_1)
-          let rate = 5 *  no_of_5
-          console.log('The rating is:  ', rate)
+          let rate = (5*no_of_5 + 4*no_of_4 + 3*no_of_3 + 2*no_of_2 + 1*no_of_1) / (no_of_5+no_of_4+no_of_3+no_of_2+no_of_1)
+          // let rate = 5 * no_of_5
           return rate
+        })).subscribe((rate)=>{
+          
+          this.calculateStars(rate);
+          console.log('The rating is:  ', rate)
         })
-       
-
-      
-    //  this.ratesService.calculateStars(this.theProperty.id).subscribe(rate => {
-    //  })
-     
+ 
     }
+
+    calculateStars(rate: number) {
+      let stars: number;
+
+      this.star_1_half = false;
+      this.star_1_full = false;
+      this.star_1_empty = true;
+    
+      this.star_2_half = false;
+      this.star_2_full = false;
+      this.star_2_empty = true;
+    
+      this.star_3_half = false;
+      this.star_3_full = false;
+      this.star_3_empty = true;
+    
+      this.star_4_half = false;
+      this.star_4_full = false;
+      this.star_4_empty = true;
+    
+      this.star_5_half = false;
+      this.star_5_full = false;
+      this.star_5_empty = true;
+
+
+      if(rate === 0){ stars = 0} 
+      if(rate === 1){
+         stars = 1;
+        this.star_1_full = true;
+        this.star_2_full = false;
+        this.star_3_full = false;
+        this.star_4_full = false;
+        this.star_5_full = false;
+
+        this.star_1_empty = false;
+        this.star_2_empty = true;
+        this.star_3_empty = true;
+        this.star_4_empty = true;
+        this.star_5_empty = true;
+        }
+
+      if(rate === 2){ 
+        stars = 2;
+        this.star_1_full = true;
+        this.star_2_full = true;
+        this.star_3_full = false;
+        this.star_4_full = false;
+        this.star_5_full = false;
+
+        this.star_1_empty = false;
+        this.star_2_empty = false;
+        this.star_3_empty = true;
+        this.star_4_empty = true;
+        this.star_5_empty = true;
+      
+      }
+      
+      if(rate === 3){ 
+        stars = 3;
+        this.star_1_full = true;
+        this.star_2_full = true;
+        this.star_3_full = true;
+        this.star_4_full = false;
+        this.star_5_full = false;
+
+        this.star_1_empty = false;
+        this.star_2_empty = false;
+        this.star_3_empty = false;
+        this.star_4_empty = true;
+        this.star_5_empty = true;
+      
+      }
+      if(rate === 4){ 
+        stars = 4;
+        this.star_1_full = true;
+        this.star_2_full = true;
+        this.star_3_full = true;
+        this.star_4_full = true;
+        this.star_5_full = false;
+
+        this.star_1_empty = false;
+        this.star_2_empty = false;
+        this.star_3_empty = false;
+        this.star_4_empty = false;
+        this.star_5_empty = true;
+
+      }
+
+      if(rate === 5){ 
+        stars = 5;
+        this.star_5_full = true;
+        this.star_1_full = true;
+        this.star_2_full = true;
+        this.star_3_full = true;
+        this.star_4_full = true;
+
+        this.star_1_empty = false;
+        this.star_2_empty = false;
+        this.star_3_empty = false;
+        this.star_4_empty = false;
+        this.star_5_empty = false;
+      }
+
+      if(rate > 0 && rate < 1) { 
+        stars = 0.5; 
+        this.star_1_half = true;
+        
+        this.star_2_half = false;
+        this.star_3_half = false;
+        this.star_4_half = false;
+        this.star_5_half = false;
+        
+        this.star_1_full = false;
+        this.star_2_full = false;
+        this.star_3_full = false;
+        this.star_4_full = false;
+        this.star_5_full = false;
+
+        this.star_1_empty = false;
+        this.star_2_empty = true;
+        this.star_3_empty = true;
+        this.star_4_empty = true;
+        this.star_5_empty = true;
+
+      }
+
+      if(rate > 1 && rate < 2) { 
+        stars = 1.5;
+        this.star_1_half = false;
+        
+        this.star_2_half = true;
+        this.star_3_half = false;
+        this.star_4_half = false;
+        this.star_5_half = false;
+        
+        this.star_1_full = true;
+        this.star_2_full = false;
+        this.star_3_full = false;
+        this.star_4_full = false;
+        this.star_5_full = false;
+
+        this.star_1_empty = false;
+        this.star_2_empty = false;
+        this.star_3_empty = true;
+        this.star_4_empty = true;
+        this.star_5_empty = true;
+      }
+      if(rate > 2 && rate < 3) {
+         stars = 2.5
+         this.star_1_half = false;
+        
+         this.star_2_half = false;
+         this.star_3_half = true;
+         this.star_4_half = false;
+         this.star_5_half = false;
+         
+         this.star_1_full = true;
+        this.star_2_full = true;
+        this.star_3_full = false;
+        this.star_4_full = false;
+        this.star_5_full = false;
+
+        this.star_1_empty = false;
+        this.star_2_empty = false;
+        this.star_3_empty = false;
+        this.star_4_empty = true;
+        this.star_5_empty = true;
+        }
+      if(rate >  3 && rate < 4) { 
+        stars = 3.5
+        this.star_1_half = false;
+        
+        this.star_2_half = false;
+        this.star_3_half = false;
+        this.star_4_half = true;
+        this.star_5_half = false;
+        
+        this.star_1_full = true;
+        this.star_2_full = true;
+        this.star_3_full = true;
+        this.star_4_full = false;
+        this.star_5_full = false;
+
+        this.star_1_empty = false;
+        this.star_2_empty = false;
+        this.star_3_empty = false;
+        this.star_4_empty = false;
+        this.star_5_empty = true;
+      }
+      if(rate >  4 && rate < 5) {
+         stars = 4.5
+        
+         this.star_1_half = false;
+        
+        this.star_2_half = false;
+        this.star_3_half = false;
+        this.star_4_half = false;
+        this.star_5_half = true;
+        
+        this.star_1_full = true;
+        this.star_2_full = true;
+        this.star_3_full = true;
+        this.star_4_full = true;
+        this.star_5_full = false;
+
+        this.star_1_empty = false;
+        this.star_2_empty = false;
+        this.star_3_empty = false;
+        this.star_4_empty = false;
+        this.star_5_empty = false;
+        }
+
+      return stars;
+    }
+
+    
 
 
   addUser(userId: string){

@@ -431,40 +431,112 @@
                                 >
                               </ion-col>
                               <ion-col size-xs="1">
-                                <ion-label
+                                <ion-label name="star_1_empty" *ngIf="star_1_empty"
+                                  class="ion-text-right"
+                                  style="margin-right: 0% ; color:  rgb(255, 153, 0)"
+                                  ><ion-icon name="star-outline" (click)="onRate(1)"></ion-icon>
+                                </ion-label>
+                             
+                                <ion-label name="star_1_full" *ngIf="star_1_full"
                                   class="ion-text-right"
                                   style="margin-right: 0% ; color: rgb(255, 153, 0)"
                                   ><ion-icon name="star" (click)="onRate(1)"></ion-icon>
                                 </ion-label>
+                             
+                                <ion-label name="star_1_half" *ngIf="star_1_half"
+                                  class="ion-text-right"
+                                  style="margin-right: 0% ; color: rgb(255, 153, 0)"
+                                  ><ion-icon name="star-half-outline" (click)="onRate(0.5)"></ion-icon>
+                                </ion-label>
                               </ion-col>
+
+
                               <ion-col size-xs="1">
-                                <ion-label
+                                <ion-label name="star_2_empty" *ngIf="star_2_empty"
+                                  class="ion-text-right"
+                                  style="margin-right: 0% ; color: rgb(255, 153, 0)"
+                                  ><ion-icon name="star-outline" (click)="onRate(2)"></ion-icon>
+                                </ion-label>
+                            
+                                <ion-label name="star_2_full" *ngIf="star_2_full"
                                   class="ion-text-right"
                                   style="margin-right: 0% ; color: rgb(255, 153, 0)"
                                   ><ion-icon name="star" (click)="onRate(2)"></ion-icon>
                                 </ion-label>
+                             
+                                <ion-label name="star_2_half" *ngIf="star_2_half"
+                                  class="ion-text-right"
+                                  style="margin-right: 0% ; color: rgb(255, 153, 0)"
+                                  ><ion-icon name="star-half-outline" (click)="onRate(1.5)"></ion-icon>
+                                </ion-label>
                               </ion-col>
+
+
                               <ion-col size-xs="1">
-                                <ion-label
+                                <ion-label name="star_3_empty" *ngIf="star_3_empty"
+                                  class="ion-text-right"
+                                  style="margin-right: 0% ; color: rgb(255, 153, 0)"
+                                  ><ion-icon name="star-outline" (click)="onRate(3)"></ion-icon>
+                                </ion-label>
+                             
+                                <ion-label name="star_3_full" *ngIf="star_3_full"
                                   class="ion-text-right"
                                   style="margin-right: 0% ; color: rgb(255, 153, 0)"
                                   ><ion-icon name="star" (click)="onRate(3)"></ion-icon>
                                 </ion-label>
-                              </ion-col>
-                              <ion-col size-xs="1">
-                                <ion-label
+                             
+                                <ion-label name="star_3_half" *ngIf="star_3_half"
                                   class="ion-text-right"
-                                  style="margin-right: 0%"
+                                  style="margin-right: 0% ; color: rgb(255, 153, 0)"
+                                  ><ion-icon name="star-half-outline" (click)="onRate(2.5)"></ion-icon>
+                                </ion-label>
+                              </ion-col>
+
+
+                              <ion-col size-xs="1">
+                                <ion-label name="star_4_empty" *ngIf="star_4_empty"
+                                  class="ion-text-right"
+                                  style="margin-right: 0% ; color:  rgb(255, 153, 0)"
+                                  ><ion-icon name="star-outline" (click)="onRate(4)"></ion-icon>
+                                </ion-label>
+                             
+                                <ion-label name="star_4_full" *ngIf="star_4_full"
+                                  class="ion-text-right"
+                                  style="margin-right: 0% ; color: rgb(255, 153, 0)"
                                   ><ion-icon name="star" (click)="onRate(4)"></ion-icon>
                                 </ion-label>
-                              </ion-col>
-                              <ion-col size-xs="1">
-                                <ion-label
+                             
+                                <ion-label name="star_4_half" *ngIf="star_4_half"
                                   class="ion-text-right"
-                                  style="margin-right: 3%"
-                                  ><ion-icon name="star" (click)="onRate(5)"></ion-icon>
+                                  style="margin-right: 0% ; color: rgb(255, 153, 0)"
+                                  ><ion-icon name="star-half-outline" (click)="onRate(3.5)"></ion-icon>
                                 </ion-label>
                               </ion-col>
+
+
+
+                              <ion-col size-xs="1">
+                                <ion-label name="star_5_empty" *ngIf="star_5_empty"
+                                  class="ion-text-right"
+                                  style="margin-right: 0% ; color:  rgb(255, 153, 0)"
+                                  ><ion-icon name="star-outline" (click)="onRate(5)"></ion-icon>
+                                </ion-label>
+                             
+                                <ion-label name="star_5_full" *ngIf="star_5_full"
+                                  class="ion-text-right"
+                                  style="margin-right: 0% ; color: rgb(255, 153, 0)"
+                                  ><ion-icon name="star" (click)="onRate(5)"></ion-icon>
+                                </ion-label>
+                             
+                                <ion-label name="star_5_half" *ngIf="star_5_half"
+                                  class="ion-text-right"
+                                  style="margin-right: 0% ; color: rgb(255, 153, 0)"
+                                  ><ion-icon name="star-half-outline" (click)="onRate(4.5)"></ion-icon>
+                                </ion-label>
+                              </ion-col>
+
+
+                              
                             </ion-row>
                           </ion-grid>
                         </ion-col>
