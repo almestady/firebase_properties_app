@@ -191,6 +191,8 @@ get likeOn(){
   
     this.getPropertyRates()
 
+    this.ratesService.rates.subscribe(rates => {this.rates = rates; this.getPropertyRates()})
+
     this.routes.paramMap.subscribe(paramMap => {
       if (!paramMap.has('propertyId')) {
         
@@ -802,13 +804,16 @@ this.viewsService.views.subscribe(views => {
   
     onRate(no_of_stars: number){
       this.ratesService.rates.pipe(take(1),map(rates => {
-        this.rates = rates;
+        this.rates = rates
        
-        this.rates.filter(rate => rate.userId === this.authService.currentUserId);
-        if(this.rates.length){
+        // this.rates.filter(rate => rate.userId === this.authService.currentUserId);
+        
+        // rates.forEach(rate => { if(rate.userId === this.authService.currentUserId){this.rates.push(rate)}})
+        rates.forEach(rate => console.log(rate.userId))
+        if(rates.length){
           // let theRates = this.rates.slice(1);
-          console.log('All the Rates........', this.rates)
-          if(this.rates.find(rate => rate.propertyId === this.theProperty.id)){
+          console.log('All the Rates........', rates)
+          if(rates.find(rate => rate.propertyId === this.theProperty.id && rate.userId === this.authService.currentUserId)){
             console.log('Sorry!!! You have already rated this property')
             
             this.alertCtrl.create({
@@ -830,7 +835,7 @@ this.viewsService.views.subscribe(views => {
                  text: 'إلغاء التقييم',
                  handler: data => {
                    this.rates.forEach((rate, index) => {
-                     if( rate.propertyId === this.theProperty.id) {
+                     if( rate.propertyId === this.theProperty.id && rate.userId === this.authService.currentUserId) {
                        this.rates.splice(index, 1);
                        this.ratesService.cancelRate(rate.id)
                        .subscribe(() => {
@@ -847,13 +852,14 @@ this.viewsService.views.subscribe(views => {
              ]
            }).then(loadEl => {loadEl.present();})
           } else {
+           
             this.askForRate(no_of_stars);
            }
         }else {
           this.askForRate(no_of_stars);
          }
       
-      })).subscribe()
+      })).subscribe(()=>{ this.getPropertyRates()})
           
      
   
@@ -876,7 +882,7 @@ this.viewsService.views.subscribe(views => {
               console.log('Saved clicked', no_of_stars);
               // this.ratesService.getRates()
               this.addARate(no_of_stars)
-              
+              this.getPropertyRates()
               // document.getElementById("isi").innerHTML = data.password;
             }
           }
@@ -894,11 +900,11 @@ this.viewsService.views.subscribe(views => {
       this.ratesService.rates.pipe(take(1),map(rates => {
         this.rates = rates;
        
-        this.rates.filter(rate => rate.userId === this.authService.currentUserId);
-        if(this.rates.length){
+        // this.rates.filter(rate => rate.userId === this.authService.currentUserId);
+        if(rates.length){
           // let theRates = this.rates.slice(1);
-          console.log('All the Rates........', this.rates)
-          if(!this.rates.find(rate => rate.propertyId === this.theProperty.id)){
+          console.log('All the Rates........', rates)
+          // if(!this.rates.find(rate => rate.propertyId === this.theProperty.id)){
             let myrate={
               id: '',
               stars: stars,
@@ -907,12 +913,12 @@ this.viewsService.views.subscribe(views => {
               userId: this.authService.currentUserId,
               
             }
-            this.ratesService.addRate(myrate).subscribe(()=> {
+            this.ratesService.addRate(myrate).subscribe((rate)=> {
               console.log('Rate is added')
             })
             this.getPropertyRates()
             return;
-          } 
+          // } 
          
         }
          
@@ -949,7 +955,8 @@ this.viewsService.views.subscribe(views => {
       
        
         let theRates: Rate[] = [];
-        this.ratesService.rates.pipe(take(1),map(rates => {
+        this.ratesService.rates.pipe(map(rates => {
+          
           // console.log(rates, 'That\'s right')
           rates.forEach(rate => {
             if(rate.propertyId === this.theProperty.id){
